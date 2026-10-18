@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+	\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{random}
+	
+	\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{remover\PYGZus{}vertices}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{n}\PYG{p}{):}
+	\PYG{n}{removidos} \PYG{o}{=} \PYG{l+m+mi}{0}
+	\PYG{k}{while} \PYG{n}{removidos} \PYG{o}{\PYGZlt{}} \PYG{n}{n}\PYG{p}{:}
+	\PYG{n}{v} \PYG{o}{=} \PYG{n}{random}\PYG{o}{.}\PYG{n}{choice}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{()))}
+	\PYG{c+c1}{\PYGZsh{} ...}
+\end{MintedVerbatim}
