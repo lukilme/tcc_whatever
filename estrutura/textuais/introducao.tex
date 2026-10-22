@@ -1,28 +1,65 @@
-% INTRODUÇÃO-------------------------------------------------------------------
 
+% INTRODUÇÃO
 \chapter{INTRODUÇÃO}
 \label{chap:introducao}
 
-Edite e coloque aqui o seu texto de introdução.
+O presente relatório descreve as atividades desenvolvidas durante o estágio supervisionado realizado entre fevereiro e junho de 2026 no Laboratório ASSERT, vinculado ao Polo de Inovação do Instituto Federal da Paraíba (IFPB). As atividades concentraram-se na evolução do sistema Banco de Especialistas, plataforma destinada ao gerenciamento de especialistas e ao apoio à composição de equipes para projetos de Pesquisa, Desenvolvimento e Inovação (PD&I).
 
-A Introdução é a parte inicial do texto, na qual devem constar o tema e a delimitação do assunto tratado, objetivos da pesquisa e outros elementos necessários para situar o tema do trabalho, tais como: justificativa, procedimentos metodológicos (classificação inicial), embasamento teórico (principais bases sintetizadas) e estrutura do trabalho, tratados de forma sucinta. Recursos utilizados e cronograma são incluídos quando necessário. Salienta-se que os procedimentos metodológicos e o embasamento teórico são tratados, posteriormente, em capítulos próprios e com a profundidade necessária ao trabalho de pesquisa.
+O Banco de Especialistas permite o cadastro, a classificação e a avaliação de candidatos com base em critérios como formação acadêmica, experiência profissional e participação em projetos. Nesse contexto, a plataforma reúne informações utilizadas na gestão dos especialistas e nos processos de seleção e composição de equipes vinculadas às iniciativas do Polo de Inovação.
 
-\section{LEIA ESTA SEÇÃO ANTES DE COMEÇAR}
-\label{sec:antesleiame}
+Durante o estágio, identificou-se uma demanda relacionada à alteração de categoria dos especialistas. O procedimento então utilizado exigia que o interessado solicitasse a mudança por e-mail e que um administrador realizasse manualmente uma consulta SQL diretamente no banco de dados. A ausência de um fluxo formal de solicitações dificultava o acompanhamento das alterações e a recuperação do estado anterior dos registros, além de aumentar o risco de inconsistências decorrentes de intervenções diretas na base de dados.
 
-Este documento é um \emph{template} \LaTeX{} que foi concebido, primariamente, para ser utilizado na elaboração de Trabalho de Conclusão de Curs em conformidade com as normas da Universidade Tecnológica Federal do Paraná.
+Diante desse cenário, o trabalho concentrou-se no desenvolvimento de um módulo de solicitações para formalizar e gerenciar operações de alteração cadastral e de classificação dos especialistas. A solução contempla mecanismos para registrar solicitações, acompanhar seu andamento, permitir sua análise e decisão e manter informações necessárias à rastreabilidade das operações. Dessa forma, busca-se reduzir a dependência de intervenções manuais no banco de dados e estabelecer um processo mais controlado e verificável.
 
-Para a produção deste \emph{template} foi necessário adaptar o arquivo {\ttfamily abntex2.cls}. Assim, foi produzido o arquivo {\ttfamily utfpr-abntex2.cls} que define o \verb|documentclass| específico para a UTFPR.
+Do ponto de vista técnico, o desenvolvimento envolveu conceitos de engenharia de software, aplicações web, persistência de dados relacionais, testes automatizados e conteinerização. Destacam-se a integração entre componentes de front-end e back-end, o uso de mecanismos de registro e recuperação do estado dos usuários e a manutenção de um histórico das operações. Esses fundamentos são apresentados no capítulo dedicado ao embasamento teórico.
 
-Antes de começar a escrever o seu trabalho acadêmico utilizando este \emph{template}, é importante saber que há dois arquivos que você precisará editar para que a capa e a folha de rosto de seu trabalho sejam geradas automaticamente.
-São eles os arquivos {\ttfamily capa.tex} e {\ttfamily folha-rosto.tex}, ambos no diretório  {\ttfamily /elementos-pre-textuais}.
-No arquivo {\ttfamily capa.tex} deverá ser informado nome do autor, título do trabalho, natureza do trabalho, nome do orientador e outras informações necessárias.
-No arquivo {\ttfamily folha-rosto.tex}, que contém o texto padrão estabelecendo que este documento é um requisito parcial para a obtenção do título pretendido, será necessário apenas comentar as linhas que não se aplicam ao tipo de trabalho acadêmico.
+\section{Objetivos}
+\label{sec:objetivos}
 
-A compilação para gerar um arquivo no formato pdf, incluindo corretamente as referências bibliográficas, deve ser realizada utilizando o comando \verb|makefile|, disponível na mesma pasta onde está o arquivo principal \verb|utfpr-tcc.tex|. Caso seja alterado o nome do arquivo \verb|utfpr-tcc.tex|, deverá ser alterado no arquivo \verb|makefile| também.
+\subsection{Objetivo geral}
+\label{subsec:objetivo-geral}
 
-\section{ORGANIZAÇÃO DO TRABALHO}
-\label{sec:organizacaoTrabalho}
+Desenvolver um módulo de solicitações de alteração cadastral e de classificação no sistema Banco de Especialistas, contemplando os fluxos de criação, consulta, aprovação, rejeição e reversão, com mecanismos de rastreabilidade e registro das operações.
 
-Normalmente ao final da introdução é apresentada, em um ou dois parágrafos curtos, a organização do restante do trabalho acadêmico.
-Deve-se dizer o quê será apresentado em cada um dos demais capítulos.
+\subsection{Objetivos específicos}
+\label{subsec:objetivos-especificos}
+
+\begin{itemize}
+    \item Levantar e analisar os requisitos e as regras de negócio relacionados às solicitações de alteração cadastral e de classificação dos especialistas.
+    
+    \item Modelar os componentes de persistência necessários ao registro das solicitações e à recuperação do estado dos usuários.
+    
+    \item Implementar as funcionalidades de gerenciamento das solicitações no back-end, incluindo as regras de negócio, a integração com o PostgreSQL e o acesso aos dados por meio do SQLAlchemy.
+    
+    \item Desenvolver as interfaces web necessárias à criação, ao acompanhamento e à análise das solicitações.
+    
+    \item Implementar mecanismos de rastreabilidade das operações, incluindo o registro de eventos e a apresentação de seu histórico.
+    
+    \item Desenvolver e executar testes unitários e de integração para verificar as regras de negócio e o funcionamento integrado dos componentes da aplicação.
+\end{itemize}
+
+\section{Escopo e limitações}
+\label{sec:escopo-limitacoes}
+
+O trabalho abrange o desenvolvimento do módulo de solicitações e as funcionalidades necessárias ao gerenciamento das operações de alteração cadastral e de classificação dos especialistas no sistema Banco de Especialistas. Estão incluídos os mecanismos de registro, acompanhamento, decisão e reversão das solicitações, bem como os recursos de persistência e rastreabilidade associados a esse fluxo.
+
+Não fazem parte do escopo a redefinição dos critérios de pontuação dos especialistas, a modificação do processo seletivo, a substituição do sistema de avaliação existente e a implementação de notificações por e-mail. Também não é contemplado o tratamento de múltiplas solicitações simultâneas para um mesmo especialista. Essas limitações delimitam as responsabilidades da solução desenvolvida e podem orientar evoluções futuras do sistema.
+
+\section{Procedimentos metodológicos}
+\label{sec:procedimentos-metodologicos}
+
+O trabalho caracteriza-se como um relato técnico de natureza aplicada e caráter descritivo, desenvolvido no contexto de um estágio supervisionado em desenvolvimento de software. Sua execução compreendeu o estudo da arquitetura e das regras de negócio do sistema, o levantamento e a análise dos requisitos, a modelagem dos componentes necessários, a implementação das funcionalidades e a realização de testes.
+
+A verificação técnica envolveu testes unitários e de integração, destinados a avaliar o comportamento das funcionalidades implementadas e a interação entre os componentes da aplicação. Também foi verificado o funcionamento integrado do front-end e do back-end em ambiente de desenvolvimento conteinerizado com Docker. As atividades foram conduzidas no contexto da arquitetura e das tecnologias já adotadas pelo projeto, considerando suas restrições e regras de negócio.
+
+\section{Contexto institucional}
+\label{sec:contexto-institucional}
+
+O estágio foi realizado no âmbito do Polo de Inovação do Instituto Federal da Paraíba, estrutura associada à Agência de Inovação da instituição (NEO-IFPB). O Polo atua no desenvolvimento de iniciativas de Pesquisa, Desenvolvimento e Inovação (PD&I), aproximando a instituição de demandas tecnológicas do setor produtivo e da sociedade.
+
+As atividades técnicas foram desenvolvidas no Laboratório ASSERT, ambiente vinculado ao Polo de Inovação no qual são realizadas atividades de desenvolvimento e manutenção de sistemas computacionais para projetos institucionais. Nesse contexto, o estágio proporcionou a participação nas etapas de análise, implementação, integração e verificação de funcionalidades de uma aplicação web existente.
+
+\section{Organização do relatório}
+\label{sec:organizacao-relatorio}
+
+Além deste capítulo introdutório, o relatório está organizado em três capítulos. O segundo apresenta o embasamento teórico relacionado às tecnologias e aos conceitos utilizados no desenvolvimento. O terceiro descreve as atividades realizadas durante o estágio, incluindo a análise dos requisitos, a implementação das funcionalidades e os testes executados. Por fim, o quarto capítulo apresenta as considerações finais, sintetizando os resultados do trabalho, as limitações identificadas e os possíveis desdobramentos.

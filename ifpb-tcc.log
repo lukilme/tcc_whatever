@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.10.17)  17 OCT 2026 22:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.10.17)  22 OCT 2026 11:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1057,11 +1057,10 @@ Package babel Info: 'brazil' activates 'portuges' shorthands.
 (./estrutura/pre-textuais/listas/lista-simbolos.aux)
 (./estrutura/pre-textuais/listas/listas-diversas/lista-algoritmos.aux)
 (./estrutura/pre-textuais/sumario.aux) (./estrutura/textuais/introducao.aux)
-(./estrutura/textuais/desenvolvimento/revisao-de-literatura.aux)
-(./estrutura/textuais/desenvolvimento/metodologia.aux)
+(./estrutura/textuais/desenvolvimento/embasamento-teorico.aux)
+(./estrutura/textuais/desenvolvimento/atividades-realizadas.aux)
 (./estrutura/textuais/desenvolvimento/resultados.aux)
-(./estrutura/textuais/desenvolvimento/orientacoes.aux)
-(./estrutura/textuais/conclusao.aux) (./estrutura/pos-textuais/referencias.aux)
+(./estrutura/pos-textuais/referencias.aux)
 (./estrutura/pos-textuais/apendices.aux) (./estrutura/pos-textuais/anexos.aux))
 \openout1 = `ifpb-tcc.aux'.
 
@@ -1316,8 +1315,8 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
 een already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.6 \end{siglas}
-                 [11
+l.19 \end{siglas}
+                  [11
 
 
 
@@ -1365,84 +1364,47 @@ l.16 \cleardoublepage
 \openout2 = `estrutura/pre-textuais/sumario.aux'.
 
  (./estrutura/pre-textuais/sumario.tex
-(./ifpb-tcc.toc
-Overfull \hbox (2.17516pt too wide) detected at line 16
-\T1/aess/bx/n/12 10 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 17
-\T1/aess/bx/n/12 11 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 18
-\T1/aess/bx/n/12 12 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 19
-\T1/aess/bx/n/12 13 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 20
-\T1/aess/bx/n/12 14 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 21
-\T1/aess/bx/n/12 15 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 22
-\T1/aess/bx/n/12 16 ^^U  
- []
-
-
-Overfull \hbox (2.17516pt too wide) detected at line 23
-\T1/aess/bx/n/12 17 ^^U  
- []
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.29 ...sline {part}{Ap\^endices}{19}{section*.24}
-                                                  % [14
-
-
-
-
-])
+(./ifpb-tcc.toc)
 pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
 een already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.7 \cleardoublepage
-                     [15])
+                     [14
+
+
+
+
+])
 \openout2 = `estrutura/textuais/introducao.aux'.
 
  (./estrutura/textuais/introducao.tex
 Cap\'{\i }tulo 1.
-LaTeX Font Info:    Trying to load font information for T1+aett on input line 1
-5.
-(/usr/share/texmf-dist/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `aett' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-)
+! Misplaced alignment tab character &.
+l.6 ...Pesquisa, Desenvolvimento e Inovação (PD&
+                                                  I).
+I can't figure out why you would want to use a tab mark
+here. If you just want an ampersand, the remedy is
+simple: Just type `I\&' now. But if some right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
+
+LaTeX Font Info:    Trying to load font information for TS1+aess on input line 
+28.
+LaTeX Font Info:    No file TS1aess.fd. on input line 28.
+
+LaTeX Font Warning: Font shape `TS1/aess/m/n' undefined
+(Font)              using `TS1/cmr/m/n' instead
+(Font)              for symbol `textbullet' on input line 28.
+
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.63 \include{estrutura/textuais/introducao}
-                                                            		           % I...
+l.30     \item M
+                odelar os componentes de persistência necessários ao regis...
 [1
 
 
@@ -1450,21 +1412,41 @@ l.63 \include{estrutura/textuais/introducao}
 
 
 ]
-\openout2 = `estrutura/textuais/desenvolvimento/revisao-de-literatura.aux'.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `aess' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    Font shape `T1/aess/m/it' in size <10> not available
+(Font)              Font shape `T1/aess/m/sl' tried instead on input line 55.
+Package babel Info: 'brazil' activates 'portuges' shorthands.
+(babel)             Reported on input line 55.
+ [2{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+! Misplaced alignment tab character &.
+l.58 ...esquisa, Desenvolvimento e Inovação (PD&
+                                                  I), aproximando a institui...
+I can't figure out why you would want to use a tab mark
+here. If you just want an ampersand, the remedy is
+simple: Just type `I\&' now. But if some right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
 
- (./estrutura/textuais/desenvolvimento/revisao-de-literatura.tex
+) [3]
+\openout2 = `estrutura/textuais/desenvolvimento/embasamento-teorico.aux'.
+
+ (./estrutura/textuais/desenvolvimento/embasamento-teorico.tex
 Cap\'{\i }tulo 2.
-) [2
+) [4
 
 
 
 
 ]
-\openout2 = `estrutura/textuais/desenvolvimento/metodologia.aux'.
+\openout2 = `estrutura/textuais/desenvolvimento/atividades-realizadas.aux'.
 
- (./estrutura/textuais/desenvolvimento/metodologia.tex
+ (./estrutura/textuais/desenvolvimento/atividades-realizadas.tex
 Cap\'{\i }tulo 3.
-) [3
+) [5
 
 
 
@@ -1474,197 +1456,7 @@ Cap\'{\i }tulo 3.
 
  (./estrutura/textuais/desenvolvimento/resultados.tex
 Cap\'{\i }tulo 4.
-) [4
-
-
-
-
-]
-\openout2 = `estrutura/textuais/desenvolvimento/orientacoes.aux'.
-
- (./estrutura/textuais/desenvolvimento/orientacoes.tex
-Cap\'{\i }tulo 5.
-[5
-
-
-
-
-]
-Cap\'{\i }tulo 6.
-<./dados/figuras/figura1.jpg, id=194, 135.1449pt x 72.27pt>
-File: ./dados/figuras/figura1.jpg Graphic file (type jpg)
-<use ./dados/figuras/figura1.jpg>
-Package pdftex.def Info: ./dados/figuras/figura1.jpg  used on input line 23.
-(pdftex.def)             Requested size: 227.5pt x 121.66086pt.
-[6
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{figure.6.1}) 
-has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.29 \chapter
-             {QUADROS E TABELAS} <./dados/figuras/figura1.jpg>]
-Cap\'{\i }tulo 7.
-(./dados/quadros/quadro1.tex) (./dados/tabelas/tabela1.tex) [7
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{quadro.7.1}) 
-has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.43 \chapter
-             {EQUAÇÕES}
-pdfTeX warning (ext4): destination with the same identifier (name{table.7.1}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.43 \chapter
-             {EQUAÇÕES}]
-Cap\'{\i }tulo 8.
-[8
-
-]
-Cap\'{\i }tulo 9.
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--66
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--66
-
- []
-
-(./dados/algoritmos/algoritmo1.tex
-\pydata@fh@0=\write6
-\openout6 = `_E79A5F2FF631A4F1E3CF3ABE15D1CAC1.data.minted'.
-
-runsystem(latexminted config  --timestamp 20261017222411 E79A5F2FF631A4F1E3CF3A
-BE15D1CAC1)...executed safely (allowed).
-
-
-(./_E79A5F2FF631A4F1E3CF3ABE15D1CAC1.config.minted)
-runsystem(latexminted cleanconfig  --timestamp 20261017222411 E79A5F2FF631A4F1E
-3CF3ABE15D1CAC1)...executed safely (allowed).
-
-
-(./_minted/default.style.minted)
-(./_minted/61E1EDC5AB5BD3DA032061D5EA5EF284.highlight.minted
-
-LaTeX Font Warning: Font shape `T1/aett/b/n' undefined
-(Font)              using `T1/aett/m/n' instead on input line 2.
-
-)) [9
-
-]
-Cap\'{\i }tulo 10.
-LaTeX Font Info:    Trying to load font information for TS1+aess on input line 
-78.
-LaTeX Font Info:    No file TS1aess.fd. on input line 78.
-
-LaTeX Font Warning: Font shape `TS1/aess/m/n' undefined
-(Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textbullet' on input line 78.
-
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `aess' (encoding: TS1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-[10
-
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-Cap\'{\i }tulo 11.
-[11
-
-]
-Cap\'{\i }tulo 12.
-
-Underfull \hbox (badness 10000) in paragraph at lines 111--113
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 111--113
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 116--118
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 116--118
-
- []
-
-[12
-
-]
-Cap\'{\i }tulo 13.
-
-Underfull \hbox (badness 10000) in paragraph at lines 129--131
-
- []
-
-
-Overfull \hbox (4.6192pt too wide) in paragraph at lines 141--142
-[]\T1/aess/m/n/12 (-20) No exem-plo acima, para a cha-mada da re-fe-r�n-cia o c
-o-mando [][]\T1/aett/b/n/12 \cite[p.~28]{Silva2000}
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--146
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--146
-
- []
-
-[13
-
-]
-Cap\'{\i }tulo 14.
-
-Underfull \hbox (badness 10000) in paragraph at lines 151--159
-
- []
-
-
-Overfull \hbox (8.2507pt too wide) in paragraph at lines 151--159
-[]\T1/aess/m/n/12 (-20) ([][]BARBOSA et al.[][], [][]2004[][][]; [][]MA-TU-RANA
-; VA-RELA[][], [][]2003[][][])    [][]\T1/aett/b/n/12 \cite{Barbosa2004,Maturan
-a2003} 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 151--159
-
- []
-
-[14
-
-]
-Cap\'{\i }tulo 15.
-
-LaTeX Font Warning: Font shape `T1/aess/m/sc' undefined
-(Font)              using `T1/aess/m/n' instead on input line 164.
-
-[15
-
-]
-Cap\'{\i }tulo 16.
-) [16
-
-]
-\openout2 = `estrutura/textuais/conclusao.aux'.
-
- (./estrutura/textuais/conclusao.tex
-Cap\'{\i }tulo 17.
-) [17
+) [6
 
 
 
@@ -1672,14 +1464,16 @@ Cap\'{\i }tulo 17.
 ]
 \openout2 = `estrutura/pos-textuais/referencias.aux'.
 
- (./estrutura/pos-textuais/referencias.tex (./ifpb-tcc.bbl
-(./ifpb-tcc.brf)
-\tf@brf=\write7
-\openout7 = `ifpb-tcc.brf'.
+ (./estrutura/pos-textuais/referencias.tex (./ifpb-tcc.bbl (./ifpb-tcc.brf)
+\tf@brf=\write6
+\openout6 = `ifpb-tcc.brf'.
 
 
 bibitemlist
-)) [18
+
+LaTeX Warning: Empty `thebibliography' environment on input line 8.
+
+)) [7
 
 
 
@@ -1687,7 +1481,7 @@ bibitemlist
 ]
 \openout2 = `estrutura/pos-textuais/apendices.aux'.
 
- (./estrutura/pos-textuais/apendices.tex [19
+ (./estrutura/pos-textuais/apendices.tex [8
 
 
 
@@ -1695,16 +1489,16 @@ bibitemlist
 
 ]
 AP\^ENDICE A.
-[20
+[9
 
 ]
 AP\^ENDICE B.
-) [21
+) [10
 
 ]
 \openout2 = `estrutura/pos-textuais/anexos.aux'.
 
- (./estrutura/pos-textuais/anexos.tex [22
+ (./estrutura/pos-textuais/anexos.tex [11
 
 
 
@@ -1712,30 +1506,33 @@ AP\^ENDICE B.
 
 ]
 ANEXO A.
-[23
+[12
 
 ]
 ANEXO B.
-) [24
+) [13
 
 ]
-\tf@lof=\write8
-\openout8 = `ifpb-tcc.lof'.
+\tf@lof=\write7
+\openout7 = `ifpb-tcc.lof'.
 
-\tf@loq=\write9
-\openout9 = `ifpb-tcc.loq'.
+\tf@loq=\write8
+\openout8 = `ifpb-tcc.loq'.
 
-\tf@lot=\write10
-\openout10 = `ifpb-tcc.lot'.
+\tf@lot=\write9
+\openout9 = `ifpb-tcc.lot'.
 
-\tf@loa=\write11
-\openout11 = `ifpb-tcc.loa'.
+\tf@loa=\write10
+\openout10 = `ifpb-tcc.loa'.
 
-\tf@toc=\write12
-\openout12 = `ifpb-tcc.toc'.
+\tf@toc=\write11
+\openout11 = `ifpb-tcc.toc'.
 
  
 enddocument/afterlastpage (AED): lastpage setting LastPage.
+runsystem(latexminted cleantemp  --timestamp 20261022112156 E79A5F2FF631A4F1E3C
+F3ABE15D1CAC1)...executed safely (allowed).
+
 (./ifpb-tcc.aux (./estrutura/pre-textuais/dedicatoria.aux)
 (./estrutura/pre-textuais/agradecimentos.aux)
 (./estrutura/pre-textuais/epigrafe.aux) (./estrutura/pre-textuais/resumo.aux)
@@ -1747,11 +1544,10 @@ enddocument/afterlastpage (AED): lastpage setting LastPage.
 (./estrutura/pre-textuais/listas/lista-simbolos.aux)
 (./estrutura/pre-textuais/listas/listas-diversas/lista-algoritmos.aux)
 (./estrutura/pre-textuais/sumario.aux) (./estrutura/textuais/introducao.aux)
-(./estrutura/textuais/desenvolvimento/revisao-de-literatura.aux)
-(./estrutura/textuais/desenvolvimento/metodologia.aux)
+(./estrutura/textuais/desenvolvimento/embasamento-teorico.aux)
+(./estrutura/textuais/desenvolvimento/atividades-realizadas.aux)
 (./estrutura/textuais/desenvolvimento/resultados.aux)
-(./estrutura/textuais/desenvolvimento/orientacoes.aux)
-(./estrutura/textuais/conclusao.aux) (./estrutura/pos-textuais/referencias.aux)
+(./estrutura/pos-textuais/referencias.aux)
 (./estrutura/pos-textuais/apendices.aux) (./estrutura/pos-textuais/anexos.aux))
  ***********
 LaTeX2e <2025-11-01>
@@ -1760,35 +1556,45 @@ L3 programming layer <2020/03/25>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `ifpb-tcc.brf' has not changed.
-(rerunfilecheck)             Checksum: D31602121594CF73F14C4A5F01A947D0;1077.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 26776 strings out of 469448
- 502563 string characters out of 5468101
- 1094075 words of memory out of 5000000
- 54214 multiletter control sequences out of 15000+600000
- 706582 words of font info for 494 fonts, out of 8000000 for 9000
+ 26022 strings out of 469448
+ 487588 string characters out of 5468101
+ 1085228 words of memory out of 5000000
+ 53668 multiletter control sequences out of 15000+600000
+ 690600 words of font info for 394 fonts, out of 8000000 for 9000
  18 hyphenation exceptions out of 8191
- 113i,12n,121p,1616b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/
-share/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmss17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmss8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.
-pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/sha
-re/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmtt12.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/s
-frm1200.pfb>
-Output written on ifpb-tcc.pdf (39 pages, 250383 bytes).
+ 113i,12n,121p,1616b,658s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{section.1.7} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.1.6} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{page.14} has been referenced but does not exist, re
+placed by a fixed one
+
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmss10.pfb></usr/share/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmss12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cms
+s17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></us
+r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/share/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/share/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/cm
+-super/sfrm1200.pfb>
+Output written on ifpb-tcc.pdf (27 pages, 148087 bytes).
 PDF statistics:
- 603 PDF objects out of 1000 (max. 8388607)
- 521 compressed objects within 6 object streams
- 115 named destinations out of 1000 (max. 500000)
- 121699 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 350 PDF objects out of 1000 (max. 8388607)
+ 296 compressed objects within 3 object streams
+ 71 named destinations out of 1000 (max. 500000)
+ 99582 words of extra memory for PDF output out of 106986 (max. 10000000)
 
