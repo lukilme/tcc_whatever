@@ -2,6 +2,7 @@
 
 \chapter{EMBASAMENTO TÉORICO}
 \label{chap:embasamento-teorico}
+Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que fundamentam as atividades descritas neste relatório. Como o estágio teve por foco o desenvolvimento de um módulo de solicitações com a rastreabilidade, auditoria e reversão para o sistema Banco de Especialistas, é dada ênfase ao \textit{back-end} (Flask, SQLAlchemy e PostgreSQL) e aos conceitos de auditoria e versionamento de dados. As demais tecnologias (Vue.js, Nuxt, Pytest, Git e Docker) são abordadas como elementos de apoio ao desenvolvimento, à validação e à execução do módulo.
 
-É uma boa prática iniciar cada novo capítulo com um breve texto introdutório (tipicamente, dois ou três parágrafos) que deve deixar claro o quê será discutido no capítulo, bem como a organização do capítulo.
-Também servirá ao propósito de "amarrar"{} o conteúdo deste capítulo com o conteúdo do capítulo imediatamente anterior.
+\section{Arquitetura Web Cliente-Servidor}
+A arquitetura cliente-servidor organiza um sistema distribuído em dois papéis complementares: o cliente, que solicita serviços, e o servidor, que os provê. Na Web, o cliente é tipicamente um navegador que envia requisições por meio do protocolo HTTP, e o servidor processa essas requisições, aplica as regras de negócio, acessa a camada de persistência e devolve uma resposta \cite{Tanenbaum2007}.
