@@ -5,64 +5,28 @@
 Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que fundamentam as atividades descritas neste relatório. Como o estágio teve por foco o desenvolvimento de um módulo de solicitações com a rastreabilidade, auditoria e reversão para o sistema Banco de Especialistas, é dada ênfase ao \textit{back-end} (Flask, SQLAlchemy e PostgreSQL) e aos conceitos de auditoria e versionamento de dados. As demais tecnologias (Vue.js, Nuxt, Pytest, Git e Docker) são abordadas como elementos de apoio ao desenvolvimento, à validação e à execução do módulo.
 
 \section{Arquitetura Web Cliente-Servidor}
-A arquitetura cliente-servidor organiza um sistema distribuído em dois papéis complementares: o cliente, que solicita serviços, e o servidor, que os provê. Na Web, o cliente é tipicamente um navegador que envia requisições por meio do protocolo HTTP, e o servidor processa essas requisições, aplica as regras de negócio, acessa a camada de persistência e devolve uma resposta \cite{Tanenbaum2007}.
+A arquitetura cliente-servidor organiza um sistema distribuído em provedores de serviços e requisitantes \cite{Tanenbaum2007}. Nesse contexto, a comunicação orientada pelo estilo REST e pelo protocolo HTTP define interações sem estado, nas quais cada requisição é independente e deve carregar as informações necessárias ao seu processamento \cite{rfc9110}.
 
-O estilo arquitetural REST foi definido por Fielding (2000) como um conjunto de restrições para sistemas hipermídia distribuídos. Entre elas destacam-se a interface uniforme, a ausência de estado entre requisições e a identificação de recursos por meio de URIs. Em uma API REST, os recursos do domínio (por exemplo, uma solicitação de alteração de categoria) são manipulados por meio dos métodos HTTP.
+Essa base teórica fundamenta a separação de responsabilidades do módulo: isolar a máquina de estados e as regras de persistência no servidor garante que a integridade dos dados e as transições de status da solicitação não dependam do cliente. Dessa forma, as aplicações em Vue.js e Nuxt atuam exclusivamente na apresentação e na coleta de informações, consumindo a API REST para criar, acompanhar e analisar as requisições.
+\section{Flask}
 
-O HTTP é um protocolo sem estado (stateless): cada requisição é independente das anteriores e deve carregar as informações necessárias ao seu processamento, como credenciais ou tokens de autenticação.
-
-\input{./dados/tabelas/codigos-http}
-
-As respostas utilizam códigos de status que expressam o resultado da operação, conforme detalhado na Tabela 1. O formato de troca de dados utilizado é o JSON, definido pela \cite{ecma404} como uma sintaxe leve, baseada em texto e independente de linguagem para intercâmbio de dados. Ele é nativamente suportado pelas tecnologias usadas no projeto, como JavaScript e Python.
-
-Uma característica relevante dessa arquitetura é a separação de responsabilidades. A camada de apresentação, executada no cliente, concentra-se na interação com o usuário; a camada de aplicação, no servidor, concentra as regras de negócio; e a camada de dados garante o armazenamento e a recuperação das informações. Essa divisão favorece a manutenção e a evolução independente de cada parte, além de permitir que diferentes clientes consumam o mesmo servidor. É uma boa prática manter uma aplicação seguindo esse formato até para reutilização de recursos já projetos e boilerplate de outros projetos.
-
-O Banco de Especialistas adota esse modelo: uma interface web, construída com Vue.js e Nuxt, comunica-se com uma API desenvolvida em Flask, que por sua vez persiste os dados em um banco PostgreSQL. O módulo de solicitações foi desenvolvido sobre essa estrutura, incorporando regras de negócio no servidor, de modo que a validade das operações não dependa do comportamento do cliente.
-
-\section{Framework Flask}
-
-O Flask é um microframework para desenvolvimento web em Python, criado por Armin Ronacher. É considerado "micro" porque seu núcleo é enxuto e não impõe escolhas sobre camada de persistência, validação ou autenticação, deixando essas decisões a cargo do desenvolvedor, que pode incorporar extensões conforme a necessidade \cite{grinberg2018}. Sua implementação baseia-se em duas bibliotecas: o Werkzeug, que fornece a camada de comunicação conforme a especificação WSGI (Web Server Gateway Interface), e o Jinja2, mecanismo de templates \cite{flask2024}.
-
-O mecanismo central do Flask é o roteamento: as funções Python (as views) são associadas a rotas e métodos HTTP por meio de decoradores. Cada função recebe a requisição, executa a lógica necessária e retorna uma resposta. Outros recursos relevantes incluem:
-
-\begin{itemize}
-    \item Blueprints: permitem organizar a aplicação em módulos independentes, cada um com suas rotas. Esse recurso é adequado para isolar o módulo de solicitações do restante do sistema.
-    \item Contextos de aplicação e de requisição: disponibilizam, durante o tratamento de uma requisição, objetos como a própria requisição e a configuração da aplicação, sem necessidade de passá-los explicitamente entre funções.
-    \item Tratamento de erros: possibilita registrar manipuladores que convertem exceções do domínio em respostas HTTP padronizadas.
-    \item Fábrica de aplicação (application factory): padrão em que a aplicação é criada por uma função, o que facilita a configuração distinta para ambientes de desenvolvimento, produção e testes.
-\end{itemize}
-
-A flexibilidade do Flask justifica sua adoção em projetos nos quais a equipe deseja controlar a composição da arquitetura. Em contrapartida, exige disciplina na organização do código, em especial na separação entre rotas, regras de negócio e acesso a dados, para evitar views extensas e de difícil teste. Em um módulo com regras como mudança de categoria e recálculo de pontuação, essa separação é particularmente importante.
+O Flask foi utilizado na API do módulo por permitir incorporar suas rotas à aplicação existente sem impor uma reorganização do sistema. Os \textit{blueprints} agruparam as operações de criação, análise, acompanhamento e reversão das solicitações em um componente isolado, preservando as demais funcionalidades e facilitando a manutenção do módulo \cite{flask2024}.
 
 \section{Persistência de dados com PostgreSQL e SQLAlchemy}
 
-A persistência de dados é definida como a característica que garante que as informações manipuladas por um sistema sobrevivam à execução do processo que as criou, sendo armazenadas permanentemente em meios não voláteis \cite{silberschatz2020}. No contexto de sistemas web, como o módulo desenvolvido, a persistência é o mecanismo que assegura que as solicitações, as alterações de categoria e os registros de auditoria permaneçam disponíveis e íntegros, independentemente do encerramento da aplicação ou de falhas no servidor.
-
-Para concretizar essa persistência e garantir a integridade e a rastreabilidade estrutural das informações, o projeto utiliza o PostgreSQL como Sistema Gerenciador de Banco de Dados (SGBD) e o SQLAlchemy como ferramenta de abstração e mapeamento objeto-relacional, tecnologias detalhadas a seguir.
+O módulo utiliza PostgreSQL para armazenar solicitações, alterações cadastrais e registros de auditoria. A persistência dessas informações precisa manter o cadastro e o histórico coerentes, sobretudo quando uma decisão altera mais de uma entidade.
 
 \subsection{PostgreSQL}
 
-O PostgreSQL é um sistema gerenciador de banco de dados objeto-relacional de código aberto, reconhecido por sua aderência ao padrão SQL, extensibilidade e robustez \cite{postgresql2024}. Como SGBD relacional, organiza os dados em tabelas relacionadas por chaves primárias e estrangeiras, garantindo integridade referencial.
-
-Um conceito central para o módulo desenvolvido é o de transação. Segundo Elmasri e Navathe \cite{elmasri2011}, uma transação é uma unidade lógica de trabalho que deve respeitar as propriedades ACID: atomicidade (todas as operações são efetivadas ou nenhuma é), consistência (a transação leva o banco de um estado válido a outro), isolamento (transações concorrentes não interferem indevidamente entre si) e durabilidade (dados confirmados persistem mesmo diante de falhas). O PostgreSQL implementa o controle de concorrência por meio de MVCC (Multiversion Concurrency Control), o que permite leituras e escritas simultâneas com bom desempenho.
-
-A atomicidade é crítica em operações como a aprovação de uma solicitação, que envolve alterar a categoria do especialista, atualizar sua pontuação, registrar o estado anterior e atualizar o status da solicitação. Se qualquer uma dessas etapas falhar, todas devem ser desfeitas, evitando inconsistências entre categoria, pontuação e histórico.
+O PostgreSQL foi adequado por oferecer transações para as operações compostas do fluxo. Na aprovação, a mudança de categoria, a atualização da pontuação, a gravação do \textit{snapshot} do estado anterior e a atualização do status da solicitação devem ser confirmadas em conjunto; se uma etapa falhar, nenhuma alteração deve permanecer aplicada \cite{postgresql2024}.
 
 \subsection{SQLAlchemy}
 
-O SQLAlchemy é uma biblioteca Python para acesso a bancos de dados que oferece tanto uma camada de abstração SQL (Core) quanto um mapeador objeto-relacional (ORM) \cite{bayer2012}. O ORM resolve o chamado descompasso de impedância entre o modelo orientado a objetos e o modelo relacional: tabelas são mapeadas para classes, linhas para instâncias e colunas para atributos, de modo que consultas e alterações podem ser expressas em código Python, sem a escrita direta de SQL na maior parte dos casos.
+O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades relacionadas em uma única unidade de trabalho \cite{bayer2012}. A sessão acumula as mudanças e, no \textit{commit}, efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo status da solicitação.
 
-O SQLAlchemy implementa padrões descritos por Fowler \cite{fowler2002}, em especial o Data Mapper, que separa os objetos de domínio do mecanismo de persistência, e o Unit of Work, que acompanha as alterações feitas nos objetos durante uma sessão e as grava no banco de forma coordenada, dentro de uma única transação. Na prática, o objeto Session representa essa unidade de trabalho: alterações são acumuladas e efetivadas por commit, ou descartadas por rollback.
+\section{Validação de Dados com Marshmallow}
 
-Outros recursos relevantes são a definição de relacionamentos entre entidades (um-para-muitos, muitos-para-muitos), o carregamento tardio (lazy loading) ou antecipado (eager loading) de dados relacionados, e o uso de consultas parametrizadas, que previnem ataques de injeção de SQL. Esse último ponto contrasta diretamente com o processo anterior ao módulo, em que o administrador executava consultas SQL manuais sobre os registros, sem validações estruturadas ou registro sistêmico das alterações.
-
-\section{Serialização e Validação de Dados com Marshmallow}
-
-O Marshmallow é uma biblioteca Python para serialização, desserialização e validação de dados \cite{marshmallow2024}. A serialização converte objetos da aplicação (como instâncias de modelos ORM) em tipos simples, que podem ser transformados em JSON e enviados ao cliente. A desserialização realiza o caminho inverso: recebe dados externos, valida-os e os converte em estruturas utilizáveis pela aplicação.
-
-O elemento central é o \textit{schema}, uma classe que declara os campos esperados, seus tipos e suas regras de validação, como obrigatoriedade, tamanho máximo, formato ou valores permitidos. Validações adicionais, específicas do domínio, podem ser implementadas por funções de validação. Quando os dados são inválidos, a biblioteca produz mensagens de erro estruturadas, que podem ser devolvidas ao cliente com código HTTP 400, como mencionado na tabela 1.
-
-O uso de schemas na fronteira da API cumpre duas funções. A primeira é de segurança e robustez: dados externos nunca devem ser considerados confiáveis, e a validação sistemática impede que entradas malformadas alcancem as regras de negócio. A segunda é de padronização: os schemas definem de maneira explícita e única o formato das requisições e respostas, servindo como contrato entre o front-end e o back-end. Essa característica é relevante quando as interfaces de criação, acompanhamento e análise de solicitações dependem de formatos de dados estáveis.
+Na fronteira da API, os \textit{schemas} do Marshmallow validam os campos e formatos recebidos antes que os dados cheguem às regras de negócio \cite{marshmallow2024}. Ao declarar os formatos esperados para as solicitações e suas respostas, também estabelecem o contrato consumido pelas interfaces de criação, acompanhamento e análise do módulo.
 
 \section{Auditoria, Rastreabilidade e Versionamento de Dados}
 
@@ -76,7 +40,7 @@ O fluxo anterior ao módulo, baseado em e-mail e execução manual de SQL, ilust
 
 \subsection{Fluxo de aprovação com máquina de estados}
 
-Uma solicitação percorre um ciclo de vida bem definido, que pode ser modelado como uma máquina de estados finitos: um conjunto de estados (por exemplo, pendente, aprovada, rejeitada e revertida) e de transições permitidas entre eles \cite{sommerville2011}. Explicitar as transições válidas evita estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o fluxo seja respeitado independentemente da interface utilizada.
+Uma solicitação percorre um ciclo de vida bem definido, que pode ser modelado como uma máquina de estados finitos: um conjunto de estados (por exemplo, pendente, aprovada e rejeitada) e de transições permitidas entre eles \cite{sommerville2011}. Explicitar as transições válidas evita estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o fluxo seja respeitado independentemente da interface utilizada.
 
 \subsection{Snapshot e reversão}
 
@@ -92,28 +56,23 @@ A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos as
 
 \section{Vue.js e Nuxt}
 
-O Vue.js é um framework JavaScript progressivo para construção de interfaces de usuário, baseado em componentes e em um sistema de reatividade declarativa \cite{vuejs2024}. Nele, a interface é descrita como uma composição de componentes reutilizáveis, geralmente escritos em arquivos de componente único (\textit{Single-File Components} - SFC), que reúnem em um só arquivo a estrutura (\textit{template}), a lógica (\textit{script}) e o estilo. Quando os dados reativos de um componente mudam, o framework atualiza automaticamente apenas as partes da interface afetadas.
+Vue.js e Nuxt foram utilizados na construção das interfaces do módulo \cite{vuejs2024, nuxt2024}. As páginas de análise e acompanhamento consomem a API para apresentar o estado e o histórico das solicitações; a interface administrativa também permite ao responsável aprovar, rejeitar ou reverter uma solicitação.
 
-O Nuxt é um framework construído sobre o Vue.js que adiciona convenções e recursos para o desenvolvimento de aplicações completas \cite{nuxt2024}. Entre eles estão o roteamento baseado na estrutura de diretórios, a organização de componentes e \textit{composables}, e a possibilidade de renderização no servidor (\textit{Server-Side Rendering} - SSR), que pode melhorar o tempo de carregamento inicial e a indexação por mecanismos de busca. A adoção do Nuxt reduz a quantidade de configuração manual e favorece a padronização da estrutura do projeto.
+\section{Verificação das Transições com Pytest}
 
-No módulo de solicitações, as interfaces de criação, acompanhamento e análise foram construídas como páginas e componentes que consomem a API REST, apresentam o estado das solicitações e permitem ao administrador aprovar, rejeitar ou reverter cada uma delas.
+O Pytest foi empregado para verificar as regras de negócio do módulo, em especial as transições permitidas da máquina de estados: criação, aprovação, rejeição e reversão \cite{pytest2024}. Os testes também verificaram os efeitos dessas transições sobre a categoria, a pontuação e o histórico da solicitação.
 
-\section{Testes Automatizados}
+\section{Ambiente Reprodutível de Testes com Docker}
 
-Testes automatizados são programas que verificam o comportamento de outro programa, permitindo detectar defeitos de forma repetível e rápida. Sua importância cresce em sistemas em evolução contínua, pois funcionam como rede de segurança contra regressões, ou seja, falhas introduzidas em funcionalidades que antes operavam corretamente \cite{sommerville2011}.
+O Docker foi utilizado para reproduzir o ambiente necessário aos testes de integração, incluindo a API e o PostgreSQL, de modo que a validação dos fluxos ocorresse sob uma configuração consistente entre execuções \cite{docker2024}.
 
-Costuma-se distinguir diferentes níveis de teste. Os testes unitários verificam unidades isoladas de código, como uma função que calcula a nova pontuação de um especialista, e são rápidos e numerosos. Os testes de integração verificam a interação entre componentes, como a comunicação entre a API, o ORM e o banco de dados, ou entre o \textit{front-end} e o \textit{back-end}. Essa proporção entre os níveis é frequentemente representada pela pirâmide de testes, que recomenda muitos testes de baixo nível e poucos de alto nível \cite{cohn2009}.
+\section{Controle de Versão e Gestão de Configuracao}
 
-O Pytest é o framework de testes mais utilizado no ecossistema Python \cite{pytest2024}. Entre seus principais recursos estão a escrita de testes como funções simples com o uso do comando \textit{assert}, a descoberta automática de testes, as \textit{fixtures}, que preparam e liberam recursos necessários aos testes (como uma sessão de banco de dados ou um cliente de teste da aplicação), a parametrização de casos de teste e uma ampla coleção de \textit{plugins}, como os de medição de cobertura. Para o módulo desenvolvido, os testes unitários cobriram as regras de negócio (mudança de categoria, atualização de pontuação, transições de estado), enquanto os testes de integração verificaram os fluxos completos de criação, aprovação, rejeição e reversão, bem como a consistência dos dados após a reversão.
+A gestão de configuração de software compreende a identificação, o controle e o registro das alterações realizadas nos artefatos de um projeto ao longo do tempo, de modo que seja possível reconstituir versões anteriores e identificar a origem de cada mudança \cite{sommerville2011}. O controle de versão é o mecanismo que concretiza esse registro sobre o código-fonte: cada alteração é capturada em um commit, com autor, data e descrição, e o histórico resultante permite recuperar estados anteriores do sistema.
 
-\section{Conteinerização com Docker}
+O módulo utilizou Git \cite{git2026} para esse fim, com ramificações (branches) por funcionalidade, o que isolou o desenvolvimento do módulo das demais partes do Banco de Especialistas até que as alterações fossem verificadas. Os repositórios foram hospedados no GitLab \cite{gitlab2026}, adotado como padrão pelo Laboratório ASSERT para os projetos do Polo de Inovação, e nele foi configurada uma pipeline de integração contínua que executa a suíte de testes (Pytest) a cada envio, impedindo que alterações que quebrem as regras de negócio sejam incorporadas à base principal.
 
-A conteinerização é uma forma de virtualização em nível de sistema operacional, na qual aplicações e suas dependências são empacotadas em unidades isoladas, chamadas contêineres, que compartilham o \textit{kernel} do sistema hospedeiro. Diferentemente das máquinas virtuais tradicionais, que emulam um sistema operacional completo, os contêineres são mais leves e iniciam mais rapidamente \cite{merkel2014}. O isolamento é obtido por recursos do \textit{kernel} Linux, como \textit{namespaces} e \textit{cgroups}.
-
-O Docker é a plataforma mais difundida para criação e execução de contêineres \cite{docker2024}. Seus conceitos fundamentais são: a imagem, um modelo imutável que contém o sistema de arquivos, as dependências e a configuração necessária à execução; o contêiner, instância em execução de uma imagem; e o \textit{Dockerfile}, arquivo que descreve, de forma declarativa, como construir uma imagem. O Docker Compose complementa essa estrutura ao permitir definir e executar aplicações compostas por múltiplos contêineres, como a API, o banco de dados e o \textit{front-end}, em um único arquivo de configuração.
-
-O principal benefício da conteinerização é a reprodutibilidade: o mesmo ambiente pode ser instanciado em qualquer máquina, o que reduz problemas do tipo "funciona na minha máquina" e simplifica a integração de novos desenvolvedores. No estágio, o Docker foi utilizado para executar e validar de forma integrada os componentes de \textit{front-end}, \textit{back-end} e banco de dados, assegurando que os testes de integração fossem realizados em um ambiente consistente.
-
+Cabe observar que o controle de versão atua sobre o código-fonte, e não sobre os dados da aplicação. A rastreabilidade das alterações cadastrais dos especialistas, tratada na seção 2.5, é um problema distinto, resolvido no domínio da aplicação por meio de solicitações, snapshots e registro de eventos.
 
 \section{Síntese do Capítulo}
 

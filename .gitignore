@@ -1,6 +1,6 @@
-./*.aux
-./*.bbl
-./*.blg
-./*.log
-./*.out
-./*.toc
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
