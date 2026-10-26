@@ -1,0 +1,19 @@
+\begin{table}[!htb]
+    \centering
+    \caption[Códigos HTTP e suas aplicações no módulo]{Códigos HTTP, significados padrão e aplicações no módulo.
+    \label{tab:codigos-http}}
+    \begin{tabular}{@{}p{2.4cm}p{4cm}p{7.7cm}@{}}
+        \toprule
+        \textbf{Código HTTP} & \textbf{Significado padrão} & \textbf{Aplicação no módulo} \\
+        \midrule
+        200 & Sucesso & Consultas e operações concluídas com êxito. \\
+        201 & Recurso criado & Criação de uma nova solicitação. \\
+        400 & Requisição inválida & Erros de validação nos dados enviados. \\
+        401 & Falha de autenticação  & Sem permissão adequada de acesso. \\
+        403 & Proibido & Tentativa de acesso a recurso sem permissão. \\
+        404 & Não encontrado & Solicitação ou recurso inexistente. \\
+        409 & Conflito de estado & Tentativa de transição inválida (por exemplo, reverter solicitação não aprovada). \\
+        \bottomrule
+    \end{tabular}
+    \fonte{Elaboração própria, com base em RFC 9110 \cite{rfc9110}.}
+\end{table}

@@ -6,3 +6,86 @@ Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que fund
 
 \section{Arquitetura Web Cliente-Servidor}
 A arquitetura cliente-servidor organiza um sistema distribuído em dois papéis complementares: o cliente, que solicita serviços, e o servidor, que os provê. Na Web, o cliente é tipicamente um navegador que envia requisições por meio do protocolo HTTP, e o servidor processa essas requisições, aplica as regras de negócio, acessa a camada de persistência e devolve uma resposta \cite{Tanenbaum2007}.
+
+O estilo arquitetural REST foi definido por Fielding (2000) como um conjunto de restrições para sistemas hipermídia distribuídos. Entre elas destacam-se a interface uniforme, a ausência de estado entre requisições e a identificação de recursos por meio de URIs. Em uma API REST, os recursos do domínio (por exemplo, uma solicitação de alteração de categoria) são manipulados por meio dos métodos HTTP.
+
+O HTTP é um protocolo sem estado (stateless): cada requisição é independente das anteriores e deve carregar as informações necessárias ao seu processamento, como credenciais ou tokens de autenticação.
+
+\input{./dados/tabelas/codigos-http}
+
+As respostas utilizam códigos de status que expressam o resultado da operação, conforme detalhado na Tabela 1. O formato de troca de dados utilizado é o JSON, definido pela \cite{ecma404} como uma sintaxe leve, baseada em texto e independente de linguagem para intercâmbio de dados. Ele é nativamente suportado pelas tecnologias usadas no projeto, como JavaScript e Python.
+
+Uma característica relevante dessa arquitetura é a separação de responsabilidades. A camada de apresentação, executada no cliente, concentra-se na interação com o usuário; a camada de aplicação, no servidor, concentra as regras de negócio; e a camada de dados garante o armazenamento e a recuperação das informações. Essa divisão favorece a manutenção e a evolução independente de cada parte, além de permitir que diferentes clientes consumam o mesmo servidor. É uma boa prática manter uma aplicação seguindo esse formato até para reutilização de recursos já projetos e boilerplate de outros projetos.
+
+O Banco de Especialistas adota esse modelo: uma interface web, construída com Vue.js e Nuxt, comunica-se com uma API desenvolvida em Flask, que por sua vez persiste os dados em um banco PostgreSQL. O módulo de solicitações foi desenvolvido sobre essa estrutura, incorporando regras de negócio no servidor, de modo que a validade das operações não dependa do comportamento do cliente.
+
+\section{Framework Flask}
+
+O Flask é um microframework para desenvolvimento web em Python, criado por Armin Ronacher. É considerado "micro" porque seu núcleo é enxuto e não impõe escolhas sobre camada de persistência, validação ou autenticação, deixando essas decisões a cargo do desenvolvedor, que pode incorporar extensões conforme a necessidade \cite{grinberg2018}. Sua implementação baseia-se em duas bibliotecas: o Werkzeug, que fornece a camada de comunicação conforme a especificação WSGI (Web Server Gateway Interface), e o Jinja2, mecanismo de templates \cite{flask2024}.
+
+O mecanismo central do Flask é o roteamento: as funções Python (as views) são associadas a rotas e métodos HTTP por meio de decoradores. Cada função recebe a requisição, executa a lógica necessária e retorna uma resposta. Outros recursos relevantes incluem:
+
+\begin{itemize}
+    \item Blueprints: permitem organizar a aplicação em módulos independentes, cada um com suas rotas. Esse recurso é adequado para isolar o módulo de solicitações do restante do sistema.
+    \item Contextos de aplicação e de requisição: disponibilizam, durante o tratamento de uma requisição, objetos como a própria requisição e a configuração da aplicação, sem necessidade de passá-los explicitamente entre funções.
+    \item Tratamento de erros: possibilita registrar manipuladores que convertem exceções do domínio em respostas HTTP padronizadas.
+    \item Fábrica de aplicação (application factory): padrão em que a aplicação é criada por uma função, o que facilita a configuração distinta para ambientes de desenvolvimento, produção e testes.
+\end{itemize}
+
+A flexibilidade do Flask justifica sua adoção em projetos nos quais a equipe deseja controlar a composição da arquitetura. Em contrapartida, exige disciplina na organização do código, em especial na separação entre rotas, regras de negócio e acesso a dados, para evitar views extensas e de difícil teste. Em um módulo com regras como mudança de categoria e recálculo de pontuação, essa separação é particularmente importante.
+
+\section{Persistência de dados com PostgreSQL e SQLAlchemy}
+
+A persistência de dados é definida como a característica que garante que as informações manipuladas por um sistema sobrevivam à execução do processo que as criou, sendo armazenadas permanentemente em meios não voláteis \cite{silberschatz2020}. No contexto de sistemas web, como o módulo desenvolvido, a persistência é o mecanismo que assegura que as solicitações, as alterações de categoria e os registros de auditoria permaneçam disponíveis e íntegros, independentemente do encerramento da aplicação ou de falhas no servidor.
+
+Para concretizar essa persistência e garantir a integridade e a rastreabilidade estrutural das informações, o projeto utiliza o PostgreSQL como Sistema Gerenciador de Banco de Dados (SGBD) e o SQLAlchemy como ferramenta de abstração e mapeamento objeto-relacional, tecnologias detalhadas a seguir.
+
+\subsection{PostgreSQL}
+
+O PostgreSQL é um sistema gerenciador de banco de dados objeto-relacional de código aberto, reconhecido por sua aderência ao padrão SQL, extensibilidade e robustez \cite{postgresql2024}. Como SGBD relacional, organiza os dados em tabelas relacionadas por chaves primárias e estrangeiras, garantindo integridade referencial.
+
+Um conceito central para o módulo desenvolvido é o de transação. Segundo Elmasri e Navathe \cite{elmasri2011}, uma transação é uma unidade lógica de trabalho que deve respeitar as propriedades ACID: atomicidade (todas as operações são efetivadas ou nenhuma é), consistência (a transação leva o banco de um estado válido a outro), isolamento (transações concorrentes não interferem indevidamente entre si) e durabilidade (dados confirmados persistem mesmo diante de falhas). O PostgreSQL implementa o controle de concorrência por meio de MVCC (Multiversion Concurrency Control), o que permite leituras e escritas simultâneas com bom desempenho.
+
+A atomicidade é crítica em operações como a aprovação de uma solicitação, que envolve alterar a categoria do especialista, atualizar sua pontuação, registrar o estado anterior e atualizar o status da solicitação. Se qualquer uma dessas etapas falhar, todas devem ser desfeitas, evitando inconsistências entre categoria, pontuação e histórico.
+
+\subsection{SQLAlchemy}
+
+O SQLAlchemy é uma biblioteca Python para acesso a bancos de dados que oferece tanto uma camada de abstração SQL (Core) quanto um mapeador objeto-relacional (ORM) \cite{bayer2012}. O ORM resolve o chamado descompasso de impedância entre o modelo orientado a objetos e o modelo relacional: tabelas são mapeadas para classes, linhas para instâncias e colunas para atributos, de modo que consultas e alterações podem ser expressas em código Python, sem a escrita direta de SQL na maior parte dos casos.
+
+O SQLAlchemy implementa padrões descritos por Fowler \cite{fowler2002}, em especial o Data Mapper, que separa os objetos de domínio do mecanismo de persistência, e o Unit of Work, que acompanha as alterações feitas nos objetos durante uma sessão e as grava no banco de forma coordenada, dentro de uma única transação. Na prática, o objeto Session representa essa unidade de trabalho: alterações são acumuladas e efetivadas por commit, ou descartadas por rollback.
+
+Outros recursos relevantes são a definição de relacionamentos entre entidades (um-para-muitos, muitos-para-muitos), o carregamento tardio (lazy loading) ou antecipado (eager loading) de dados relacionados, e o uso de consultas parametrizadas, que previnem ataques de injeção de SQL. Esse último ponto contrasta diretamente com o processo anterior ao módulo, em que o administrador executava consultas SQL manuais sobre os registros, sem validações estruturadas ou registro sistêmico das alterações.
+
+\section{Serialização e Validação de Dados com Marshmallow}
+
+O Marshmallow é uma biblioteca Python para serialização, desserialização e validação de dados \cite{marshmallow2024}. A serialização converte objetos da aplicação (como instâncias de modelos ORM) em tipos simples, que podem ser transformados em JSON e enviados ao cliente. A desserialização realiza o caminho inverso: recebe dados externos, valida-os e os converte em estruturas utilizáveis pela aplicação.
+
+O elemento central é o \textit{schema}, uma classe que declara os campos esperados, seus tipos e suas regras de validação, como obrigatoriedade, tamanho máximo, formato ou valores permitidos. Validações adicionais, específicas do domínio, podem ser implementadas por funções de validação. Quando os dados são inválidos, a biblioteca produz mensagens de erro estruturadas, que podem ser devolvidas ao cliente com código HTTP 400.
+
+O uso de schemas na fronteira da API cumpre duas funções. A primeira é de segurança e robustez: dados externos nunca devem ser considerados confiáveis, e a validação sistemática impede que entradas malformadas alcancem as regras de negócio. A segunda é de padronização: os schemas definem de maneira explícita e única o formato das requisições e respostas, servindo como contrato entre o front-end e o back-end. Essa característica é relevante quando as interfaces de criação, acompanhamento e análise de solicitações dependem de formatos de dados estáveis.
+
+\section{Auditoria, Rastreabilidade e Versionamento de Dados}
+
+Esta seção reúne os conceitos que sustentam a principal contribuição do módulo: a capacidade de registrar, consultar e desfazer alterações cadastrais com garantias de rastreabilidade.
+
+\subsection{Auditoria e rastreabilidade}
+
+Auditoria, no contexto de sistemas de informação, é o registro sistemático de quem realizou determinada operação, quando, sobre qual dado e com qual resultado. A rastreabilidade é a propriedade que permite reconstituir o histórico de uma informação a partir desses registros. Fowler \cite{fowler2004} descreve o padrão \textit{Audit Log} como um registro de alterações feitas nos dados, com o objetivo de permitir verificar o que ocorreu e, quando necessário, compreender a origem de um estado atual. Em sistemas que envolvem decisões de classificação e seleção de pessoas, como o Banco de Especialistas, esse registro contribui para a transparência e para a responsabilização dos agentes envolvidos.
+
+O fluxo anterior ao módulo, baseado em e-mail e execução manual de SQL, ilustra a ausência dessas propriedades: não havia registro formal do solicitante, da justificativa, do responsável pela decisão ou do estado anterior do cadastro. Ao formalizar a solicitação como uma entidade persistente, com status, autoria e datas, o sistema passa a produzir esse registro como efeito natural do próprio fluxo de trabalho.
+
+\subsection{Fluxo de aprovação com máquina de estados}
+
+Uma solicitação percorre um ciclo de vida bem definido, que pode ser modelado como uma máquina de estados finitos: um conjunto de estados (por exemplo, pendente, aprovada, rejeitada e revertida) e de transições permitidas entre eles \cite{sommerville2011}. Explicitar as transições válidas evita estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o fluxo seja respeitado independentemente da interface utilizada.
+
+\subsection{Snapshot e reversão}
+
+Para possibilitar a reversão de uma alteração, é necessário preservar o estado anterior dos dados. O conceito de \textit{snapshot} (instantâneo) consiste em capturar e armazenar o estado de um objeto em determinado momento. Ele se aproxima do padrão \textit{Memento}, descrito por Gamma et al. \cite{gamma1994}, cujo propósito é capturar o estado interno de um objeto, sem violar seu encapsulamento, para que ele possa ser restaurado posteriormente.
+
+No módulo, a entidade \textit{Snapshot} registra o estado relevante do especialista (como categoria e pontuação) antes da aplicação de uma alteração aprovada. A reversão consiste em restaurar esses valores, mantendo a consistência entre categoria e pontuação. Cabe distinguir essa abordagem da simples exclusão do registro de histórico: a reversão é, ela mesma, uma operação registrada, de modo que o histórico permanece completo e a operação inversa pode ser auditada. Esse comportamento é análogo à ideia de transações compensatórias, em que o efeito de uma operação já efetivada é desfeito por uma nova operação, e não pela remoção do passado.
+
+Existem abordagens mais gerais para o versionamento de dados, como o \textit{Event Sourcing}, em que o estado é derivado de uma sequência imutável de eventos \cite{fowler2005, kleppmann2017}. O módulo adota uma solução mais simples e proporcional ao escopo, combinando \textit{snapshots} do estado anterior com um registro de eventos, e o conceito de \textit{Event Sourcing} é aqui mencionado como referência conceitual para a ideia de histórico imutável.
+
+\subsection{Timeline e registro de eventos}
+
+A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos associados a uma entidade. Cada evento (criação, aprovação, rejeição, reversão) é registrado com seu tipo, autor, data e informações complementares, e a interface os exibe como uma linha do tempo. Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao administrador do banco de dados.
