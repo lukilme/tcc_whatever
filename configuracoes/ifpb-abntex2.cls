@@ -180,7 +180,7 @@
 % Elementos pré-textuais
 \renewcommand{\pretextual}
 {%
-    \pagenumbering{gobble}
+    \pagenumbering{roman}
     \aliaspagestyle{chapter}{empty}
     \pagestyle{empty}
     \aliaspagestyle{cleared}{empty}

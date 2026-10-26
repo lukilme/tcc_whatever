@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99e (TeX Live 2026/Arch Linux)
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ifpb-tcc.aux
 A level-1 auxiliary file: estrutura/pre-textuais/dedicatoria.aux
@@ -16,69 +16,69 @@ A level-1 auxiliary file: estrutura/pre-textuais/sumario.aux
 A level-1 auxiliary file: estrutura/textuais/introducao.aux
 A level-1 auxiliary file: estrutura/textuais/desenvolvimento/embasamento-teorico.aux
 A level-1 auxiliary file: estrutura/textuais/desenvolvimento/atividades-realizadas.aux
-A level-1 auxiliary file: estrutura/textuais/conclusao.aux
+A level-1 auxiliary file: estrutura/textuais/desenvolvimento/resultados.aux
 A level-1 auxiliary file: estrutura/pos-textuais/referencias.aux
 The style file: abntex2-alf.bst
 A level-1 auxiliary file: estrutura/pos-textuais/apendices.aux
 A level-1 auxiliary file: estrutura/pos-textuais/anexos.aux
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated wiz_functions (elt_size=8) to 6000 items from 3000.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated wiz_functions (elt_size=8) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Database file #1: abntex2-options.bib
 Database file #2: ./base-referencias.bib
-Reallocated singl_function (elt_size=8) to 100 items from 50.
-Reallocated glb_str_ptr (elt_size=8) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=200001) to 20 items from 10.
-Reallocated glb_str_end (elt_size=8) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 +---------------------------------------------------------+
 | Estilo bibliográfico abntex2-alf.bst versão v-1.9.7           |
 | Em caso de dúvidas ou problemas com este estilo procure |
 | http://www.abntex.net.br/                               |
 +---------------------------------------------------------+
-You've used 6 entries,
+You've used 22 entries,
             6714 wiz_defined-function locations,
-            1222 strings with 10277 characters,
-and the built_in function-call counts, 2097 in all, are:
-= -- 247
-> -- 3
-< -- 3
-+ -- 51
-- -- 3
-* -- 81
-:= -- 274
-add.period$ -- 0
-call.type$ -- 7
-change.case$ -- 18
-chr.to.int$ -- 13
-cite$ -- 0
-duplicate$ -- 25
-empty$ -- 260
-format.name$ -- 0
-if$ -- 571
+            1312 strings with 12339 characters,
+and the built_in function-call counts, 19825 in all, are:
+= -- 2209
+> -- 329
+< -- 371
++ -- 529
+- -- 102
+* -- 1181
+:= -- 2429
+add.period$ -- 75
+call.type$ -- 23
+change.case$ -- 153
+chr.to.int$ -- 47
+cite$ -- 16
+duplicate$ -- 1668
+empty$ -- 1244
+format.name$ -- 471
+if$ -- 4380
 int.to.chr$ -- 5
 int.to.str$ -- 3
-missing$ -- 61
-newline$ -- 8
-num.names$ -- 0
-pop$ -- 44
+missing$ -- 348
+newline$ -- 80
+num.names$ -- 61
+pop$ -- 394
 preamble$ -- 1
-purify$ -- 18
+purify$ -- 74
 quote$ -- 0
-skip$ -- 313
+skip$ -- 1947
 stack$ -- 1
-substring$ -- 74
-swap$ -- 3
-text.length$ -- 0
+substring$ -- 728
+swap$ -- 603
+text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
+type$ -- 1
 warning$ -- 0
-while$ -- 2
+while$ -- 87
 width$ -- 0
-write$ -- 8
+write$ -- 257

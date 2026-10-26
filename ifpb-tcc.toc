@@ -1,5 +1,9 @@
 \changetocdepth {4}
 \babel@toc {brazil}{}\relax 
+\contentsline {chapter}{LISTA DE FIGURAS}{viii}{section*.7}%
+\contentsline {chapter}{LISTA DE QUADROS}{ix}{section*.8}%
+\contentsline {chapter}{LISTA DE TABELAS}{x}{section*.9}%
+\contentsline {chapter}{LISTA DE ALGORITMOS}{xiii}{chapter*.14}%
 \contentsline {chapter}{\chapternumberline {1}INTRODUÇÃO}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Objetivos}{1}{section.1.1}%
 \contentsline {subsection}{\numberline {1.1.1}Objetivo geral}{1}{subsection.1.1.1}%
@@ -9,16 +13,27 @@
 \contentsline {section}{\numberline {1.4}Contexto institucional}{3}{section.1.4}%
 \contentsline {section}{\numberline {1.5}Organização do relatório}{3}{section.1.5}%
 \contentsline {chapter}{\chapternumberline {2}EMBASAMENTO TÉORICO}{4}{chapter.2}%
-\contentsline {chapter}{\chapternumberline {3}ATIVIDADES REALIZADAS}{5}{chapter.3}%
-\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{6}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{7}{chapter*.23}%
+\contentsline {section}{\numberline {2.1}Arquitetura Web Cliente-Servidor}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Framework Flask}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Persistência de dados com PostgreSQL e SQLAlchemy}{6}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}PostgreSQL}{6}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}SQLAlchemy}{7}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Serialização e Validação de Dados com Marshmallow}{7}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Auditoria, Rastreabilidade e Versionamento de Dados}{8}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Auditoria e rastreabilidade}{8}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Fluxo de aprovação com máquina de estados}{8}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Snapshot e reversão}{8}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}Timeline e registro de eventos}{9}{subsection.2.5.4}%
+\contentsline {chapter}{\chapternumberline {3}ATIVIDADES REALIZADAS}{10}{chapter.3}%
+\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{11}{chapter.4}%
+\contentsline {chapter}{Refer\^encias}{12}{chapter*.18}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{8}{section*.24}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{9}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{10}{appendix.B}%
+\contentsline {part}{Ap\^endices}{14}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{15}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{16}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{11}{section*.25}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{12}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{13}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{17}{section*.20}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{18}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{19}{appendix.anexochapback.2}%
