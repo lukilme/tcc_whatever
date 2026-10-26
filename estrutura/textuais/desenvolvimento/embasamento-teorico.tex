@@ -60,7 +60,7 @@ Outros recursos relevantes são a definição de relacionamentos entre entidades
 
 O Marshmallow é uma biblioteca Python para serialização, desserialização e validação de dados \cite{marshmallow2024}. A serialização converte objetos da aplicação (como instâncias de modelos ORM) em tipos simples, que podem ser transformados em JSON e enviados ao cliente. A desserialização realiza o caminho inverso: recebe dados externos, valida-os e os converte em estruturas utilizáveis pela aplicação.
 
-O elemento central é o \textit{schema}, uma classe que declara os campos esperados, seus tipos e suas regras de validação, como obrigatoriedade, tamanho máximo, formato ou valores permitidos. Validações adicionais, específicas do domínio, podem ser implementadas por funções de validação. Quando os dados são inválidos, a biblioteca produz mensagens de erro estruturadas, que podem ser devolvidas ao cliente com código HTTP 400.
+O elemento central é o \textit{schema}, uma classe que declara os campos esperados, seus tipos e suas regras de validação, como obrigatoriedade, tamanho máximo, formato ou valores permitidos. Validações adicionais, específicas do domínio, podem ser implementadas por funções de validação. Quando os dados são inválidos, a biblioteca produz mensagens de erro estruturadas, que podem ser devolvidas ao cliente com código HTTP 400, como mencionado na tabela 1.
 
 O uso de schemas na fronteira da API cumpre duas funções. A primeira é de segurança e robustez: dados externos nunca devem ser considerados confiáveis, e a validação sistemática impede que entradas malformadas alcancem as regras de negócio. A segunda é de padronização: os schemas definem de maneira explícita e única o formato das requisições e respostas, servindo como contrato entre o front-end e o back-end. Essa característica é relevante quando as interfaces de criação, acompanhamento e análise de solicitações dependem de formatos de dados estáveis.
 
@@ -89,3 +89,32 @@ Existem abordagens mais gerais para o versionamento de dados, como o \textit{Eve
 \subsection{Timeline e registro de eventos}
 
 A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos associados a uma entidade. Cada evento (criação, aprovação, rejeição, reversão) é registrado com seu tipo, autor, data e informações complementares, e a interface os exibe como uma linha do tempo. Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao administrador do banco de dados.
+
+\section{Vue.js e Nuxt}
+
+O Vue.js é um framework JavaScript progressivo para construção de interfaces de usuário, baseado em componentes e em um sistema de reatividade declarativa \cite{vuejs2024}. Nele, a interface é descrita como uma composição de componentes reutilizáveis, geralmente escritos em arquivos de componente único (\textit{Single-File Components} - SFC), que reúnem em um só arquivo a estrutura (\textit{template}), a lógica (\textit{script}) e o estilo. Quando os dados reativos de um componente mudam, o framework atualiza automaticamente apenas as partes da interface afetadas.
+
+O Nuxt é um framework construído sobre o Vue.js que adiciona convenções e recursos para o desenvolvimento de aplicações completas \cite{nuxt2024}. Entre eles estão o roteamento baseado na estrutura de diretórios, a organização de componentes e \textit{composables}, e a possibilidade de renderização no servidor (\textit{Server-Side Rendering} - SSR), que pode melhorar o tempo de carregamento inicial e a indexação por mecanismos de busca. A adoção do Nuxt reduz a quantidade de configuração manual e favorece a padronização da estrutura do projeto.
+
+No módulo de solicitações, as interfaces de criação, acompanhamento e análise foram construídas como páginas e componentes que consomem a API REST, apresentam o estado das solicitações e permitem ao administrador aprovar, rejeitar ou reverter cada uma delas.
+
+\section{Testes Automatizados}
+
+Testes automatizados são programas que verificam o comportamento de outro programa, permitindo detectar defeitos de forma repetível e rápida. Sua importância cresce em sistemas em evolução contínua, pois funcionam como rede de segurança contra regressões, ou seja, falhas introduzidas em funcionalidades que antes operavam corretamente \cite{sommerville2011}.
+
+Costuma-se distinguir diferentes níveis de teste. Os testes unitários verificam unidades isoladas de código, como uma função que calcula a nova pontuação de um especialista, e são rápidos e numerosos. Os testes de integração verificam a interação entre componentes, como a comunicação entre a API, o ORM e o banco de dados, ou entre o \textit{front-end} e o \textit{back-end}. Essa proporção entre os níveis é frequentemente representada pela pirâmide de testes, que recomenda muitos testes de baixo nível e poucos de alto nível \cite{cohn2009}.
+
+O Pytest é o framework de testes mais utilizado no ecossistema Python \cite{pytest2024}. Entre seus principais recursos estão a escrita de testes como funções simples com o uso do comando \textit{assert}, a descoberta automática de testes, as \textit{fixtures}, que preparam e liberam recursos necessários aos testes (como uma sessão de banco de dados ou um cliente de teste da aplicação), a parametrização de casos de teste e uma ampla coleção de \textit{plugins}, como os de medição de cobertura. Para o módulo desenvolvido, os testes unitários cobriram as regras de negócio (mudança de categoria, atualização de pontuação, transições de estado), enquanto os testes de integração verificaram os fluxos completos de criação, aprovação, rejeição e reversão, bem como a consistência dos dados após a reversão.
+
+\section{Conteinerização com Docker}
+
+A conteinerização é uma forma de virtualização em nível de sistema operacional, na qual aplicações e suas dependências são empacotadas em unidades isoladas, chamadas contêineres, que compartilham o \textit{kernel} do sistema hospedeiro. Diferentemente das máquinas virtuais tradicionais, que emulam um sistema operacional completo, os contêineres são mais leves e iniciam mais rapidamente \cite{merkel2014}. O isolamento é obtido por recursos do \textit{kernel} Linux, como \textit{namespaces} e \textit{cgroups}.
+
+O Docker é a plataforma mais difundida para criação e execução de contêineres \cite{docker2024}. Seus conceitos fundamentais são: a imagem, um modelo imutável que contém o sistema de arquivos, as dependências e a configuração necessária à execução; o contêiner, instância em execução de uma imagem; e o \textit{Dockerfile}, arquivo que descreve, de forma declarativa, como construir uma imagem. O Docker Compose complementa essa estrutura ao permitir definir e executar aplicações compostas por múltiplos contêineres, como a API, o banco de dados e o \textit{front-end}, em um único arquivo de configuração.
+
+O principal benefício da conteinerização é a reprodutibilidade: o mesmo ambiente pode ser instanciado em qualquer máquina, o que reduz problemas do tipo "funciona na minha máquina" e simplifica a integração de novos desenvolvedores. No estágio, o Docker foi utilizado para executar e validar de forma integrada os componentes de \textit{front-end}, \textit{back-end} e banco de dados, assegurando que os testes de integração fossem realizados em um ambiente consistente.
+
+
+\section{Síntese do Capítulo}
+
+As tecnologias e os conceitos apresentados compõem a base sobre a qual o módulo de solicitações foi desenvolvido. A arquitetura cliente-servidor e o estilo REST definem a forma de comunicação entre as interfaces e a API; o Flask estrutura a aplicação, o SQLAlchemy e o PostgreSQL garantem a persistência transacional, e o Marshmallow assegura a validação e o contrato dos dados. Os conceitos de auditoria, máquina de estados, \textit{snapshot} e registro de eventos sustentam os requisitos de rastreabilidade e reversão que motivaram o estágio. Por fim, Vue.js e Nuxt viabilizam as interfaces, o Pytest garante a verificação das regras de negócio, o Git organiza a colaboração e o Docker fornece o ambiente reprodutível de execução. O próximo capítulo descreve como esses elementos foram aplicados nas atividades realizadas.

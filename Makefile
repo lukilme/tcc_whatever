@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Universidade Tecnológica Federal do Paraná - UTFPR
+# Instituição Federal da Paraíba - IFPB
 # Makefile Customização da Classe abnTeX2 para as normas da UTFPR
 #
 # Projeto hospedado em: <link git>
