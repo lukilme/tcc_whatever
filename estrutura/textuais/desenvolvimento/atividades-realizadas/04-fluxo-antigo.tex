@@ -1,13 +1,69 @@
-\section{Entendimento do Fluxo Antigo}
+\section{Entendimento do Fluxo Antigo e Diagnóstico de Demanda}
 
-Antes do desenvolvimento do módulo, as solicitações de mudanças de categoria eram realizadas por meio de correio eletrônico. Após o recebimento do pedido, a alteração dependia da intervenção de um membro da equipe responsável, que executava manualmente as operações necessárias diretamente no banco de dados por meio de uma QUERY SQL reutilizável.
+Antes do desenvolvimento do módulo, as solicitações de mudanças de categoria e de atualização cadastral eram realizadas exclusivamente por e-mail. Após o recebimento do pedido, a alteração dependia da intervenção de um técnico, que executava manualmente as operações diretamente na base de dados por meio de scripts SQL reutilizáveis.
 
-Esse procedimento estabelece uma dependência entre a solicitação do especialista e a disponibilidade de um responsável com acesso técnico à base de dados. Além disso, o acompanhamento do pedido e a consulta ao histórico das alterações dependiam dos registros e das comunicações existentes fora de um fluxo centralizado e auditável na aplicação.
+Esse procedimento estabelecia uma forte dependência entre a solicitação do usuário e a disponibilidade de um responsável com acesso privilegiado ao banco de dados. Além disso, o acompanhamento dos pedidos, a validação das justificativas e o histórico das alterações ficavam dispersos nas caixas de entrada de e-mail, fora de um fluxo centralizado e auditável.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{dados/figuras/old_workflow.png}
     \caption{Fluxo de alteração de categoria de especialistas antes do desenvolvimento do módulo.}
+    \label{fig:fluxo_antigo}
+    \fonte{Elaboração própria (2026).}
 \end{figure}
 
-A análise desse processo permitiu identificar a necessidade de incorporar ao sistema mecanismos para registrar as solicitações, formalizar as decisões e acompanhar as alterações realizadas.
+Para dimensionar a recorrência desse gargalo operacional, realizou-se o levantamento dos chamados recebidos pelo e-mail de suporte no período de 30 de maio de 2025 a 4 de agosto de 2026. No total, foram catalogados 141 chamados de suporte diretamente vinculados a solicitações manuais de ajuste cadastral e de pontuação.
+
+A Tabela~\ref{tab:tipo_inscricao} apresenta a distribuição das solicitações conforme o tipo de vínculo do usuário no sistema.
+
+\begin{table}[htbp]
+    \centering
+    \caption[Volume de chamados por tipo de inscrição]{Volume de solicitações de suporte por tipo de inscrição (maio/2025 a agosto/2026).}
+    \label{tab:tipo_inscricao}
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Tipo de Inscrição} & \textbf{Quantidade de Chamados} & \textbf{Porcentagem (\%)} \\
+        \midrule
+        Colaborador(a) externo & 79 & 56,0\% \\
+        Estudante & 47 & 33,3\% \\
+        Servidor(a) & 15 & 10,6\% \\
+        \midrule
+        \textbf{Total} & \textbf{141} & \textbf{100,0\%} \\
+        \bottomrule
+    \end{tabular}
+    \fonte{Elaboração própria, com base em dados do suporte (2026).}
+\end{table}
+
+A Tabela~\ref{tab:categoria_problema} detalha os motivos apresentados nesses atendimentos. 
+
+\begin{table}[htbp]
+    \centering
+    \caption[Distribuição dos chamados por categoria de problema]{Distribuição das solicitações de suporte por categoria de problema.}
+    \label{tab:categoria_problema}
+    \begin{tabular}{p{8cm}rr}
+        \toprule
+        \textbf{Categoria do Problema} & \textbf{Quantidade} & \textbf{Porcentagem (\%)} \\
+        \midrule
+        Outro (especificar) & 59 & 41,8\% \\
+        Completar cadastro (dados pessoais) & 34 & 24,1\% \\
+        Cadastrar pontuação & 34 & 24,1\% \\
+        Cadastrar no sistema & 7 & 5,0\% \\
+        Fazer login no sistema & 7 & 5,0\% \\
+        \midrule
+        \textbf{Total} & \textbf{141} & \textbf{100,0\%} \\
+        \bottomrule
+    \end{tabular}
+    \fonte{Elaboração própria, com base em dados do suporte (2026).}
+\end{table}
+
+A análise empírica revela que as demandas por atualização de cadastro e inclusão de pontuação somam juntas 48,2\% de todos os chamados mapeados. Quando somadas às demandas genéricas ("Outro"), constata-se que a grande maioria das interações via e-mail tratava-se de intervenções manuais que poderiam ser automatizadas.
+
+A execução de queries manuais em ambiente de produção para atender a esse volume constante de chamados apresentava riscos críticos:
+\begin{itemize}
+    \item \textbf{Vulnerabilidade de segurança:} risco de erro humano na execução de scripts diretos no SGBD;
+    \item \textbf{Falta de rastreabilidade:} ausência de registros sobre quem aprovou ou alterou determinado dado;
+    \item \textbf{Ineficiência operacional:} alocação de esforço técnico em tarefas repetitivas de suporte administrativo;
+    \item \textbf{Atrasos no atendimento:} dependência da disponibilidade da equipe de TI para demandas administrativas do sistema.
+\end{itemize}
+
+O diagnóstico comprovou a necessidade de aposentar o fluxo manual e implementar um módulo integrado ao sistema, capaz de formalizar solicitações, gerenciar aprovações via máquina de estados e manter um histórico auditável das alterações.

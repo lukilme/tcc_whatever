@@ -34,39 +34,42 @@
 \contentsline {chapter}{\chapternumberline {3}ATIVIDADES REALIZADAS}{9}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Estudo da Arquitetura e Levantamento de Requisitos}{9}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Análise das Regras de Negócio}{9}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Entendimento do Fluxo Antigo}{10}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Desenvolvimento do Módulo de Solicitações}{11}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Endpoints}{11}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Integração com o banco de dados}{11}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Aprovação e Rejeição}{11}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Mudança de categoria}{11}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Atualização de pontuação}{11}{subsection.3.4.5}%
-\contentsline {section}{\numberline {3.5}Implementação do Sistema de Snapshot e Auditoria}{11}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Entidade Snapshot}{11}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}JSONB}{11}{subsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.5.3}Reversão}{11}{subsection.3.5.3}%
-\contentsline {subsection}{\numberline {3.5.4}Timeline}{11}{subsection.3.5.4}%
-\contentsline {subsection}{\numberline {3.5.5}Rastreabilidade}{11}{subsection.3.5.5}%
-\contentsline {section}{\numberline {3.6}Desenvolvimento das Interfaces Web}{11}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Telas Criadas}{11}{subsection.3.6.1}%
-\contentsline {subsection}{\numberline {3.6.2}Componentes Vue}{11}{subsection.3.6.2}%
-\contentsline {subsection}{\numberline {3.6.3}Integração frontend/backend}{11}{subsection.3.6.3}%
-\contentsline {section}{\numberline {3.7}Testes e Validação}{11}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Pytest}{11}{subsection.3.7.1}%
-\contentsline {subsection}{\numberline {3.7.2}Pré-configuração}{11}{subsection.3.7.2}%
-\contentsline {subsection}{\numberline {3.7.3}Testes unitários}{11}{subsection.3.7.3}%
-\contentsline {subsection}{\numberline {3.7.4}Testes de integração}{11}{subsection.3.7.4}%
-\contentsline {subsection}{\numberline {3.7.5}Processo de Integração Contínua}{11}{subsection.3.7.5}%
-\contentsline {section}{\numberline {3.8}Levantamento de Requisitos das Funcionalidades}{11}{section.3.8}%
-\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{12}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{13}{chapter*.17}%
+\contentsline {section}{\numberline {3.3}Entendimento do Fluxo Antigo e Diagnóstico de Demanda}{10}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Levantamento de Requisitos das Funcionalidades}{11}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Requisitos Funcionais}{12}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Requisitos Não Funcionais}{12}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Desenvolvimento do Módulo de Solicitações}{12}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Endpoints}{12}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Integração com o banco de dados}{12}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Autorização e Controle de Acesso}{13}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Aprovação e Rejeição}{13}{subsection.3.5.4}%
+\contentsline {subsection}{\numberline {3.5.5}Mudança de categoria}{13}{subsection.3.5.5}%
+\contentsline {subsection}{\numberline {3.5.6}Atualização de pontuação}{13}{subsection.3.5.6}%
+\contentsline {section}{\numberline {3.6}Implementação do Sistema de Snapshot e Auditoria}{13}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Entidade Snapshot}{13}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}JSONB}{13}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}Reversão}{14}{subsection.3.6.3}%
+\contentsline {subsection}{\numberline {3.6.4}Timeline}{14}{subsection.3.6.4}%
+\contentsline {subsection}{\numberline {3.6.5}Rastreabilidade}{14}{subsection.3.6.5}%
+\contentsline {section}{\numberline {3.7}Desenvolvimento das Interfaces Web}{14}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Telas Criadas}{14}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Componentes Vue}{14}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}Integração frontend/backend}{14}{subsection.3.7.3}%
+\contentsline {section}{\numberline {3.8}Testes e Validação}{15}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}Pytest}{15}{subsection.3.8.1}%
+\contentsline {subsection}{\numberline {3.8.2}Pré-configuração}{15}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}Testes unitários}{15}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.4}Testes de integração}{15}{subsection.3.8.4}%
+\contentsline {subsection}{\numberline {3.8.5}Processo de Integração Contínua}{15}{subsection.3.8.5}%
+\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{16}{chapter.4}%
+\contentsline {chapter}{Refer\^encias}{17}{chapter*.17}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{15}{section*.18}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{16}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{17}{appendix.B}%
+\contentsline {part}{Ap\^endices}{19}{section*.18}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{20}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{21}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{18}{section*.19}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{19}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{20}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{22}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{23}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{24}{appendix.anexochapback.2}%
