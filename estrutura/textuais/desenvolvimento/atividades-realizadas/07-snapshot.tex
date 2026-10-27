@@ -1,0 +1,22 @@
+\section{Implementação do Sistema de Snapshot e Auditoria}
+\label{sec:snapshot-auditoria}
+
+\subsection{Entidade Snapshot}
+
+A entidade Snapshot foi concebida para registrar um estado completo do registro em um determinado momento, permitindo preservar informações relevantes antes de qualquer alteração. Essa abordagem torna possível reconstituir o contexto do dado em caso de revisão, validação ou correção posterior.
+
+\subsection{JSONB}
+
+O uso de JSONB foi adotado para armazenar os dados do snapshot em um formato estruturado e flexível, permitindo a persistência de informações detalhadas sem perder a capacidade de consulta e análise. Essa escolha favorece a rastreabilidade e facilita a recuperação do contexto em operações de auditoria.
+
+\subsection{Reversão}
+
+A reversão é um dos principais benefícios do sistema de snapshot, pois permite retornar o sistema a um estado anterior quando há inconsistência, erro humano ou necessidade de correção. A funcionalidade garantiu maior segurança para as operações críticas e reduziu o risco de impactos negativos no banco de dados.
+
+\subsection{Timeline}
+
+A timeline foi implementada para registrar a sequência de eventos e alterações relacionadas às solicitações de mudança de categoria. Essa visualização ajuda a compreender o histórico completo do processo, incluindo a origem da solicitação, decisões tomadas e mudanças efetivadas.
+
+\subsection{Rastreabilidade}
+
+A rastreabilidade foi reforçada com o registro dos dados relevantes de cada operação, incluindo informações sobre autor, data, estado atual e histórico de versões. Dessa forma, o sistema passa a permitir auditoria detalhada e maior confiabilidade no acompanhamento das alterações.

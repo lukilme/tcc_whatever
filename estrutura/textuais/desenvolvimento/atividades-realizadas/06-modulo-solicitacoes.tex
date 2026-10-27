@@ -1,0 +1,26 @@
+\section{Desenvolvimento do Módulo de Solicitações}
+\label{sec:modulo-solicitacoes}
+
+\subsection{Endpoints}
+
+Os endpoints foram desenvolvidos para oferecer uma interface clara e organizada para a criação, consulta e atualização das solicitações de mudança de categoria. A estrutura foi pensada para manter compatibilidade com a arquitetura existente, adicionando rotas específicas sem impactar o comportamento dos módulos já em funcionamento.
+
+\subsection{Integração com o banco de dados}
+
+A integração com o banco de dados foi planejada para armazenar as solicitações, os estados do processo e as informações necessárias à rastreabilidade. A persistência foi organizada para manter a relação entre a solicitação, o especialista e o histórico de decisões, garantindo consistência e confiabilidade no armazenamento das informações.
+
+\subsection{Autorização e Controle de Acesso}
+
+A autorização foi implementada considerando os diferentes papéis envolvidos no fluxo, de modo que apenas usuários com permissão adequada possam aprovar, rejeitar ou alterar as informações relacionadas à categoria do especialista. Esse controle é essencial para preservar as regras de negócio e evitar ações indevidas no sistema.
+
+\subsection{Aprovação e Rejeição}
+
+A funcionalidade de aprovação e rejeição foi estruturada como etapas distintas, cada uma com consequências específicas sobre o estado da solicitação. A aprovação formaliza a decisão e desencadeia a mudança de categoria, enquanto a rejeição mantém o registro do pedido sem alteração do estado do especialista.
+
+\subsection{Mudança de categoria}
+
+A mudança de categoria representa o ponto central do módulo, sendo executada apenas quando a solicitação é aprovada e todas as regras pertinentes são satisfeitas. Esse processo foi implementado de forma a preservar a integridade dos dados e a lógica do sistema, evitando alterações abruptas ou inconsistentes em cadastros existentes.
+
+\subsection{Atualização de pontuação}
+
+A atualização de pontuação foi tratada como parte do processo de alteração de categoria, considerando os critérios de classificação previamente definidos. Essa etapa garante que a nova categoria reflita corretamente o histórico e os dados atualizados do especialista, mantendo a coerência da classificação institucional.

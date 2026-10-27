@@ -1,0 +1,7 @@
+\section{Análise das Regras de Negócio}
+
+O sistema possui um modelo de regras de negócio relacionadas à classificação de especialistas e à alteração de seus dados cadastrais. Condições essas que deveriam ser respeitadas pela nova funcionalidade, bem como os efeitos das operações sobre os registros existentes.
+
+Foram examinados os critérios relacionados à mudança de categoria, à atualização da pontuação e às responsabilidades dos usuários envolvidos no processo. Também foi necessário distinguir as operações de solicitação das ações de aprovação e rejeição, uma vez que essas etapas possuem finalidades e consequências distintas. O levantamento dessas regras serviu de base para definir o comportamento esperado do módulo e evitar que as novas operações comprometessem as restrições já estabelecidas pelo sistema.
+
+Com base no sistema atual, os principais desafios para realizar a transição de categoria de um especialista começam pelo fato de que a categoria de um especialista não estar armazenada no modelo Specialist, mas sim no User.

@@ -1,0 +1,7 @@
+\section{Estudo da Arquitetura e Levantamento de Requisitos}
+
+O primeiro passo para o desenvolvimento da funcionalidade consiste na compreensão do sistema Banco de Especialistas, de sua finalidade institucional e de sua organização técnica. A plataforma permite o cadastramento e a classificação de profissionais interessados em participar de projetos de pesquisa, desenvolvimento e inovação vinculados ao IFPB.
+
+Nesse contexto, foram estudadas as funcionalidades relacionadas ao cadastro dos especialistas, à organização por categorias e aos critérios de classificação utilizados pelo sistema. Também foram examinados os componentes da aplicação e suas interações, com o objetivo de identificar os pontos de integração necessários ao desenvolvimento do novo módulo.
+
+De certo modo, um dos princípios que foram usados é o Additive Change, no gerenciamento de APIs e controladores de código: a prática de evoluir o sistema apenas adicionando novas rotas, campos ou módulos, visando a compatibilidade com o código anterior. A escolha de evitar grandes alterações ao código veio da reflexão baseada na forma como o código antigo foi escrito, seguindo uma arquitetura MVC com a camada de controller sobrecarregada de funções, aproximando-se mais de uma versão procedural com baixa manutenção e abstração. Os módulos recém-construídos já foram melhor desenvolvidos com base nos pontos anteriormente analisados.
