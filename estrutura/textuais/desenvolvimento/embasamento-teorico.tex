@@ -7,7 +7,7 @@ Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que fund
 \section{Arquitetura Web Cliente-Servidor}
 A arquitetura cliente-servidor organiza um sistema distribuído em provedores de serviços e requisitantes \cite{Tanenbaum2007}. Nesse contexto, a comunicação orientada pelo estilo REST e pelo protocolo HTTP define interações sem estado, nas quais cada requisição é independente e deve carregar as informações necessárias ao seu processamento \cite{rfc9110}.
 
-Essa base teórica fundamenta a separação de responsabilidades do módulo: isolar a máquina de estados e as regras de persistência no servidor garante que a integridade dos dados e as transições de status da solicitação não dependam do cliente. Dessa forma, as aplicações em Vue.js e Nuxt atuam exclusivamente na apresentação e na coleta de informações, consumindo a API REST para criar, acompanhar e analisar as requisições.
+Essa base teórica fundamenta a separação de responsabilidades do módulo: isolar a máquina de estados e as regras de persistência no servidor garante que a integridade dos dados e as transições de status da solicitação não dependam do cliente. Dessa forma, a aplicação no frontend atua exclusivamente na apresentação e na coleta de informações, consumindo a API REST para criar, acompanhar e analisar as requisições.
 \section{Flask}
 
 O Flask foi utilizado na API do módulo por permitir incorporar suas rotas à aplicação existente sem impor uma reorganização do sistema. Os \textit{blueprints} agruparam as operações de criação, análise, acompanhamento e reversão das solicitações em um componente isolado, preservando as demais funcionalidades e facilitando a manutenção do módulo \cite{flask2024}.
@@ -24,10 +24,11 @@ O PostgreSQL foi adequado por oferecer transações para as operações composta
 
 O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades relacionadas em uma única unidade de trabalho \cite{bayer2012}. A sessão acumula as mudanças e, no \textit{commit}, efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo status da solicitação.
 
-\section{Validação de Dados com Marshmallow}
+\section{Validação de Dados com Marshmallow e Flasgger}
 
 Na fronteira da API, os \textit{schemas} do Marshmallow validam os campos e formatos recebidos antes que os dados cheguem às regras de negócio \cite{marshmallow2024}. Ao declarar os formatos esperados para as solicitações e suas respostas, também estabelecem o contrato consumido pelas interfaces de criação, acompanhamento e análise do módulo.
 
+Complementarmente, o Flasgger foi utilizado na documentação e na especificação dos endpoints da API, permitindo descrever os parâmetros, os formatos esperados e as respostas das operações segundo as especificações OpenAPI/Swagger. Além da documentação interativa, a biblioteca oferece mecanismos de validação das requisições recebidas com base nos schemas definidos, desde que habilitados na configuração da aplicação. Dessa forma, sua utilização pode contribuir tanto para a explicitação do contrato da API quanto para a verificação da conformidade dos dados de entrada com as estruturas especificadas \cite{flasgger2024}.
 \section{Auditoria, Rastreabilidade e Versionamento de Dados}
 
 Esta seção reúne os conceitos que sustentam a principal contribuição do módulo: a capacidade de registrar, consultar e desfazer alterações cadastrais com garantias de rastreabilidade.
@@ -54,9 +55,9 @@ Existem abordagens mais gerais para o versionamento de dados, como o \textit{Eve
 
 A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos associados a uma entidade. Cada evento (criação, aprovação, rejeição, reversão) é registrado com seu tipo, autor, data e informações complementares, e a interface os exibe como uma linha do tempo. Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao administrador do banco de dados.
 
-\section{Vue.js e Nuxt}
+% \section{Vue.js e Nuxt}
 
-Vue.js e Nuxt foram utilizados na construção das interfaces do módulo \cite{vuejs2024, nuxt2024}. As páginas de análise e acompanhamento consomem a API para apresentar o estado e o histórico das solicitações; a interface administrativa também permite ao responsável aprovar, rejeitar ou reverter uma solicitação.
+% Vue.js e Nuxt foram utilizados na construção das interfaces do módulo \cite{vuejs2024, nuxt2024}. As páginas de análise e acompanhamento consomem a API para apresentar o estado e o histórico das solicitações; a interface administrativa também permite ao responsável aprovar, rejeitar ou reverter uma solicitação.
 
 \section{Verificação das Transições com Pytest}
 
@@ -76,4 +77,4 @@ Cabe observar que o controle de versão atua sobre o código-fonte, e não sobre
 
 \section{Síntese do Capítulo}
 
-As tecnologias e os conceitos apresentados compõem a base sobre a qual o módulo de solicitações foi desenvolvido. A arquitetura cliente-servidor e o estilo REST definem a forma de comunicação entre as interfaces e a API; o Flask estrutura a aplicação, o SQLAlchemy e o PostgreSQL garantem a persistência transacional, e o Marshmallow assegura a validação e o contrato dos dados. Os conceitos de auditoria, máquina de estados, \textit{snapshot} e registro de eventos sustentam os requisitos de rastreabilidade e reversão que motivaram o estágio. Por fim, Vue.js e Nuxt viabilizam as interfaces, o Pytest garante a verificação das regras de negócio, o Git organiza a colaboração e o Docker fornece o ambiente reprodutível de execução. O próximo capítulo descreve como esses elementos foram aplicados nas atividades realizadas.
+As tecnologias e os conceitos apresentados compõem a base sobre a qual o módulo de solicitações foi desenvolvido. A arquitetura cliente-servidor e o estilo REST definem a forma de comunicação entre as interfaces e a API; o Flask estrutura a aplicação, o SQLAlchemy e o PostgreSQL garantem a persistência transacional, e o Marshmallow assegura a validação e o contrato dos dados. Os conceitos de auditoria, máquina de estados, \textit{snapshot} e registro de eventos sustentam os requisitos de rastreabilidade e reversão que motivaram o estágio. Por fim, o Pytest garante a verificação das regras de negócio, o Git organiza a colaboração e o Docker fornece o ambiente reprodutível de execução. O próximo capítulo descreve como esses elementos foram aplicados nas atividades realizadas.
