@@ -1,13 +1,91 @@
-\subsection{Levantamento de Requisitos das Funcionalidades}
+\subsection{Levantamento de Requisitos}
 
-É relevante destacar que o sistema deve preservar o comportamento anterior, sem alterar funcionalidades já existentes, mas incorporando novos módulos e processos que ampliem a capacidade operacional, a rastreabilidade e a segurança das alterações. A solução foi pensada para garantir que futuras mudanças de categoria e atualização de pontuação ocorram de forma controlada, com registro claro de cada ação e possibilidade de reversão em caso de inconsistências.
+O levantamento de requisitos teve como objetivo definir as funcionalidades 
+e as propriedades de qualidade necessárias à integração do módulo de 
+solicitações ao sistema Banco de Especialistas. A solução foi concebida 
+para preservar o comportamento das funcionalidades existentes e formalizar 
+o processo de alteração de categoria e de dados cadastrais dos especialistas, 
+mediante validação das entradas, controle de aprovação e registro das 
+operações realizadas.
 
-Além disso, o módulo deve respeitar as regras de negócio do sistema atual, incluindo critérios de aprovação, validação de dados e manutenção da integridade das informações de especialistas e usuários. Nesse contexto, a funcionalidade deve ser auditável, permitindo identificar quem solicitou a mudança, quem aprovou ou rejeitou a ação e quais dados foram alterados em cada etapa do processo.
+Os requisitos funcionais especificam as operações disponibilizadas pelo 
+módulo e seus efeitos sobre os registros do sistema. Os requisitos não 
+funcionais estabelecem as condições de integridade, segurança, 
+rastreabilidade, compatibilidade e manutenção que orientam a implementação 
+da solução.
 
 \subsubsection{Requisitos Funcionais}
 
-Os requisitos funcionais incluem: criação de solicitações de mudança de categoria, aprovação ou rejeição das solicitações, atualização de pontuação conforme critérios definidos, manutenção do histórico das mudanças e registro de ações relevantes para auditoria. O sistema também deve assegurar que somente usuários autorizados realizem operações de alteração, preservando a integridade dos dados e o fluxo operacional já estabelecido.
+Os requisitos funcionais abrangem a criação e o processamento de 
+solicitações, a consulta e o acompanhamento das demandas, a aplicação 
+das alterações aprovadas, a preservação do estado anterior dos registros 
+e o controle de acesso às operações. As decisões e as alterações devem 
+ser executadas exclusivamente por usuários autorizados, conforme as 
+regras de negócio estabelecidas.
+
+\FloatBarrier
+\begin{quadro}[htbp]
+\centering
+\caption[Requisitos funcionais do módulo]{Requisitos funcionais do módulo de solicitações.}
+\label{qua:rf}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{1cm}p{6.5cm}p{2.2cm}p{2.3cm}p{2cm}}
+\toprule
+\textbf{ID} & \textbf{Descrição} & \textbf{Tipo de solicitação} & \textbf{Origem} & \textbf{Implementação} \\
+\midrule
+RF01 & Permitir a criação de solicitações de mudança de categoria, com indicação da categoria de destino e justificativa obrigatória. & Categoria & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF02 & Permitir a criação de solicitações de atualização de pontuação, com indicação dos itens e das respectivas comprovações. & Pontuação & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF03 & Permitir a criação de solicitações de complemento cadastral ou de recurso, com descrição do problema identificado. & Complemento & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF04 & Permitir a consulta das solicitações, com filtros por tipo e por situação, conforme o perfil do usuário (solicitante ou avaliador). & Todos & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:interfaces-web} \\
+RF05 & Permitir a aprovação ou rejeição de solicitações, registrando o responsável e a decisão tomada. & Todos & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF06 & Aplicar, após a aprovação, as alterações correspondentes à categoria de destino do especialista. & Categoria & Seção~\ref{sec:regras-negocio} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF07 & Aplicar, após a aprovação, a atualização da pontuação do especialista correspondente aos itens aprovados. & Pontuação & Seção~\ref{sec:regras-negocio} & Seção~\ref{sec:modulo-solicitacoes} \\
+RF08 & Registrar o estado anterior do especialista antes da aplicação de alterações registradas em snapshot. & Categoria & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:snapshot-auditoria} \\
+RF09 & Permitir a reversão de alterações aprovadas, restaurando o estado anterior registrado. & Categoria & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:snapshot-auditoria} \\
+RF10 & Registrar e disponibilizar uma linha do tempo cronológica dos eventos associados a cada solicitação. & Todos & Seção~\ref{sec:regras-negocio} & Seção~\ref{sec:snapshot-auditoria} \\
+RF11 & Restringir as operações de criação, consulta e decisão a usuários autenticados e autorizados, conforme o perfil de acesso. & Todos & Seção~\ref{sec:fluxo-antigo} & Seção~\ref{sec:modulo-solicitacoes} \\
+\bottomrule
+\end{tabular}
+\fonte{Elaboração própria (2026).}
+{\footnotesize\noindent\textbf{Nota:} O requisito RF03 refere-se à abertura 
+de solicitações de complemento cadastral ou recurso. Após a aprovação ou 
+rejeição da demanda, o sistema registra a decisão e o encaminhamento 
+correspondente, sem alterar automaticamente o perfil do especialista.}
+\end{quadro}
+\FloatBarrier
 
 \subsubsection{Requisitos Não Funcionais}
 
-Os requisitos não funcionais envolvem a necessidade de compatibilidade com a arquitetura existente, rastreabilidade das decisões, proteção contra alterações indevidas, clareza no acompanhamento do processo e facilidade de manutenção do código. A implementação também deve considerar a escalabilidade do módulo e a capacidade de auditoria por meio de snapshots e timeline de alterações.
+Os requisitos não funcionais estabelecem as propriedades de qualidade 
+necessárias ao funcionamento do módulo e à sua integração ao sistema 
+existente. Esses requisitos abrangem a integridade das operações, a 
+rastreabilidade das alterações, a segurança do controle de acesso, a 
+validação dos dados, a compatibilidade com as funcionalidades existentes, 
+a extensibilidade da solução, a testabilidade das regras de negócio e a 
+reprodutibilidade do ambiente de testes.
+
+\FloatBarrier
+\begin{quadro}[htbp]
+\centering
+\caption[Requisitos não funcionais do módulo]{Requisitos não funcionais do módulo de solicitações.}
+\label{qua:rnf}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{1cm}p{2.3cm}p{6.5cm}p{3cm}}
+\toprule
+\textbf{ID} & \textbf{Categoria} & \textbf{Descrição} & \textbf{Mecanismo de atendimento} \\
+\midrule
+RNF01 & Integridade & As alterações decorrentes da aprovação devem ser executadas atomicamente, evitando a persistência parcial dos registros envolvidos na operação. & Transações PostgreSQL e SQLAlchemy \\
+RNF02 & Rastreabilidade & As informações de auditoria devem ser preservadas de forma que seja possível reconstituir, a qualquer momento, o histórico de decisões e o estado anterior das alterações registradas em snapshot. & Entidade Snapshot e linha do tempo de eventos \\
+RNF03 & Segurança & O controle de acesso deve ser aplicado no servidor, de modo que as operações não possam ser executadas por chamadas diretas à API que contornem a interface. & Verificação de permissões nas rotas da API \\
+RNF04 & Validação & Os dados recebidos pela API devem ser validados no servidor, de modo que a validação do servidor seja autoritativa, independentemente das verificações realizadas pela interface. & Schemas Marshmallow \\
+RNF05 & Compatibilidade & A incorporação do módulo deve preservar o comportamento das funcionalidades existentes não abrangidas pelo módulo. & Blueprints Flask e estratégia de mudança aditiva (\textit{Additive Change}) \\
+RNF06 & Extensibilidade & A inclusão de novos tipos de solicitação deve permitir o reaproveitamento do fluxo principal, limitando as alterações necessárias às regras específicas de cada tipo. & Formulário único e configuração \texttt{SCHEMA\_POR\_TIPO} \\
+RNF07 & Testabilidade & As regras de negócio devem permitir testes isolados sem requisição HTTP, de modo que possam ser verificadas independentemente da camada de comunicação. & Separação da camada de serviço e Pytest \\
+RNF08 & Reprodutibilidade & O ambiente de testes deve poder ser configurado e executado de maneira reproduzível, com dependências e procedimentos documentados. & Docker e Docker Compose \\
+\bottomrule
+\end{tabular}
+\fonte{Elaboração própria (2026).}
+\end{quadro}
+\FloatBarrier
