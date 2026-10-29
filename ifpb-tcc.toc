@@ -41,32 +41,32 @@
 \contentsline {subsubsection}{\numberline {3.1.5.2}Requisitos Não Funcionais}{16}{subsubsection.3.1.5.2}%
 \contentsline {section}{\numberline {3.2}Desenvolvimento do Módulo de Solicitações}{17}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Endpoints}{17}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Integração com o banco de dados}{17}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Autorização e Controle de Acesso}{17}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Aprovação e Rejeição}{17}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}Mudança de categoria}{17}{subsection.3.2.5}%
-\contentsline {subsection}{\numberline {3.2.6}Atualização de pontuação}{17}{subsection.3.2.6}%
-\contentsline {section}{\numberline {3.3}Implementação do Sistema de Snapshot e Auditoria}{18}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Entidade Snapshot}{18}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}JSONB}{18}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Reversão}{18}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Timeline}{18}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Rastreabilidade}{18}{subsection.3.3.5}%
-\contentsline {section}{\numberline {3.4}Testes e Validação}{18}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Pytest}{18}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Pré-configuração}{19}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Testes unitários}{19}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Testes de integração}{19}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Processo de Integração Contínua}{19}{subsection.3.4.5}%
-\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{20}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{21}{chapter*.17}%
+\contentsline {subsection}{\numberline {3.2.2}Integração com o Banco de Dados}{18}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Autorização e Controle de Acesso}{22}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Aprovação e Rejeição}{22}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Mudança de categoria}{22}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Atualização de pontuação}{22}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Implementação do Sistema de Snapshot e Auditoria}{23}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Entidade Snapshot}{23}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}JSONB}{23}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Reversão}{23}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Timeline}{23}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Rastreabilidade}{23}{subsection.3.3.5}%
+\contentsline {section}{\numberline {3.4}Testes e Validação}{23}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Pytest}{23}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Pré-configuração}{24}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Testes unitários}{24}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Testes de integração}{24}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Processo de Integração Contínua}{24}{subsection.3.4.5}%
+\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{25}{chapter.4}%
+\contentsline {chapter}{Refer\^encias}{26}{chapter*.17}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{23}{section*.18}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{24}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{25}{appendix.B}%
+\contentsline {part}{Ap\^endices}{28}{section*.18}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{29}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{30}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{26}{section*.19}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{27}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{28}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{31}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{32}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{33}{appendix.anexochapback.2}%

@@ -1,0 +1,173 @@
+\subsection{Integração com o Banco de Dados}
+\label{sec:banco-dados}
+
+A persistência do módulo foi implementada com SQLAlchemy sobre PostgreSQL, 
+seguindo o padrão já adotado pelo sistema. O mapeamento foi feito em estilo 
+declarativo, com uma tabela principal (\texttt{solicitations}) e duas tabelas 
+de referência (\texttt{solicitation\_status} e \texttt{solicitation\_category}), 
+que funcionam como \textit{lookup tables} para os estados e os tipos de 
+solicitação. A escolha de manter tabelas de referência, em vez de armazenar 
+os valores como texto livre, garante integridade referencial no banco e 
+permite a evolução do domínio sem migrations estruturais a cada novo valor.
+O Quadro~\ref{qua:modelo-solicitacao} descreve as tabelas do módulo, suas 
+colunas e restrições.
+
+\begin{quadro}[htbp]
+\centering
+\caption[Modelo de dados do módulo de solicitações]{Modelo de dados do módulo de solicitações.}
+\label{qua:modelo-solicitacao}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{p{2.3cm}p{2.0cm}p{3.1cm}p{3.7cm}}
+\toprule
+\textbf{Tabela} & \textbf{Coluna} & \textbf{Tipo / Restrição} & \textbf{Observação} \\
+\midrule
+\texttt{solicitations} & \texttt{id} & Inteiro, PK & Identificador da solicitação \\
+ & \texttt{id\_user} & FK $\rightarrow$ \texttt{users}, obrigatório & Solicitante \\
+ & \texttt{id\_status} & FK $\rightarrow$ \texttt{solicitation\_status}, padrão \texttt{CREATED} & Estado atual \\
+ & \texttt{id\_category} & FK $\rightarrow$ \texttt{solicitation\_category}, opcional & Tipo de solicitação; nulo em rascunho \\
+ & \texttt{specialist\_type\_id} & FK $\rightarrow$ \texttt{users\_specialist\_types}, opcional & Categoria de destino \\
+ & \texttt{title} & Texto(128), obrigatório & Título \\
+ & \texttt{description} & Texto(640), obrigatório & Justificativa ou descrição \\
+ & \texttt{file\_path} & Texto(256), opcional & Caminho do documento anexado \\
+ & \texttt{created\_at} & DataHora, padrão \texttt{agora()} & Criação \\
+ & \texttt{last\_update} & DataHora, atualizado em alteração & Última modificação \\
+\midrule
+\texttt{solicitation status} & \texttt{id}, \texttt{name} & PK, Texto(20) único & \texttt{CREATED}, \texttt{PENDING}, \texttt{APPROVED}, \texttt{REJECTED} \\
+\texttt{solicitation category} & \texttt{id}, \texttt{name} & PK, Texto(20) único & \texttt{CHANGE\_CATEGORY}, \texttt{RESOURCE}, \texttt{UPDATE\_POINTS} \\
+\texttt{solicitation reviews} & \texttt{id\_solicitation} & FK $\rightarrow$ \texttt{solicitations}, cascata & Decisões e pareceres das análises \\
+\bottomrule
+\end{tabular}%
+}
+\fonte{Elaboração própria (2026).}
+\end{quadro}
+
+O Algoritmo~\ref{alg:modelo-solicitation} descreve, em pseudocódigo, a 
+estrutura da entidade principal, com seus atributos, restrições, índices 
+e relacionamentos, e as enumerações que definem os estados e os tipos de 
+solicitação.
+
+\begin{algorithm}[htbp]
+\caption{Estrutura da entidade \texttt{Solicitation} e enumerações de domínio (pseudocódigo).}
+\label{alg:modelo-solicitation}
+\begin{verbatim}
+ENUMERAÇÃO SolicitationStatus
+    CREATED  = 1    // rascunho, em elaboração
+    PENDING  = 2    // submetida, aguardando análise
+    APPROVED = 3    // deferida
+    REJECTED = 4    // indeferida
+
+ENUMERAÇÃO SolicitationCategory
+    CHANGE_CATEGORY = 1    // alteração de categoria
+    RESOURCE        = 2    // recurso / complemento cadastral
+    UPDATE_POINTS   = 3    // atualização de pontuação
+
+ENTIDADE Solicitation
+    TABELA: solicitations
+
+    ATRIBUTOS
+        id                 : Inteiro, Chave Primária
+        id_user            : Inteiro, FK -> User, obrigatório
+        id_status          : Inteiro, FK -> SolicitationStatus,
+                             padrão CREATED
+        id_category        : Inteiro, FK -> SolicitationCategory,
+                             opcional (discriminador de tipo)
+        specialist_type_id : Inteiro, FK -> UserSpecialistType,
+                             opcional (categoria de destino)
+        title              : Texto(128), obrigatório
+        description        : Texto(640), obrigatório
+        file_path          : Texto(256), opcional
+        created_at         : DataHora, padrão agora()
+        last_update        : DataHora, atualizado em cada alteração
+
+    RELACIONAMENTOS
+        user    : User                 (muitos-para-um)
+        reviews : Lista<Review>        (um-para-muitos, cascata)
+
+    ÍNDICES
+        idx_solicitation_user     -> (id_user)
+        idx_solicitation_status   -> (id_status)
+        idx_solicitation_created  -> (created_at)
+\end{verbatim}
+\end{algorithm}
+
+A decisão de modelagem central é a \textbf{abordagem polimórfica em tabela 
+única}: os três tipos de solicitação (\texttt{CHANGE\_CATEGORY}, 
+\texttt{RESOURCE} e \texttt{UPDATE\_POINTS}) compartilham a mesma tabela 
+\texttt{solicitations}, discriminados pelo campo \texttt{id\_category}. 
+Essa escolha evita a fragmentação em três tabelas com colunas comuns 
+replicadas (título, descrição, autor, estado, timestamps) e concentra a 
+lógica de listagem, filtragem e paginação em uma única consulta, 
+independentemente do tipo. Campos específicos de um tipo, como 
+\texttt{specialist\_type\_id}, são opcionais e populados apenas quando 
+aplicáveis: no fluxo de alteração de categoria, o campo indica a categoria 
+de destino; nos fluxos de recurso e de atualização de pontuação, permanece 
+nulo. A abordagem foi adotada em vez da herança de tabela por subtipo 
+(\textit{joined table inheritance}) por não haver, no escopo do módulo, 
+atributos exclusivos de um tipo que justificassem tabelas próprias.
+
+O \textbf{estado de rascunho} é consequência direta dessa modelagem. O 
+estado \texttt{CREATED} representa uma solicitação em elaboração, que pode 
+ser salva e editada antes da submissão. Nesse estado, o campo 
+\texttt{id\_category} pode ser nulo, permitindo que o usuário salve a 
+solicitação parcialmente preenchida e escolha o tipo mais adiante. A 
+submissão para análise corresponde à transição de \texttt{CREATED} para 
+\texttt{PENDING}, momento a partir do qual o tipo passa a ser obrigatório 
+na prática, ainda que a restrição não esteja expressa no esquema. A 
+alternativa — tornar \texttt{id\_category} obrigatório e criar uma tabela 
+separada para rascunhos — foi descartada por duplicar a estrutura e a 
+lógica de consulta sem ganho proporcional.
+
+A \textbf{dupla representação de estados e categorias} — enumeração em 
+Python e tabela de referência no banco — atende a duas necessidades 
+distintas. A enumeração serve à aplicação, garantindo, em tempo de 
+desenvolvimento, que apenas valores conhecidos sejam usados e permitindo 
+comparações explícitas no código. A tabela de referência serve ao banco, 
+garantindo integridade referencial e viabilizando junções e filtros 
+eficientes nas consultas de listagem. O custo é a disciplina de manter os 
+dois em sincronia a cada novo valor; o benefício é que o estado de uma 
+solicitação nunca fica armazenado como texto livre, o que facilitaria 
+inconsistências e inviabilizaria restrições declarativas.
+
+A \textbf{chave estrangeira para \texttt{users}}, e não para a entidade de 
+especialista, reflete no esquema o desafio identificado na 
+Seção~\ref{sec:regras-negocio}: a categoria do especialista está em 
+\texttt{users}, e não em \texttt{specialists}. A solicitação referencia 
+o usuário e, quando aplicável, indica a categoria de destino em 
+\texttt{specialist\_type\_id}, sem duplicar a classificação corrente. Isso 
+mantém o modelo coerente com o restante do sistema e evita que a 
+solicitação armazene estados intermediários que precisariam ser 
+sincronizados com a tabela de origem.
+
+A \textbf{indexação} foi definida a partir das consultas efetivamente 
+implementadas nas rotas (Seção~\ref{sec:endpoints}): listagem por usuário 
+(\texttt{idx\_solicitation\_user}), listagem por situação 
+(\texttt{idx\_solicitation\_status}) e ordenação por data de criação 
+(\texttt{idx\_solicitation\_created}). Consultas por identificador já são 
+otimizadas pela chave primária e não exigem índice adicional. A escolha 
+privilegia os caminhos de leitura da interface — listagem do solicitante, 
+listagem do avaliador e ordenação cronológica — em vez de uma indexação 
+genérica e não fundamentada.
+
+O \textbf{armazenamento do arquivo} foi delegado ao sistema de arquivos: 
+o atributo \texttt{file\_path} guarda o caminho do documento anexado, não 
+o conteúdo binário. Essa decisão mantém o banco fora do caminho de 
+operações de I/O de arquivos, que são executadas fora da transação 
+principal, e evita o inchaço da tabela. A referência ao arquivo permanece 
+no mesmo registro da solicitação, mantendo a consistência entre o 
+documento e os metadados que o descrevem.
+
+Por fim, o \textbf{controle temporal} foi delegado ao banco: 
+\texttt{created\_at} recebe o instante corrente na inserção e 
+\texttt{last\_update} é atualizado automaticamente a cada alteração, de 
+modo que o momento da última modificação é registrado mesmo em operações 
+que não passem pela aplicação. Isso atende parcialmente ao RNF02, no 
+aspecto temporal da rastreabilidade; a dimensão semântica — quem alterou, 
+de qual estado para qual estado, com qual justificativa — é atendida pelo 
+mecanismo de snapshot e pela linha do tempo, descritos na 
+Seção~\ref{sec:snapshot-auditoria}. A atomicidade das operações (RNF01), 
+por sua vez, não é garantida no modelo, mas na camada de serviço, por 
+meio da unidade de trabalho do SQLAlchemy (\texttt{session}): o modelo 
+define as restrições; a transação define o momento em que elas são 
+verificadas em conjunto.

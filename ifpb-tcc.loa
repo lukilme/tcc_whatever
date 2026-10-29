@@ -3,6 +3,8 @@
 \addvspace {10\p@ }
 \contentsline {algocf}{\numberline {1}{\ignorespaces Padrão de implementação observado em controladores existentes.}}{10}{algocf.1}%
 \contentsline {algocf}{\numberline {2}{\ignorespaces Estrutura do novo módulo, com separação de responsabilidades.}}{11}{algocf.2}%
+\contentsline {algocf}{\numberline {3}{\ignorespaces Estrutura da rota de criação de solicitação.}}{18}{algocf.3}%
+\contentsline {algocf}{\numberline {4}{\ignorespaces Estrutura da entidade \texttt {Solicitation} e enumerações de domínio (pseudocódigo).}}{20}{algocf.4}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
