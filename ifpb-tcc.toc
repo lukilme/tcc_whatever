@@ -18,18 +18,18 @@
 \contentsline {section}{\numberline {2.1}Arquitetura Web Cliente-Servidor}{4}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Flask}{4}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Persistência de dados com PostgreSQL e SQLAlchemy}{4}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}PostgreSQL}{4}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.1}PostgreSQL}{5}{subsection.2.3.1}%
 \contentsline {subsection}{\numberline {2.3.2}SQLAlchemy}{5}{subsection.2.3.2}%
 \contentsline {section}{\numberline {2.4}Validação de Dados com Marshmallow e Flasgger}{5}{section.2.4}%
 \contentsline {section}{\numberline {2.5}Auditoria, Rastreabilidade e Versionamento de Dados}{5}{section.2.5}%
 \contentsline {subsection}{\numberline {2.5.1}Auditoria e rastreabilidade}{5}{subsection.2.5.1}%
 \contentsline {subsection}{\numberline {2.5.2}Fluxo de aprovação com máquina de estados}{6}{subsection.2.5.2}%
 \contentsline {subsection}{\numberline {2.5.3}Snapshot e reversão}{6}{subsection.2.5.3}%
-\contentsline {subsection}{\numberline {2.5.4}Timeline e registro de eventos}{6}{subsection.2.5.4}%
+\contentsline {subsection}{\numberline {2.5.4}Timeline e registro de eventos}{7}{subsection.2.5.4}%
 \contentsline {section}{\numberline {2.6}Verificação das Transições com Pytest}{7}{section.2.6}%
 \contentsline {section}{\numberline {2.7}Ambiente Reprodutível de Testes com Docker}{7}{section.2.7}%
 \contentsline {section}{\numberline {2.8}Controle de Versão e Gestão de Configuracao}{7}{section.2.8}%
-\contentsline {section}{\numberline {2.9}Síntese do Capítulo}{7}{section.2.9}%
+\contentsline {section}{\numberline {2.9}Síntese do Capítulo}{8}{section.2.9}%
 \contentsline {chapter}{\chapternumberline {3}ATIVIDADES REALIZADAS}{9}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Estudo da Arquitetura do Sistema Existente}{9}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Visão Geral do Sistema}{9}{subsection.3.1.1}%
@@ -59,13 +59,14 @@
 \contentsline {subsection}{\numberline {3.4.4}Testes de integração}{19}{subsection.3.4.4}%
 \contentsline {subsection}{\numberline {3.4.5}Processo de Integração Contínua}{19}{subsection.3.4.5}%
 \contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{20}{chapter.4}%
-\renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{21}{section*.16}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{22}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{23}{appendix.B}%
+\contentsline {chapter}{Refer\^encias}{21}{chapter*.17}%
 \vspace {\cftbeforepartskip }
+\renewcommand *{\cftappendixname }{AP\^ENDICE \space }
+\contentsline {part}{Ap\^endices}{23}{section*.18}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{24}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{25}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{24}{section*.17}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{25}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{26}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{26}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{27}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{28}{appendix.anexochapback.2}%
