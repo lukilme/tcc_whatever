@@ -1,22 +1,250 @@
 \section{Implementação do Sistema de Snapshot e Auditoria}
 \label{sec:snapshot-auditoria}
+\subsection{Entidade Snapshot e Modelo de Persistência}
+\label{sec:entidade-snapshot}
 
-\subsection{Entidade Snapshot}
+A entidade \texttt{SpecialistSnapshot} foi criada para preservar o estado 
+do especialista antes da aplicação de alterações aprovadas no fluxo de 
+mudança de categoria. O nome reflete o escopo: o snapshot cobre o 
+especialista, e é acionado exclusivamente pelo tipo \texttt{CHANGE\_CATEGORY} 
+— recurso e atualização de pontuação não geram snapshot, pelas razões 
+discutidas na Seção~\ref{sec:efeitos-por-tipo}. O 
+Quadro~\ref{qua:modelo-snapshot} descreve sua estrutura.
 
-A entidade Snapshot foi concebida para registrar um estado completo do registro em um determinado momento, permitindo preservar informações relevantes antes de qualquer alteração. Essa abordagem torna possível reconstituir o contexto do dado em caso de revisão, validação ou correção posterior.
+\begin{quadro}[htbp]
+\centering
+\caption[Modelo da entidade SpecialistSnapshot]{Modelo da entidade \texttt{SpecialistSnapshot}.}
+\label{qua:modelo-snapshot}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{2.8cm}p{2cm}p{3.4cm}p{4.4cm}}
+\toprule
+\textbf{Coluna} & \textbf{Tipo} & \textbf{Restrição} & \textbf{Observação} \\
+\midrule
+\texttt{id} & Inteiro & Chave primária & Identificador do snapshot \\
+\texttt{specialist\_id} & Inteiro & Obrigatório, indexado & Especialista cujo estado foi capturado; sem FK \\
+\texttt{snapshot} & JSONB & Obrigatório & Estado anterior serializado \\
+\texttt{authorizer\_id} & Inteiro & Obrigatório & Usuário que autorizou a alteração; sem FK \\
+\texttt{created\_at} & DataHora & Padrão \texttt{agora()} & Momento da captura \\
+\bottomrule
+\end{tabular}
+\fonte{Elaboração própria (2026).}
+\end{quadro}
 
-\subsection{JSONB}
+Duas decisões de modelagem merecem destaque. A primeira é a 
+\textbf{ausência de chave estrangeira} em \texttt{specialist\_id} e 
+\texttt{authorizer\_id}. Trata-se de uma escolha deliberada para uma 
+entidade de auditoria: o snapshot é um registro histórico, e sua 
+integridade não deve depender da existência atual da entidade referenciada. 
+Se o especialista ou o autor da decisão for removido do sistema, o 
+snapshot permanece consultável, preservando a memória do que ocorreu. A 
+contrapartida é a possibilidade de referências órfãs e a ausência de 
+integridade referencial garantida pelo banco — custo aceito em troca da 
+preservação histórica. A alternativa — FK com \texttt{ON DELETE SET NULL} 
+— destruiria justamente a informação que o snapshot existe para preservar.
 
-O uso de JSONB foi adotado para armazenar os dados do snapshot em um formato estruturado e flexível, permitindo a persistência de informações detalhadas sem perder a capacidade de consulta e análise. Essa escolha favorece a rastreabilidade e facilita a recuperação do contexto em operações de auditoria.
+A segunda é a \textbf{ausência de vínculo explícito com a solicitação} 
+que originou o snapshot. A entidade referencia o especialista, não a 
+solicitação nem a revisão. Essa decisão tem consequência direta sobre a 
+reversão (Seção~\ref{sec:reversao}): a operação de reversão busca o 
+snapshot mais recente do especialista, e não o snapshot "daquela 
+solicitação". Para o fluxo atual — em que se reverte a última alteração 
+aprovada —, a modelagem é suficiente. Para reversão de uma alteração 
+específica no meio do histórico, seria necessário vincular o snapshot 
+à solicitação ou à revisão correspondente, o que está registrado como 
+limitação em Seção~\ref{sec:rastreabilidade}. 
 
-\subsection{Reversão}
+O campo \texttt{snapshot} armazena o estado anterior em JSONB. A escolha 
+do formato, em vez de colunas relacionais, decorre de três fatores. O 
+primeiro é a \textbf{coesão do estado}: os campos capturados descrevem um 
+único estado lógico do especialista e fazem sentido juntos; armazená-los 
+em uma coluna única preserva essa coesão e evita reconstituição por 
+junção. O segundo é a \textbf{evolução do esquema}: se o conjunto de 
+campos a capturar for ampliado, um documento JSONB acomoda novos campos 
+sem migration; colunas adicionais exigiriam alteração de esquema e 
+migração de dados históricos. O terceiro é a \textbf{legibilidade}: 
+consultas diretas ao documento permitem visualizar o estado anterior 
+sem conhecer o esquema das tabelas de origem.
 
-A reversão é um dos principais benefícios do sistema de snapshot, pois permite retornar o sistema a um estado anterior quando há inconsistência, erro humano ou necessidade de correção. A funcionalidade garantiu maior segurança para as operações críticas e reduziu o risco de impactos negativos no banco de dados.
+As contrapartidas também precisam ser declaradas. O JSONB não impõe 
+integridade referencial interna — o documento é um retrato, não uma 
+referência viva, e não há como garantir que os campos correspondam ao 
+esquema atual do especialista depois de migrations futuras. O formato 
+não é validado pelo banco: a estrutura do documento depende da aplicação 
+que o grava. Essas limitações são aceitáveis no escopo do módulo, porque 
+o snapshot é um registro histórico e **deve** preservar o estado como 
+era no momento da captura, e não acompanhar a evolução do esquema. A 
+alternativa — colunas relacionais com FK para as tabelas de origem — 
+traria integridade, mas produziria snapshots que se corrompem quando a 
+tabela de origem muda, anulando o propósito de preservar o estado anterior.
 
-\subsection{Timeline}
+A captura é feita antes da aplicação dos efeitos e dentro da mesma 
+unidade de trabalho da aprovação (Seção~\ref{sec:efeitos-por-tipo}): o 
+snapshot, a mudança de categoria e o registro da revisão são confirmados 
+em conjunto. Se qualquer etapa falhar, o snapshot é descartado junto, 
+garantindo que ele exista se e somente se a alteração correspondente foi 
+efetivada. Isso atende ao RNF01 e sustenta o RNF02: sem atomicidade, um 
+snapshot poderia registrar um estado anterior que nunca foi alterado, ou 
+uma alteração sem snapshot correspondente.
 
-A timeline foi implementada para registrar a sequência de eventos e alterações relacionadas às solicitações de mudança de categoria. Essa visualização ajuda a compreender o histórico completo do processo, incluindo a origem da solicitação, decisões tomadas e mudanças efetivadas.
+O campo \texttt{authorizer\_id} registra o usuário responsável pela 
+autorização da alteração, separadamente do autor da revisão. Na prática, 
+os dois coincidem no fluxo atual — o avaliador que aprova a revisão é o 
+mesmo que autoriza a alteração —, mas manter o campo explícito na 
+entidade permite que, no futuro, a autorização seja delegada ou 
+automatizada sem alteração do modelo. A separação também garante que a 
+informação esteja presente na própria entidade de auditoria, e não apenas 
+derivável por junção com a revisão.
 
-\subsection{Rastreabilidade}
+\subsection{Reversão de Alterações}
+\label{sec:reversao}
 
-A rastreabilidade foi reforçada com o registro dos dados relevantes de cada operação, incluindo informações sobre autor, data, estado atual e histórico de versões. Dessa forma, o sistema passa a permitir auditoria detalhada e maior confiabilidade no acompanhamento das alterações.
+A reversão permite desfazer uma alteração de categoria aprovada, 
+restaurando o estado do especialista registrado no snapshot mais recente. 
+A operação é acionada por rota administrativa e está sujeita a controle 
+de acesso, como as demais operações de decisão (RNF03).
+
+A reversão não é uma operação destrutiva: o snapshot não é apagado após 
+o uso, e a reversão é registrada como evento próprio na linha do tempo 
+(Seção~\ref{sec:timeline}). O histórico completo é preservado — a 
+solicitação original, a revisão que aprovou, o snapshot capturado, a 
+reversão e o estado resultante. Essa é a diferença entre reversão e 
+exclusão de histórico: a primeira adiciona um evento, a segunda remove 
+o passado. A escolha pela primeira é o que sustenta a auditoria.
+
+O Algoritmo~\ref{alg:reversao} descreve o fluxo em pseudocódigo, com 
+base na recuperação do snapshot mais recente do especialista.
+
+\begin{algorithm}[htbp]
+\caption{Fluxo de reversão (pseudocódigo).}
+\label{alg:reversao}
+\begin{verbatim}
+FUNÇÃO reverter(especialista_id, autorizador):
+    especialista = buscar Specialist por id
+    SE não existe:
+        erro "especialista não encontrado"
+
+    snapshot = buscar SpecialistSnapshot
+               filtrando specialist_id = especialista.id
+               ordenando por created_at DESC
+               limitando a 1 resultado
+    SE não existe:
+        erro "nenhum snapshot encontrado"
+
+    estado_anterior = desserializar(snapshot.snapshot)
+
+    EM UMA TRANSAÇÃO:
+        restaurar(especialista, estado_anterior)
+        registrar_evento(especialista, REVERTIDA,
+                         autorizador, data)
+
+    RETORNAR confirmação
+\end{verbatim}
+\end{algorithm}
+
+Quatro decisões delimitam o escopo da reversão. A primeira é que ela 
+restaura o \textbf{snapshot mais recente}, não o snapshot de uma 
+solicitação específica. Isso decorre da modelagem da entidade 
+(Seção~\ref{sec:entidade-snapshot}), que referencia o especialista sem 
+vincular-se à solicitação. A consequência é que a reversão desfaz a 
+última alteração aprovada, e não uma alteração qualquer no histórico. 
+Para o caso de uso original — corrigir uma mudança de categoria recente 
+que se mostrou inadequada —, a semântica é adequada. Para reverter uma 
+alteração específica no meio do histórico, seria necessário alterar o 
+modelo para vincular o snapshot à solicitação. A limitação está 
+registrada em Seção~\ref{sec:rastreabilidade}.
+
+A segunda é que a reversão restaura apenas os campos capturados no 
+snapshot, sem desfazer alterações feitas ao especialista por outros 
+fluxos no intervalo. Se, após a aprovação, o especialista atualizou 
+dados pessoais ou pontuação por outro caminho, esses dados não são 
+afetados. A escolha é conservadora e evita que uma reversão de categoria 
+apague, por tabela, alterações não relacionadas.
+
+A terceira é que a reversão \textbf{não altera o estado da revisão} que 
+aprovou a solicitação. A revisão permanece registrada como aprovada, e 
+a reversão é um evento subsequente — o que preserva o histórico de 
+decisões.
+
+A quarta é que a operação adiciona um novo evento à linha do tempo, mas 
+não gera um novo snapshot. Isso poderia ser questionado — se a reversão 
+também é uma alteração, por que não capturar o estado anterior a ela? A 
+resposta é que reverter uma reversão seria equivalente a reaplicar a 
+alteração original, e isso é feito criando-se uma nova solicitação, não 
+reusando o snapshot antigo. A decisão mantém o modelo simples: um 
+snapshot por alteração aprovada, um evento de reversão por reversão 
+executada.
+
+\subsection{Linha do Tempo de Eventos}
+\label{sec:timeline}
+
+A linha do tempo é a apresentação cronológica dos eventos associados a 
+um especialista: criação da solicitação, submissão para análise, decisão 
+da revisão, captura de snapshot e, quando aplicável, reversão. A 
+implementação \textbf{não mantém tabela própria de eventos}: a linha do 
+tempo é derivada das entidades que já registram cada evento com autor e 
+data — \texttt{Solicitation} (\texttt{created\_at}), 
+\texttt{SolicitationReview} (autor, veredicto, comentário, data) e 
+\texttt{SpecialistSnapshot} (autorização, captura, data). A escolha por 
+derivação, em vez de uma tabela de log genérica, evita duplicação de 
+informação e garante que a linha do tempo nunca divirja das entidades de 
+origem: se a revisão registrou uma decisão, ela aparece na linha do 
+tempo; se o snapshot foi capturado, ele também aparece.
+
+O preço da derivação é que a consulta precisa agregar três fontes e 
+ordená-las por data. Isso é feito no serviço de consulta da linha do 
+tempo, que retorna a lista consolidada para a interface. A alternativa 
+— tabela de eventos dedicada, alimentada por gatilhos — teria a vantagem 
+de uma consulta única, mas exigiria sincronização com as entidades de 
+origem e abriria margem para inconsistência. Para o volume atual, a 
+derivação é a solução mais simples e mais robusta.
+
+A linha do tempo cumpre duas funções. Para o solicitante, mostra o 
+andamento da solicitação e a justificativa de cada decisão. Para o 
+avaliador e para auditoria, permite reconstituir o processo completo, 
+com autores, datas e estados intermediários. Em ambos os casos, a 
+informação apresentada é a mesma que sustenta a rastreabilidade — a 
+interface apenas a torna legível.
+
+\subsection{Rastreabilidade e Limitações}
+\label{sec:rastreabilidade}
+
+O conjunto formado por solicitação, revisão, snapshot e linha do tempo 
+atende ao requisito de rastreabilidade (RNF02) em três dimensões. A 
+dimensão \textbf{temporal} é coberta pelos carimbos automáticos das 
+entidades. A dimensão \textbf{autoral} é coberta pelo registro do 
+solicitante na solicitação, do avaliador na revisão e do autorizador no 
+snapshot. A dimensão \textbf{semântica} — o que mudou e por quê — é 
+coberta pelo snapshot (estado anterior) e pela revisão (justificativa). 
+As três juntas permitem reconstituir, para qualquer solicitação, quem 
+pediu, quem decidiu, quando, com qual justificativa e de qual estado 
+para qual estado.
+
+O mecanismo tem limitações que precisam ser declaradas. A primeira é a 
+já discutida \textbf{reversão pelo snapshot mais recente}: como o 
+snapshot não referencia a solicitação, a reversão desfaz a última 
+alteração aprovada, e não uma alteração específica. A segunda é a 
+\textbf{ausência de exclusão lógica}: o \texttt{cascade="all, 
+delete-orphan"} na relação entre solicitação e revisões implica que a 
+remoção física de uma solicitação apaga o histórico associado. O módulo 
+não expõe rota de exclusão, de modo que o cascade atua apenas como 
+salvaguarda de integridade, mas a ausência de uma política de retenção 
+é uma lacuna que pode ser endereçada em trabalho futuro. A terceira é 
+a \textbf{ausência de vínculo do snapshot com a solicitação}: o 
+snapshot referencia o especialista, não a solicitação, o que simplifica 
+a modelagem e atende ao caso de uso atual, mas impede auditoria 
+retroativa que relacione snapshot e revisão diretamente — a associação 
+existe apenas por proximidade temporal e autoral. A quarta é que 
+\textbf{alterações fora do fluxo formal não geram snapshot}: 
+intervenções diretas no banco, ainda que possíveis para a equipe de 
+suporte, não geram revisão nem snapshot, apenas atualizam 
+\texttt{last\_update}. A política de acesso ao banco em produção está 
+fora do escopo do módulo, mas o efeito sobre a rastreabilidade precisa 
+ser reconhecido.
+
+Essas limitações não invalidam o mecanismo; delimitam o que ele garante. 
+O sistema passou de um fluxo sem registro formal (Seção~\ref{sec:fluxo-antigo}) 
+para um fluxo em que toda operação realizada pela aplicação é registrada 
+com autor, data, justificativa e estado anterior. O que está fora do 
+fluxo formal — intervenções diretas no banco — permanece fora do escopo 
+da garantia, e isso é uma decisão de escopo, não uma falha do mecanismo.

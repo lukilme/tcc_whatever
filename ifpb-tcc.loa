@@ -5,6 +5,7 @@
 \contentsline {algocf}{\numberline {2}{\ignorespaces Estrutura do novo módulo, com separação de responsabilidades.}}{11}{algocf.2}%
 \contentsline {algocf}{\numberline {3}{\ignorespaces Estrutura da rota de criação de solicitação.}}{18}{algocf.3}%
 \contentsline {algocf}{\numberline {4}{\ignorespaces Estrutura da entidade \texttt {Solicitation} e enumerações de domínio (pseudocódigo).}}{20}{algocf.4}%
+\contentsline {algocf}{\numberline {5}{\ignorespaces Fluxo de reversão (pseudocódigo).}}{24}{algocf.5}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
