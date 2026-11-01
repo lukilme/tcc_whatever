@@ -49,23 +49,23 @@
 \contentsline {section}{\numberline {3.3}Implementação do Sistema de Snapshot e Auditoria}{23}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Entidade Snapshot e Modelo de Persistência}{23}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Reversão de Alterações}{24}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Linha do Tempo de Eventos}{25}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.3}Linha do Tempo de Eventos}{26}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Rastreabilidade e Limitações}{26}{subsection.3.3.4}%
-\contentsline {section}{\numberline {3.4}Testes e Validação}{26}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Pytest}{26}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Pré-configuração}{26}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Testes unitários}{27}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Testes de integração}{27}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Processo de Integração Contínua}{27}{subsection.3.4.5}%
-\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{28}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{29}{chapter*.17}%
+\contentsline {section}{\numberline {3.4}Testes e Validação}{27}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Construção da Infraestrutura de Testes}{27}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Isolamento entre Testes}{29}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Fixtures de Autenticação}{30}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Testes de integração}{30}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Processo de Integração Contínua}{31}{subsection.3.4.5}%
+\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{32}{chapter.4}%
+\contentsline {chapter}{Refer\^encias}{33}{chapter*.17}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{31}{section*.18}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{32}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{33}{appendix.B}%
+\contentsline {part}{Ap\^endices}{35}{section*.18}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{36}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{37}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{34}{section*.19}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{35}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{36}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{38}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{39}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{40}{appendix.anexochapback.2}%
