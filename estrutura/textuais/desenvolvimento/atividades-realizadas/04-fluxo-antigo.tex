@@ -1,20 +1,33 @@
-\subsection{Entendimento do Fluxo Antigo e Diagnóstico de Demanda}
+\subsection{Entendimento do Fluxo Antigo e Diagnóstico da Demanda}
 
-Antes do desenvolvimento do módulo, as solicitações de mudanças de categoria e de atualização cadastral eram realizadas exclusivamente por e-mail. Após o recebimento do pedido, a alteração dependia da intervenção de um técnico, que executava manualmente as operações diretamente na base de dados por meio de scripts SQL reutilizáveis.
-
-Esse procedimento estabelecia uma forte dependência entre a solicitação do usuário e a disponibilidade de um responsável com acesso privilegiado ao banco de dados. Além disso, o acompanhamento dos pedidos, a validação das justificativas e o histórico das alterações ficavam dispersos nas caixas de entrada de e-mail, fora de um fluxo centralizado e auditável.
+Antes do desenvolvimento do módulo, as solicitações de alteração de 
+categoria e de atualização cadastral eram realizadas exclusivamente 
+por e-mail. Após o recebimento do pedido, a alteração dependia da 
+intervenção de um membro da equipe de suporte com acesso privilegiado, 
+que executava manualmente os comandos SQL correspondentes diretamente 
+na base de dados, conforme ilustrado na Figura~\ref{fig:fluxo_antigo}.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{dados/figuras/old_workflow.png}
-    \caption{Fluxo de alteração de categoria de especialistas antes do desenvolvimento do módulo.}
+    \caption{Fluxo de solicitações manuais de ajuste cadastral e de categoria antes do desenvolvimento do módulo.}
     \label{fig:fluxo_antigo}
     \fonte{Elaboração própria (2026).}
 \end{figure}
 
-Para dimensionar a recorrência desse gargalo operacional, realizou-se o levantamento dos chamados recebidos pelo e-mail de suporte no período de 30 de maio de 2025 a 4 de agosto de 2026. No total, foram catalogados 141 chamados de suporte diretamente vinculados a solicitações manuais de ajuste cadastral e de pontuação.
+Esse procedimento estabelecia uma dependência entre a solicitação do 
+usuário e a disponibilidade de um responsável com acesso ao banco. 
+Além disso, o acompanhamento dos pedidos, a validação das justificativas 
+e o histórico das alterações ficavam dispersos na caixa de entrada do 
+suporte, fora de um fluxo centralizado e auditável.
 
-A Tabela~\ref{tab:tipo_inscricao} apresenta a distribuição das solicitações conforme o tipo de vínculo do usuário no sistema.
+Para dimensionar a recorrência desse processo, realizou-se o levantamento 
+dos chamados recebidos pela caixa de suporte no período de 30 de maio de 
+2025 a 4 de agosto de 2026. A catalogação foi feita manualmente pela 
+equipe, a partir do assunto e do conteúdo das mensagens, resultando em 
+141 chamados relacionados à gestão de cadastro e de acesso dos 
+especialistas. A Tabela~\ref{tab:tipo_inscricao} apresenta a distribuição 
+conforme o tipo de vínculo do usuário.
 
 \begin{table}[htbp]
     \centering
@@ -34,7 +47,13 @@ A Tabela~\ref{tab:tipo_inscricao} apresenta a distribuição das solicitações 
     \fonte{Elaboração própria, com base em dados do suporte (2026).}
 \end{table}
 
-A Tabela~\ref{tab:categoria_problema} detalha os motivos apresentados nesses atendimentos. 
+A concentração de 56,0\% em colaboradores externos é relevante: trata-se 
+do público com menor familiaridade com os procedimentos internos do IFPB 
+e, portanto, mais dependente de um canal formal e autoexplicativo para 
+solicitar ajustes.
+
+A Tabela~\ref{tab:categoria_problema} detalha os motivos apresentados 
+nesses atendimentos.
 
 \begin{table}[htbp]
     \centering
@@ -56,14 +75,38 @@ A Tabela~\ref{tab:categoria_problema} detalha os motivos apresentados nesses ate
     \fonte{Elaboração própria, com base em dados do suporte (2026).}
 \end{table}
 
-A análise empírica revela que as demandas por atualização de cadastro e inclusão de pontuação somam juntas 48,2\% de todos os chamados mapeados. Quando somadas às demandas genéricas ("Outro"), constata-se que a grande maioria das interações via e-mail tratava-se de intervenções manuais que poderiam ser automatizadas.
+A categoria ``Outro'' agrega solicitações heterogêneas que não foram 
+classificadas em uma categoria específica no levantamento original, 
+incluindo pedidos de alteração de categoria do especialista. Ainda que não tenha 
+sido possível isolar cada uma dessas demandas na catalogação, observa-se 
+que quase metade dos chamados (48,2\%) corresponde a ajuste cadastral 
+ou de pontuação, o que evidencia que o volume de trabalho manual não 
+decorria apenas de casos isolados, mas de operações recorrentes de 
+manutenção de dados.
 
-A execução de queries manuais em ambiente de produção para atender a esse volume constante de chamados apresentava riscos críticos:
+A execução manual de comandos SQL em ambiente de produção, para atender 
+a esse tipo de demanda, apresentava riscos que não se restringiam ao 
+volume de chamados:
+
 \begin{itemize}
-    \item \textbf{Vulnerabilidade de segurança:} risco de erro humano na execução de scripts diretos no SGBD;
-    \item \textbf{Falta de rastreabilidade:} ausência de registros sobre quem aprovou ou alterou determinado dado;
-    \item \textbf{Ineficiência operacional:} alocação de esforço técnico em tarefas repetitivas de suporte administrativo;
-    \item \textbf{Atrasos no atendimento:} dependência da disponibilidade da equipe de TI para demandas administrativas do sistema.
+    \item \textbf{Risco de inconsistência:} execução manual sujeita a 
+    erro humano, sem validação automática das regras de negócio;
+    \item \textbf{Ausência de rastreabilidade:} falta de registro sobre 
+    quem solicitou, quem aprovou e qual era o estado anterior do dado 
+    alterado;
+    \item \textbf{Ineficiência operacional:} alocação de esforço técnico 
+    em tarefas repetitivas de suporte administrativo;
+    \item \textbf{Dependência da equipe de TI:} indisponibilidade do 
+    responsável com acesso ao banco interrompia o atendimento.
 \end{itemize}
 
-O diagnóstico comprovou a necessidade de aposentar o fluxo manual e implementar um módulo integrado ao sistema, capaz de formalizar solicitações, gerenciar aprovações via máquina de estados e manter um histórico auditável das alterações.
+O diagnóstico evidenciou a necessidade de substituir o fluxo manual por 
+um módulo integrado ao sistema, capaz de formalizar as solicitações, 
+submetê-las a uma máquina de estados para aprovação e rejeição 
+(descrita na Seção~\ref{sec:maquina-estados}) e manter histórico 
+auditável das alterações. O módulo foi concebido para absorver três 
+tipos de demanda identificados no levantamento: alteração de categoria, 
+cadastro de pontuação e complemento cadastral. A alteração de categoria, 
+por envolver dados do usuário e exigir possibilidade de reversão, 
+recebeu tratamento específico, com registro de snapshot e linha do 
+tempo, conforme detalhado na Seção~\ref{sec:snapshot-auditoria}.
