@@ -34,6 +34,7 @@ que viabiliza sua integração à pipeline de verificação contínua.
 
 A distribuição dos testes por arquivo é apresentada no Quadro~\ref{qua:distribuicao-testes}.
 
+\FloatBarrier
 \begin{quadro}[htbp]
 \centering
 \caption[Distribuição dos testes por arquivo]{Distribuição dos testes implementados.}
@@ -65,14 +66,7 @@ A distribuição dos testes por arquivo é apresentada no Quadro~\ref{qua:distri
 \end{tabular}
 \fonte{Elaboração própria (2026).}
 \end{quadro}
-
-Dois arquivos de regressão merecem destaque. O \texttt{test\_stale\_criteria\_on\_category\_switch.py} 
-e \texttt{test\_list\_items\_without\_declaration.py} cobrem um efeito 
-colateral específico: a mudança de categoria pode tornar obsoletos os 
-critérios de avaliação e a listagem de itens do especialista. Esses 
-testes não verificam o módulo novo; verificam que o módulo novo não 
-corrompe o que já existia ao alterar a categoria. São a evidência 
-prática do RNF05.
+\FloatBarrier
 
 O arquivo \texttt{test\_change\_category.py}, com 19 testes, é o mais 
 relevante da suíte. Ele cobre o fluxo completo de mudança de categoria 
@@ -173,7 +167,7 @@ de vínculo servidor. O identificador é fixo (\texttt{99999}), o que
 permite que a fixture seja idempotente: se o usuário já existe, ele é 
 reaproveitado; se não, é criado. O perfil de administração é o que 
 satisfaz o \texttt{FeatureEnum.SPECIALIST\_REVIEW} exigido pelas rotas 
-de revisão, conforme a Seção~\ref{sec:modulo-revisao}.
+de revisão, conforme a Seção~\ref{sec:endpoints}.
 
 A separação em duas fixtures, em vez de uma fixture parametrizada, 
 justifica-se pela diferença de fluxo: o especialista precisa de dados 

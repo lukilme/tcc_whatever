@@ -22,23 +22,27 @@ os requisitos funcionais atendidos.
 
 \begin{quadro}[htbp]
 \centering
-\caption[Endpoints do módulo de solicitações]{Endpoints implementados no módulo de solicitações.}
+\caption[Endpoints do módulo de solicitações e revisão]{Endpoints implementados nos módulos de solicitações e revisão.}
 \label{qua:endpoints}
 \scriptsize
 \setlength{\tabcolsep}{2pt}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{p{0.8cm}p{1.5cm}p{4.0cm}p{4.0cm}p{1.5cm}}
+\begin{tabular}{p{0.8cm}p{2.1cm}p{4.0cm}p{4.0cm}p{1.5cm}}
 \toprule
 \textbf{Método} & \textbf{Rota} & \textbf{Função} & \textbf{Controle de acesso} & \textbf{Requisitos} \\
 \midrule
-POST & \texttt{/} & \texttt{save\_solicitation} & Usuário autenticado & RF01, RF02, RF03 \\
-GET & \texttt{/} & \texttt{get\_solicitations\_page} & Autenticado com perfil de visualização & RF04 \\
-GET & \texttt{/me} & \texttt{get\_my\_solicitation} & Usuário autenticado (restrito ao próprio usuário) & RF04 \\
-GET & \texttt{/\textless id\textgreater} & \texttt{get\_detail\_solicitation} & Autenticado, com verificação de acesso no serviço & RF04, RF11 \\
+POST & \texttt{/solicitations/} & \texttt{save\_solicitation} & Usuário autenticado & RF01, RF02, RF03 \\
+GET & \texttt{/solicitations/} & \texttt{get\_solicitations\_page} & Autenticado com perfil de visualização & RF04 \\
+GET & \texttt{/solicitations/me} & \texttt{get\_my\_solicitation} & Usuário autenticado (restrito ao próprio usuário) & RF04 \\
+GET & \texttt{/solicitations/\textless id\textgreater} & \texttt{get\_detail\_solicitation} & Autenticado, com verificação de acesso no serviço & RF04, RF11 \\
+POST & \texttt{/solicitation/review} & \texttt{create\_review} & Usuário autenticado com \texttt{SPECIALIST\_REVIEW} & RF05, RF06, RF07 \\
+POST & \texttt{/solicitation/review/edit} & \texttt{edit\_review} & Usuário autenticado com \texttt{SPECIALIST\_REVIEW} & RF05, RF06, RF07 \\
+GET & \texttt{/solicitation/review/\textless solicitation\_id\textgreater} & \texttt{list\_review\_by\_solicitation} & Usuário autenticado com \texttt{SPECIALIST\_REVIEW} & RF05, RF06, RF07 \\
+GET & \texttt{/solicitation/review/user/\textless user\_id\textgreater} & \texttt{list\_review\_by\_user} & Usuário autenticado com \texttt{SPECIALIST\_REVIEW} & RF05, RF06, RF07 \\
 \bottomrule
 \end{tabular}%
 }
-\fonte{Elaboração própria (2026). Obs: usando com báse que todas as rotas são prefixadas com \texttt{/solicitations}.}
+\fonte{Elaboração própria (2026). Obs: as rotas do módulo de solicitações são prefixadas com \texttt{/solicitations}, enquanto as rotas de revisão utilizam o prefixo \texttt{/solicitation/review}.}
 \end{quadro}
 
 A rota de criação (\texttt{POST /solicitations}) concentra o padrão 
