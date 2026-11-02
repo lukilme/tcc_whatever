@@ -54,24 +54,24 @@
 \contentsline {subsection}{\numberline {3.1.5}Levantamento de Requisitos}{17}{subsection.3.1.5}%
 \contentsline {subsubsection}{\numberline {3.1.5.1}Requisitos Funcionais}{17}{subsubsection.3.1.5.1}%
 \contentsline {subsubsection}{\numberline {3.1.5.2}Requisitos Não Funcionais}{19}{subsubsection.3.1.5.2}%
-\contentsline {section}{\numberline {3.2}Desenvolvimento do Módulo de Solicitações}{20}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Endpoints}{20}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Integração com o Banco de Dados}{22}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.2}Desenvolvimento do Módulo de Solicitações}{19}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Endpoints}{19}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Integração com o Banco de Dados}{21}{subsection.3.2.2}%
 \contentsline {subsection}{\numberline {3.2.3}Autorização e Controle de Acesso}{25}{subsection.3.2.3}%
 \contentsline {subsection}{\numberline {3.2.4}O Módulo de Revisão e a Efetivação das Alterações}{25}{subsection.3.2.4}%
-\contentsline {subsubsection}{\numberline {3.2.4.1}Separação de Responsabilidades e Controle de Acesso}{26}{subsubsection.3.2.4.1}%
+\contentsline {subsubsection}{\numberline {3.2.4.1}Separação de Responsabilidades e Controle de Acesso}{25}{subsubsection.3.2.4.1}%
 \contentsline {subsubsection}{\numberline {3.2.4.2}A Revisão como um Evento de Domínio (Domain Event)}{26}{subsubsection.3.2.4.2}%
 \contentsline {subsubsection}{\numberline {3.2.4.3}Execução das Regras de Negócio e Atomicidade}{26}{subsubsection.3.2.4.3}%
 \contentsline {section}{\numberline {3.3}Implementação do Sistema de Snapshot e Auditoria}{27}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Entidade Snapshot e Modelo de Persistência}{27}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Reversão de Alterações}{29}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.2}Reversão de Alterações}{28}{subsection.3.3.2}%
 \contentsline {subsection}{\numberline {3.3.3}Linha do Tempo de Eventos}{30}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Rastreabilidade e Limitações}{31}{subsection.3.3.4}%
-\contentsline {section}{\numberline {3.4}Desenvolvimento das Interfaces Web}{32}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Telas Criadas}{32}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Componentes Vue}{32}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Integração frontend/backend}{32}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}RBAC e controle de acesso}{32}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.3.4}Rastreabilidade e Limitações}{30}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Desenvolvimento das Interfaces Web}{31}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Telas Criadas}{31}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Componentes Vue}{31}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Integração frontend/backend}{31}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}RBAC e controle de acesso}{31}{subsection.3.4.4}%
 \contentsline {section}{\numberline {3.5}Testes e Validação}{32}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}Construção da Infraestrutura de Testes}{32}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Isolamento entre Testes}{33}{subsection.3.5.2}%
