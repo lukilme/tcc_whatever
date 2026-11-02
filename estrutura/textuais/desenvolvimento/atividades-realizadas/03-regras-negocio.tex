@@ -1,6 +1,6 @@
 \subsection{Análise das Regras de Negócio}
-
-A análise das regras de negócio concentrou-se nos critérios de classificação dos especialistas, nas alterações cadastrais e nas permissões associadas às operações de solicitação, aprovação e rejeição. O levantamento dessas regras permitiu estabelecer os requisitos comportamentais do novo módulo, considerando as restrições existentes e os possíveis impactos das operações sobre os registros do sistema.
+\label{sec:regras-negocio}
+O sistema possui um modelo de regras de negócio relacionadas à classificação de especialistas e à alteração de seus dados cadastrais. Condições essas que deveriam ser respeitadas pela nova funcionalidade, bem como os efeitos das operações sobre os registros existentes.
 
 Um dos principais desafios identificados decorre da organização do modelo de dados da aplicação: a categoria do especialista é definida no modelo \textit{User}, e não diretamente no modelo \textit{Specialist}. Embora os especialistas compartilhem uma estrutura de usuário comum, suas categorias determinam especializações distintas, com atributos específicos para cada tipo. Essa organização exige que as operações de transição considerem as relações entre os modelos envolvidos, de modo a preservar a integridade dos dados durante a alteração cadastral.
 

@@ -1,17 +1,194 @@
 \section{Testes e Validação}
 \label{sec:testes-validacao}
 
-\subsection{Pytest}
+\subsection{Construção da Infraestrutura de Testes}
+\label{sec:infraestrutura-testes}
 
-A validação do módulo foi realizada com a utilização de Pytest, uma ferramenta que permitiu estruturar testes automatizados para verificar o comportamento das funcionalidades implementadas. Esse processo foi essencial para confirmar que as regras de negócio e os fluxos principais continuavam funcionando corretamente.
+O sistema Banco de Especialistas não dispunha, antes do desenvolvimento 
+deste módulo, de infraestrutura de testes automatizados. A verificação 
+das funcionalidades era feita manualmente, por meio de requisições à API 
+e inspeção do banco. Diante disso, a validação do módulo de solicitações 
+exigiu a construção prévia de uma base de testes reutilizável, que 
+pudesse ser aplicada não apenas ao módulo novo, mas a funcionalidades 
+futuras.
 
-\subsection{Pré-configuração}
+A construção seguiu uma ordem deliberada. Primeiro, foi para funcionaldades básicas, que os novos módulos 
+não deveria nem interferir, as features relacionadas a criação de especialistas, tratamento de documentos,
+pontuação e RBAC. Em seguida, foram implementados 
+testes de regressão para as funcionalidades existentes que o novo módulo 
+afeta ou consome: mudança de categoria (\texttt{test\_change\_category.py}), 
+notificação (\texttt{test\_notification.py}), usuário (\texttt{test\_user.py}) 
+e especialista (\texttt{test\_specialist.py}). Esses testes estabeleceram 
+uma linha de base — o comportamento que não poderia ser alterado. Só 
+depois dessa linha de base, foram implementados os testes do próprio 
+módulo de solicitações. A ordem não foi acidental: sem a linha de base, 
+a refatoração introduzida pelo módulo novo não teria como ser verificada 
+contra regressões.
 
-Antes da execução dos testes, foi necessária a configuração do ambiente, incluindo dependências, dados iniciais e parametrização básica do projeto. Essa etapa garantiu que os testes fossem executados em um cenário consistente com o ambiente real de desenvolvimento.
+No total, a suíte implementada contém 89 testes, distribuídos em 44 
+testes para o módulo novo e 45 testes de regressão. A proporção, 
+próxima de 1:1, reflete a estratégia de equilíbrio entre adicionar 
+cobertura para o que foi construído e preservar a cobertura do que 
+existia. A suíte completa executa em aproximadamente três minutos, o 
+que viabiliza sua integração à pipeline de verificação contínua.
 
-\subsection{Testes unitários}
+A distribuição dos testes por arquivo é apresentada no Quadro~\ref{qua:distribuicao-testes}.
 
-Os testes unitários foram empregados para validar as partes mais isoladas da lógica, como validações de regras, criação de pedidos e atualização de registros. Essa abordagem aumentou a confiabilidade da implementação e reduziu a chance de erros em componentes específicos.
+\begin{quadro}[htbp]
+\centering
+\caption[Distribuição dos testes por arquivo]{Distribuição dos testes implementados.}
+\label{qua:distribuicao-testes}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{5.5cm}p{1.6cm}p{4.6cm}}
+\toprule
+\textbf{Arquivo} & \textbf{Testes} & \textbf{Propósito} \\
+\midrule
+\multicolumn{3}{l}{\textit{Módulo novo — fluxo completo}} \\
+\texttt{test\_change\_category.py} & 19 & Fluxo ponta a ponta: solicitação → revisão → mudança de categoria \\
+\midrule
+\multicolumn{3}{l}{\textit{Módulo novo — camadas}} \\
+\texttt{test\_solicitation.py} & 11 & Integração pela API \\
+\texttt{test\_solicitation\_service.py} & 11 & Camada de serviço \\
+\texttt{test\_review.py} & 3 & Integração pela API (decisão) \\
+\midrule
+\multicolumn{3}{l}{\textit{Regressão}} \\
+\texttt{test\_notification.py} & 22 & Notificações — efeito colateral \\
+\texttt{test\_specialist.py} & 8 & Especialista — entidade modificada \\
+\texttt{test\_user.py} & 7 & Usuário — entidade associada \\
+\texttt{test\_stale\_criteria\_on\_category\_switch.py} & 2 & Critérios após mudança de categoria \\
+\texttt{test\_list\_items\_without\_declaration.py} & 2 & Listagem de itens \\
+\texttt{test\_geral.py} & 4 & Verificações gerais \\
+\midrule
+\textbf{Total} & \textbf{89} & \\
+\bottomrule
+\end{tabular}
+\fonte{Elaboração própria (2026).}
+\end{quadro}
+
+Dois arquivos de regressão merecem destaque. O \texttt{test\_stale\_criteria\_on\_category\_switch.py} 
+e \texttt{test\_list\_items\_without\_declaration.py} cobrem um efeito 
+colateral específico: a mudança de categoria pode tornar obsoletos os 
+critérios de avaliação e a listagem de itens do especialista. Esses 
+testes não verificam o módulo novo; verificam que o módulo novo não 
+corrompe o que já existia ao alterar a categoria. São a evidência 
+prática do RNF05.
+
+O arquivo \texttt{test\_change\_category.py}, com 19 testes, é o mais 
+relevante da suíte. Ele cobre o fluxo completo de mudança de categoria 
+— criação da solicitação, aprovação pela rota de revisão, aplicação 
+do efeito sobre o especialista e verificação do estado resultante —, 
+para todas as transições válidas e para os casos de erro identificados 
+na análise de regras de negócio (Seção~\ref{sec:regras-negocio}). 
+Diferentemente dos demais arquivos, que testam um módulo por vez, 
+esses testes atravessam os três módulos envolvidos no fluxo — 
+solicitação, revisão e especialista —, e são a evidência prática de que 
+a integração entre eles funciona. É a este arquivo que o restante deste 
+capítulo se refere quando afirma que a mudança de categoria só existe 
+como integração (Seção~\ref{sec:cobertura-testes}).
+
+\subsection{Isolamento entre Testes}
+\label{sec:isolamento}
+
+O isolamento entre testes é obtido por \texttt{TRUNCATE} das tabelas 
+transacionais antes e depois de cada teste. A escolha do \texttt{TRUNCATE} 
+com \texttt{RESTART IDENTITY CASCADE}, em vez do padrão mais comum de 
+\textit{rollback} transacional, foi deliberada e decorre de uma 
+característica específica do ambiente.
+
+O padrão mais difundido para isolamento em testes com SQLAlchemy é abrir 
+uma transação por teste e fazer \textit{rollback} ao final. Esse padrão 
+funciona quando todas as operações do teste compartilham a mesma sessão 
+de banco. No entanto, o cliente de testes do Flask (\texttt{app.test\_client()}) 
+abre sessões próprias ao processar cada requisição, e essas sessões 
+participam de transações independentes da transação do teste. Como 
+consequência, o \textit{rollback} da transação do teste não desfaz as 
+alterações feitas pelas requisições HTTP — o isolamento falha.
+
+O \texttt{TRUNCATE} resolve o problema porque opera no nível do banco, 
+fora do controle transacional das sessões da aplicação. A limpeza 
+acontece em uma conexão dedicada, com \texttt{commit} explícito, 
+independente das sessões abertas pelo cliente de teste. O Algoritmo~\ref{alg:truncate} 
+descreve a função de limpeza em pseudocódigo.
+
+\begin{algorithm}[htbp]
+\caption{Limpeza de tabelas transacionais entre testes (pseudocódigo).}
+\label{alg:truncate}
+\begin{verbatim}
+TABELAS_TRANSACIONAIS = [
+    "specialists",
+    "users",
+    "solicitations",
+    "solicitation_reviews",
+    "specialist_snapshots",
+    "notifications",
+]
+
+FUNÇÃO truncar(app, db):
+    COM app.em_contexto():
+        COM db.engine.conectar() COMO conexão:
+            conexão.executar(
+                "TRUNCATE TABLE "
+                + juntar(TABELAS_TRANSACIONAIS)
+                + " RESTART IDENTITY CASCADE")
+            conexão.commit()
+
+FIXTURE session(db, app):    // autouse, escopo de função
+    truncar(app, db)
+    ENTREGAR db.session
+    truncar(app, db)
+\end{verbatim}
+\end{algorithm}
+
+A escolha do \texttt{TRUNCATE} tem uma contrapartida: ele é mais lento 
+que o \textit{rollback}, porque envolve I/O real e reinício de sequências. 
+Para a suíte do módulo de solicitações, com poucas dezenas de testes, o 
+custo é irrelevante. Para suítes maiores, o \textit{rollback} transacional 
+seria preferível, desde que o cliente de testes fosse adaptado para 
+participar da transação — o que exigiria reescrever os testes em um 
+estilo diferente. A escolha do \texttt{TRUNCATE} privilegia simplicidade 
+e robustez sobre desempenho, o que é adequado ao estágio atual do projeto.
+
+\subsection{Fixtures de Autenticação}
+\label{sec:fixtures-auth}
+
+Os testes do módulo de solicitações exigem, em sua maioria, um usuário 
+autenticado — solicitante ou avaliador. Sem abstração, cada teste 
+precisaria criar o usuário, autenticar, obter o token e montar o cabeçalho 
+de autorização, o que repetiria cerca de quinze linhas de código por 
+teste. Para evitar essa repetição, foram implementadas duas fixtures de 
+autenticação: \texttt{auth\_specialist} e \texttt{auth\_administrator}.
+
+A fixture \texttt{auth\_specialist} cria um usuário do tipo especialista 
+com dados gerados por \texttt{UserFake}, autentica-o via 
+\texttt{POST /users/login}, extrai o token da resposta e cria os dados 
+pessoais do especialista via \texttt{POST /specialists/personal\_data}. 
+Retorna o cabeçalho de autorização pronto para ser usado pelo cliente de 
+testes. A fixture aceita um payload opcional, o que permite que cada 
+teste ajuste os dados do usuário sem duplicar a lógica de autenticação.
+
+A fixture \texttt{auth\_administrator} segue o mesmo padrão, mas cria um 
+usuário com perfil de administração (\texttt{ProfileEnum.ADMIN}) e tipo 
+de vínculo servidor. O identificador é fixo (\texttt{99999}), o que 
+permite que a fixture seja idempotente: se o usuário já existe, ele é 
+reaproveitado; se não, é criado. O perfil de administração é o que 
+satisfaz o \texttt{FeatureEnum.SPECIALIST\_REVIEW} exigido pelas rotas 
+de revisão, conforme a Seção~\ref{sec:modulo-revisao}.
+
+A separação em duas fixtures, em vez de uma fixture parametrizada, 
+justifica-se pela diferença de fluxo: o especialista precisa de dados 
+pessoais para estar completo no sistema, enquanto o administrador precisa 
+de perfil específico para acessar as rotas de revisão. Unificar em uma 
+única fixture forçaria condicionais no corpo da própria fixture, o que 
+prejudicaria a legibilidade. A duplicação de oito linhas entre as duas é 
+preferível à complexidade de uma fixture condicional.
+
+O uso das fixtures reduz o boilerplate nos testes e, mais importante, 
+garante que a preparação de cada teste seja consistente: todos os 
+testes que exigem autenticação passam pelo mesmo fluxo, o que elimina 
+variações acidentais na preparação. Quando a lógica de autenticação mudar 
+— por exemplo, se o formato do token mudar —, a correção é feita em um 
+único lugar.
 
 \subsection{Testes de integração}
 

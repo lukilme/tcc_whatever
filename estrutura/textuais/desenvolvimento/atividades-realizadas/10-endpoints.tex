@@ -1,0 +1,103 @@
+\subsection{Endpoints}
+\label{sec:endpoints}
+
+A camada de rotas do módulo de solicitações foi implementada como um 
+\textit{Blueprint} do Flask, registrado sob o prefixo \texttt{/solicitations}. 
+A escolha do \textit{Blueprint} decorre diretamente da estratégia de 
+\textit{Additive Change} descrita na Seção~\ref{sec:codigo-existente}: 
+o módulo é incorporado como um componente isolado, sem alterar os 
+controladores existentes. As rotas atuam como camada de fronteira — 
+recebem a requisição, aplicam o controle de acesso, delegam o 
+processamento ao \texttt{SolicitationService} e serializam a resposta —, 
+mantendo fora do controlador as regras de negócio, a persistência e 
+o tratamento de exceções de domínio. A documentação Swagger foi 
+externalizada em arquivos YAML, referenciados pelo decorador 
+\texttt{@swag\_from}, em contraste com o padrão observado nos 
+controladores legados (Algoritmo~\ref{alg:legado}), nos quais a 
+documentação ocupava a maior parte da função.
+
+O Quadro~\ref{qua:endpoints} relaciona os endpoints implementados, 
+a função responsável por cada um, a restrição de acesso aplicada e 
+os requisitos funcionais atendidos.
+
+\begin{quadro}[htbp]
+\centering
+\caption[Endpoints do módulo de solicitações]{Endpoints implementados no módulo de solicitações.}
+\label{qua:endpoints}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{p{0.8cm}p{1.5cm}p{4.0cm}p{4.0cm}p{1.5cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Função} & \textbf{Controle de acesso} & \textbf{Requisitos} \\
+\midrule
+POST & \texttt{/} & \texttt{save\_solicitation} & Usuário autenticado & RF01, RF02, RF03 \\
+GET & \texttt{/} & \texttt{get\_solicitations\_page} & Autenticado com perfil de visualização & RF04 \\
+GET & \texttt{/me} & \texttt{get\_my\_solicitation} & Usuário autenticado (restrito ao próprio usuário) & RF04 \\
+GET & \texttt{/\textless id\textgreater} & \texttt{get\_detail\_solicitation} & Autenticado, com verificação de acesso no serviço & RF04, RF11 \\
+\bottomrule
+\end{tabular}%
+}
+\fonte{Elaboração própria (2026). Obs: usando com báse que todas as rotas são prefixadas com \texttt{/solicitations}.}
+\end{quadro}
+
+A rota de criação (\texttt{POST /solicitations}) concentra o padrão 
+adotado nas demais. O controlador limita-se a extrair os dados da 
+requisição — aceitando tanto \texttt{multipart/form-data}, quando há 
+arquivo anexado, quanto JSON, quando não há — e a delegar o 
+processamento ao serviço, conforme ilustrado no Algoritmo~\ref{alg:rota-criacao}.
+
+\begin{algorithm}[htbp]
+\caption{Estrutura da rota de criação de solicitação.}
+\label{alg:rota-criacao}
+\begin{verbatim}
+@bp.route("", methods=["POST"])
+@auth.login_required
+@swag_from("docs/create_solicitation.yml", validation=False)
+def save_solicitation():
+    form_data = request.form.to_dict() if request.form else None
+    json_data = request.get_json(silent=True) or {}
+    file = request.files.get("document_file")
+
+    return SolicitationService.create_or_update(
+        user_id=g.user.id,
+        form_data=form_data,
+        file=file,
+    )
+\end{verbatim}
+\end{algorithm}
+
+Quatro características do padrão merecem destaque. A primeira é o 
+\textbf{controlador fino}: a função não constrói entidades, não valida 
+campos individualmente, não executa consultas e não trata exceções de 
+banco — responsabilidades que, no padrão legado (Algoritmo~\ref{alg:legado}), 
+estavam concentradas na própria rota. A segunda é o \textbf{controle 
+de acesso declarativo}, aplicado pelo decorador 
+\texttt{@auth.login\_required}, que aceita um parâmetro opcional de 
+perfil; a rota de listagem geral exige perfil de visualização, enquanto 
+a rota \texttt{/me} restringe o resultado ao próprio usuário autenticado, 
+independentemente do perfil. A terceira é a \textbf{validação na fronteira} 
+por schemas Marshmallow: a consulta é interpretada por 
+\texttt{SolicitationQuerySchema}, e a resposta é serializada por 
+\texttt{SolicitationSchema} ou \texttt{PaginatedResponseSchema}, de modo 
+que o formato de entrada e o de saída não dependem da interface que 
+consome a API, atendendo ao RNF04. A quarta é a \textbf{externalização 
+da documentação}: o decorador \texttt{@swag\_from} referencia um arquivo 
+YAML por rota, com \texttt{validation=False} indicando que a validação 
+é responsabilidade dos schemas e não do Swagger.
+
+A listagem foi implementada por meio de uma função auxiliar, 
+\texttt{\_fetch\_solicitations}, que centraliza a interpretação dos 
+parâmetros de paginação, ordenação e filtro (situação, intervalo de 
+datas e usuário). O endpoint \texttt{/solicitations/me} reutiliza a 
+mesma função forçando o identificador do usuário autenticado, enquanto 
+o endpoint \texttt{/solicitations} permite filtro opcional por usuário, 
+desde que o solicitante possua o perfil de visualização. Essa 
+centralização evita a duplicação da lógica de consulta entre rotas, 
+que, no padrão legado, costumava ser reproduzida em cada controlador.
+
+Do ponto de vista dos requisitos, os endpoints concentram os RF01 a RF04 
+(criação e consulta) e o RF11 (restrição de operações a usuários 
+autorizados). As operações de decisão, aplicação de efeitos, snapshot e 
+reversão, correspondentes aos RF05 a RF09, são implementadas por rotas 
+específicas descritas na Seção~\ref{sec:modulo-solicitacoes}.
