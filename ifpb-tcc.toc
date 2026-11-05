@@ -1,11 +1,11 @@
 \changetocdepth {4}
 \babel@toc {brazil}{}\relax 
-\contentsline {chapter}{LISTA DE FIGURAS}{viii}{section*.8}%
-\contentsline {chapter}{LISTA DE QUADROS}{ix}{chapter*.9}%
-\contentsline {chapter}{LISTA DE TABELAS}{x}{chapter*.10}%
-\contentsline {chapter}{LISTA DE ABREVIATURAS E SIGLAS}{xi}{chapter*.11}%
-\contentsline {chapter}{LISTA DE S\'{I}MBOLOS}{xi}{chapter*.11}%
-\contentsline {chapter}{LISTA DE ALGORITMOS}{xi}{chapter*.11}%
+\contentsline {chapter}{LISTA DE FIGURAS}{viii}{section*.7}%
+\contentsline {chapter}{LISTA DE QUADROS}{ix}{section*.8}%
+\contentsline {chapter}{LISTA DE TABELAS}{x}{section*.9}%
+\contentsline {chapter}{LISTA DE ABREVIATURAS E SIGLAS}{xi}{section*.10}%
+\contentsline {chapter}{LISTA DE S\'{I}MBOLOS}{xi}{section*.10}%
+\contentsline {chapter}{LISTA DE ALGORITMOS}{xi}{section*.10}%
 \contentsline {chapter}{\chapternumberline {1}INTRODUÇÃO}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Objetivos}{1}{section.1.1}%
 \contentsline {subsection}{\numberline {1.1.1}Objetivo geral}{1}{subsection.1.1.1}%
@@ -79,14 +79,14 @@
 \contentsline {subsection}{\numberline {3.5.4}Testes de integração}{35}{subsection.3.5.4}%
 \contentsline {subsection}{\numberline {3.5.5}Processo de Integração Contínua}{35}{subsection.3.5.5}%
 \contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{36}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{37}{chapter*.17}%
+\contentsline {chapter}{Refer\^encias}{37}{chapter*.14}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{39}{section*.18}%
+\contentsline {part}{Ap\^endices}{39}{section*.15}%
 \contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{40}{appendix.A}%
 \contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{41}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{42}{section*.19}%
+\contentsline {part}{Anexos}{42}{section*.16}%
 \contentsline {appendix}{\chapternumberline {A}Nome do anexo}{43}{appendix.anexochapback.1}%
 \contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{44}{appendix.anexochapback.2}%

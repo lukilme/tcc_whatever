@@ -1,0 +1,37 @@
+\section{Escopo e limitações}
+\label{sec:escopo-limitacoes}
+
+O trabalho abrange o desenvolvimento do módulo de solicitações e as
+funcionalidades necessárias ao gerenciamento das operações de alteração
+cadastral e de classificação dos especialistas no sistema Banco de
+Especialistas. Estão incluídos os mecanismos de registro, acompanhamento,
+decisão e reversão das solicitações, bem como os recursos de persistência e
+rastreabilidade associados a esse fluxo.
+
+Para os fins deste trabalho, adotam-se as seguintes definições:
+
+\begin{itemize}
+  \item \textbf{Solicitação de complemento cadastral:} requisição para que o
+  especialista seja submetido a nova avaliação, com a alteração de seu status
+  para COMPLEMENTAÇÃO e o consequente recálculo de sua pontuação, conforme as
+  regras de negócio aplicáveis.
+
+  \item \textbf{Solicitação de mudança de classificação:} requisição de
+  alteração da categoria do especialista entre as categorias existentes
+  (estudante, colaborador externo e servidor), observadas as regras de negócio
+  que impedem, por exemplo, a transição para a mesma categoria e a aprovação
+  quando já existe retificação em curso.
+\end{itemize}
+
+Não fazem parte do escopo a redefinição dos critérios de pontuação dos
+especialistas, a modificação do processo seletivo, a substituição do sistema de
+avaliação existente e a implementação de notificações por e-mail. Também não é
+contemplado o tratamento de múltiplas solicitações simultâneas para um mesmo
+especialista.
+
+O desenvolvimento foi conduzido por um único desenvolvedor, com restrições de
+prazo e de experiência. As decisões de arquitetura e de implementação foram
+fundamentadas em pesquisa, documentação técnica e experimentação, e validadas
+por testes automatizados e entregas incrementais. Como consequência, algumas
+escolhas privilegiam simplicidade e aderência ao sistema legado, em vez de uma
+solução ótima para todos os cenários.

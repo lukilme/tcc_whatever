@@ -1,0 +1,84 @@
+\subsection{Características do Código Existente e Decisão por Additive Change}
+\label{sec:additive-change}
+A adoção do princípio de Additive Change foi uma decisão arquitetural relevante para garantir a compatibilidade com a base já existente. Esse princípio orienta a evolução do sistema por meio da adição de novas rotas, campos, serviços e módulos, sem a necessidade de reescrever estruturas centrais ou alterar de forma profunda o comportamento de componentes já consolidados.
+
+Essa estratégia se mostrou adequada ao contexto do projeto, pois a aplicação legada foi estruturada em um padrão MVC com controladores responsáveis por múltiplas tarefas, incluindo validação, persistência, tratamento de exceções, registro de eventos e comunicação com camadas externas. Esse desenho favoreceu a rapidez inicial de implementação, mas também resultou em baixa coesão, acoplamento funcional e maior dificuldade de manutenção e evolução.
+
+A partir dessa análise, a nova funcionalidade foi concebida como uma extensão incremental do sistema, preservando os comportamentos já consolidados e adicionando um fluxo específico para a solicitação, aprovação, auditoria e registro histórico das mudanças de categoria. Essa abordagem reduziu o risco de regressão e permitiu a inserção de novos mecanismos sem comprometimento da infraestrutura preexistente.
+
+A seguir, é apresentado o padrão observado em controladores existentes, evidenciando as características que motivaram a escolha por uma evolução incremental.
+
+\begin{algorithm}[htbp]
+\caption{Padrão de implementação observado em controladores existentes.}
+\label{alg:legado}
+\begin{verbatim}
+@bp.route('', methods=['POST'])
+@swag.validate('UserRegistration')
+def register():
+    if not validate_cpf(request.json['cpf']):
+        raise ValidationError(details={'cpf': 'invalid'})
+
+    user = User(**request.json)
+    user.hash_password()
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except IntegrityError as e:
+        msg = e.args[0]
+        if 'users_tipo_especialista_fkey' in msg:
+            raise InvalidIdFieldError('specialist_type_id')
+        elif 'users_cpf_key' in msg:
+            raise UniqueIdentifierAlreadyExistsError('cpf')
+        elif 'users_email_key' in msg:
+            raise UniqueIdentifierAlreadyExistsError('email')
+        else:
+            raise e
+
+    create_timeline_log(
+        activity_type_id=ActivityTypeEnum.CADASTRADO,
+        user_id=user.id)
+
+    msg = 'Informe seus dados pessoais...'
+    create_notification(title='Boas vindas!', message=msg, user=user)
+
+    return UserSchema().dump(user), HTTPStatus.CREATED
+\end{verbatim}
+\end{algorithm}
+
+O padrão exemplificado no Algoritmo~\ref{alg:legado} demonstra a forma como os controladores legados eram organizados. Em uma mesma função, eram concentradas validação de entrada, construção do objeto de domínio, hash de senha, persistência no banco de dados, tratamento de erros de integridade, registro de timeline, envio de notificação e serialização da resposta. A validação dos dados de entrada era realizada pelo Flasgger, por meio do decorador \texttt{@swag.validate}, que verificava os dados conforme o schema associado à operação. Assim, a documentação Swagger também era utilizada como base para a validação das requisições.
+
+Esse desenho gera alguns acoplamentos relevantes. O primeiro deles está no tratamento de erro, em que a lógica depende de strings de constraint do banco, como \allowbreak\mbox{\texttt{users\_tipo\_especialista\_fkey}} e \texttt{users\_cpf\_key}. Esse tipo de condição cria uma forte dependência com o esquema físico do banco de dados, de forma que qualquer renomeação ou alteração da constraint pode quebrar o fluxo de tratamento de exceções. O segundo acoplamento está na execução de operações colaterais após o commit, como a criação de registros de timeline e notificações. Nesse cenário, a criação do usuário e os eventos associados não são tratados como uma unidade transacional, de modo que falhas nas etapas posteriores podem deixar um registro principal persistido sem os dados complementares esperados.
+
+A comparação com o novo módulo evidencia a importância da abordagem incremental. O desenvolvimento do módulo de solicitações foi organizado para separar responsabilidades e encapsular regras de negócio em serviços e camadas mais específicas, preservando o restante da aplicação e reduzindo o risco de efeitos colaterais.
+
+\begin{algorithm}[htbp]
+\caption{Estrutura do novo módulo, com separação de responsabilidades.}
+\label{alg:novo}
+\begin{verbatim}
+@bp_solicitacoes.route('', methods=['POST'])
+@schema_required(SolicitacaoCreateSchema)
+def criar_solicitacao(payload):
+    solicitacao = solicitacao_service.criar(
+        solicitante_id=current_user.id,
+        tipo=payload['tipo'],
+        dados=payload['dados'],
+    )
+    return SolicitacaoSchema().dump(solicitacao), HTTPStatus.CREATED
+
+
+def criar(solicitante_id, tipo, dados):
+    campos = SCHEMA_POR_TIPO[tipo].load(dados)
+    solicitacao = Solicitacao(...)
+
+    with db.session.begin_nested():
+        db.session.add(solicitacao)
+        registrar_evento(solicitacao, Evento.CRIADA)
+
+    return solicitacao
+\end{verbatim}
+\end{algorithm}
+
+O Algoritmo~\ref{alg:novo} ilustra o padrão adotado no novo módulo. A validação ocorre na fronteira, por meio do decorador \texttt{@schema\_required(SolicitacaoCreateSchema)}, de modo que o serviço recebe um payload já validado. O controlador limita-se a delegar a execução ao serviço e serializar a resposta, sem concentrar hash, tratamento de erro do banco ou envio de notificações. A seleção do schema por tipo, por meio de \texttt{SCHEMA\_POR\_TIPO[tipo].load(dados)}, representa o mecanismo das restrições dinâmicas descritas na análise de regras de negócio e reforça a separação entre validação e persistência. Por fim, a persistência e o registro do evento são agrupados em uma mesma unidade de trabalho, eliminando o intervalo entre o commit e os efeitos colaterais observado no Algoritmo~\ref{alg:legado}.
+
+A escolha por Additive Change permitiu incorporar o novo fluxo sem reescrever os controladores existentes, preservando o comportamento consolidado da aplicação.
