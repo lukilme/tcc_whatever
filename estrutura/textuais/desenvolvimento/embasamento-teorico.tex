@@ -1,16 +1,37 @@
+
+
 % EMBASAMENTO TEÓRICO----------------------------------------------------------
 
-\chapter{EMBASAMENTO TÉORICO}
+\chapter{EMBASAMENTO TEÓRICO}
 \label{chap:embasamento-teorico}
-Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que fundamentam as atividades descritas neste relatório. Como o estágio teve por foco o desenvolvimento de um módulo de solicitações com a rastreabilidade, auditoria e reversão para o sistema Banco de Especialistas, é dada ênfase ao \textit{back-end} (Flask, SQLAlchemy e PostgreSQL) e aos conceitos de auditoria e versionamento de dados. As demais tecnologias (Vue.js, Nuxt, Pytest, Git e Docker) são abordadas como elementos de apoio ao desenvolvimento, à validação e à execução do módulo.
+Este capítulo apresenta, de forma clara, os conceitos e as tecnologias que
+fundamentam as atividades descritas neste relatório. Como o estágio teve
+por foco o desenvolvimento de um módulo de solicitações com a rastreabilidade, a
+auditoria e reversão para o sistema Banco de Especialistas, é dada ênfase ao \textit{back-end}
+(Flask, SQLAlchemy e PostgreSQL) e aos conceitos de auditoria e versionamento de dados.
+As demais tecnologias (Vue.js, Nuxt, Pytest, Git e Docker) são abordadas como
+elementos de apoio ao desenvolvimento, à validação e à execução do módulo.
 
-\section{Arquitetura Web Cliente-Servidor}
-A arquitetura cliente-servidor organiza um sistema distribuído em provedores de serviços e requisitantes \cite{Tanenbaum2007}. Nesse contexto, a comunicação orientada pelo estilo REST e pelo protocolo HTTP define interações sem estado, nas quais cada requisição é independente e deve carregar as informações necessárias ao seu processamento \cite{rfc9110}.
+\section{Arquitetura e Padrões de Aplicações Web}
+\label{sec:arquitetura-padroes-aplicacoes-web}
 
-Essa base teórica fundamenta a separação de responsabilidades do módulo: isolar a máquina de estados e as regras de persistência no servidor garante que a integridade dos dados e as transições de status da solicitação não dependam do cliente. Dessa forma, a aplicação no frontend atua exclusivamente na apresentação e na coleta de informações, consumindo a API REST para criar, acompanhar e analisar as requisições.
+\subsection{Cliente-Servidor}
+\label{subsec:cliente-servidor}
+A arquitetura cliente-servidor organiza um sistema distribuído em provedores de
+serviços e requisitantes \cite{Tanenbaum2007}. Nesse contexto, a comunicação
+orientada pelo estilo REST e pelo protocolo HTTP define interações sem estado,
+nas quais cada requisição é independente e deve carregar as informações
+necessárias ao seu processamento \cite{rfc9110}.
 
 \subsection{REST e HTTP}
-O estilo arquitetural REST (Representational State Transfer) define um conjunto de restrições que, quando aplicadas, promovem escalabilidade, simplicidade e independência entre cliente e servidor \cite{fielding2000}. A comunicação entre os componentes do sistema ocorre por meio de recursos identificados por URIs, manipulados por métodos HTTP (GET, POST, PUT, DELETE etc.) e representados em formatos padronizados, como JSON ou XML. A aplicação dessas restrições permite que o cliente e o servidor evoluam de forma independente, desde que a interface entre eles permaneça consistente
+\label{subsec:rest-http}
+O estilo arquitetural REST (Representational State Transfer) define um conjunto de
+restrições que, quando aplicadas, promovem escalabilidade, simplicidade e independência
+entre cliente e servidor \cite{fielding2000}. A comunicação entre os componentes do
+sistema ocorre por meio de recursos identificados por URIs, manipulados por métodos
+HTTP (GET, POST, PUT, DELETE e etc.) e representados em formatos padronizados, como
+JSON ou XML. A aplicação dessas restrições permite que o cliente e o servidor
+evoluam de forma independente, desde que a interface entre eles permaneça consistente
 
 \begin{table}[!htb]
     \centering
@@ -23,7 +44,7 @@ O estilo arquitetural REST (Representational State Transfer) define um conjunto 
         200 & Sucesso & Consultas e operações concluídas com êxito. \\
         201 & Recurso criado & Criação de uma nova solicitação. \\
         400 & Requisição inválida & Erros de validação nos dados enviados. \\
-        401 & Falha de autenticação & Credenciais inválidas \\
+        401 & Falha de autenticação & Credenciais inválidas. \\
         403 & Proibido & Tentativa de acesso a recurso sem permissão. \\
         404 & Não encontrado & Solicitação ou recurso inexistente. \\
         409 & Conflito de estado & Tentativa de transição inválida (por exemplo, reverter solicitação não aprovada). \\
@@ -32,125 +53,340 @@ O estilo arquitetural REST (Representational State Transfer) define um conjunto 
     \fonte{Elaboração própria, com base em RFC 9110 \cite{rfc9110}.}
 \end{table}
 
-\subsection{MVC e SoC}
-
-O padrão de arquitetura MVC (Model-View-Controller) organiza a aplicação em três componentes: o \textit{Model} representa os dados e as regras de negócio, a \textit{View} é responsável pela apresentação e interação com o usuário, e o \textit{Controller} atua como intermediário, recebendo as requisições da interface, manipulando os dados e retornando respostas \cite{gamma1994}. A separação de responsabilidades (SoC - Separation of Concerns) permite que cada componente evolua independentemente, desde que a interface entre eles permaneça consistente.
+\subsection{MVC e Separação de Responsabilidade (SoC)}
+\label{subsec:mvc-soc}
+O padrão de arquitetura MVC (Model-View-Controller) organiza a aplicação em três
+componentes: o \textit{Model} representa os dados e as regras de negócio, a \textit{View}
+é responsável pela apresentação e interação com o usuário, e o \textit{Controller} atua
+como intermediário, recebendo as requisições da interface, manipulando os dados e retornando
+respostas \cite{gamma1994}. A separação de responsabilidades (SoC - Separation of Concerns)
+permite que cada componente evolua independentemente, desde que a interface entre eles
+permaneça consistente.
 
 \subsection{Service Layer}
-
-O padrão Service Layer organiza a lógica de negócio em uma camada intermediária entre o \textit{Controller} e o \textit{Model}, promovendo a reutilização de regras de negócio e a centralização das operações que envolvem múltiplas entidades \cite{fowler2002}. Essa abordagem facilita a manutenção do sistema, pois as alterações nas regras de negócio podem ser implementadas em um único local, sem impactar diretamente os controladores ou modelos individuais.
+\label{subsec:service-layer}
+O padrão Service Layer organiza a lógica de negócio em uma camada intermediária entre
+o \textit{Controller} e o \textit{Model}, promovendo a reutilização de regras de negócio
+e a centralização das operações que envolvem múltiplas entidades \cite{fowler2002}. Essa
+abordagem facilita a manutenção do sistema, pois as alterações nas regras de negócio
+podem ser implementadas em um único local, sem impactar diretamente os controladores
+ou modelos individuais.
 
 \subsection{Additive Change}
+\label{subsec:additive-change}
 
-O padrão Additive Change descreve a evolução de um sistema por meio da adição de novas funcionalidades, em vez de modificar diretamente o código existente \cite{fowler2004}. Essa abordagem minimiza o risco de introduzir erros em funcionalidades já implementadas e permite que o sistema cresça de forma incremental, preservando a estabilidade e a confiabilidade das operações existentes. No contexto do módulo de solicitações, o Additive Change foi aplicado ao desenvolver novas rotinas para criação, análise e reversão de solicitações, sem alterar as funcionalidades já presentes no Banco de Especialistas.
+O padrão Additive Change descreve a evolução de um sistema por meio da adição de novas
+funcionalidades, em vez de modificar diretamente o código existente \cite{fowler2004}. Essa
+abordagem minimiza o risco de introduzir erros em funcionalidades já implementadas e permite que
+o sistema cresça de forma incremental, preservando a estabilidade e a confiabilidade das
+operações existentes. No contexto do módulo de solicitações, o Additive Change foi aplicado ao
+desenvolver novas rotinas para criação, análise e reversão de solicitações, sem alterar as
+funcionalidades já presentes no Banco de Especialistas.
 
 \subsection{OWASP e Segurança de Aplicações Web}
+\label{subsec:owasp-seguranca-aplicacoes-web}
+O Open Worldwide Application Security Project (OWASP) mantém o OWASP Top 10, uma lista
+de referência global que elenca os dez riscos de segurança mais críticos para aplicações
+web \cite{owasp2025}. A edição mais recente (2025) destaca que o Controle de Acesso Quebrado
+(Broken Access Control) permanece no topo do ranking como o risco mais sério, seguido por
+Configuração Insegura (Security Misconfiguration). Para um sistema que lida com dados de
+usuários e decisões administrativas, como o Banco de Especialistas, alinhar o desenvolvimento
+a esse referencial não é apenas uma boa prática, mas uma necessidade para mitigar
+vulnerabilidades exploráveis.
 
-O Open Worldwide Application Security Project (OWASP) mantém o OWASP Top 10, uma lista de referência global que elenca os dez riscos de segurança mais críticos para aplicações web \cite{owasp2025}. A edição mais recente (2025) destaca que o Controle de Acesso Quebrado (Broken Access Control) permanece no topo do ranking como o risco mais sério, seguido por Configuração Insegura (Security Misconfiguration). Para um sistema que lida com dados de usuários e decisões administrativas, como o Banco de Especialistas, alinhar o desenvolvimento a esse referencial não é apenas uma boa prática, mas uma necessidade para mitigar vulnerabilidades exploráveis.
+\section{Gestão de Projeto Ágil}
+\label{sec:gestao-projeto-agil}
 
-\section{Gestão de Projeto Ágil com OpenProject, Scrum e Extreme Programming (XP)}
+A organização das atividades de desenvolvimento também exigiu atenção à gestão do projeto,
+às prioridades e ao acompanhamento do progresso. Em contextos de software, a gestão ágil busca
+reduzir a incerteza por meio de entregas incrementais, feedback frequente e adaptação contínua
+às mudanças, em vez de dependência excessiva de planos rígidos e de documentação extensa
+\cite{cohn2009}. Nesse sentido, a gestão do módulo foi apoiada por ferramentas e práticas que
+permitiram organizar o backlog, acompanhar pendências e controlar o avanço das tarefas de forma
+transparente.
 
-A organização das atividades de desenvolvimento também exigiu atenção à gestão do projeto, às prioridades e ao acompanhamento do progresso. Em contextos de software, a gestão ágil busca reduzir a incerteza por meio de entregas incrementais, feedback frequente e adaptação contínua às mudanças, em vez de dependência excessiva de planos rígidos e de documentação extensa \cite{cohn2009}. Nesse sentido, a gestão do módulo foi apoiada por ferramentas e práticas que permitiram organizar o backlog, acompanhar pendências e controlar o avanço das tarefas de forma transparente.
 
 \subsection{OpenProject}
+\label{subsec:openproject}
 
-O OpenProject é uma plataforma de gestão de projetos e de colaboração que oferece recursos de backlog, planejamento, acompanhamento de tarefas, cronogramas e relatórios de progresso \cite{openproject2026}. No estágio, ele foi utilizado para registrar issues, atribuir responsabilidades, definir prioridades e monitorar o avanço das atividades relacionadas ao desenvolvimento do módulo. Essa ferramenta contribuiu para manter o trabalho organizado, reduzindo a perda de contexto e permitindo uma visão clara do status das pendências em cada etapa do projeto.
+O OpenProject é uma plataforma de gestão de projetos e de colaboração que oferece recursos de
+backlog, planejamento, acompanhamento de tarefas, cronogramas e relatórios de progresso
+\cite{openproject2026}. No estágio, ele foi utilizado para registrar issues, atribuir
+responsabilidades, definir prioridades e monitorar o avanço das atividades relacionadas ao
+desenvolvimento do módulo. Essa ferramenta contribuiu para manter o trabalho organizado,
+reduzindo a perda de contexto e permitindo uma visão clara do status das pendências em cada
+etapa do projeto.
+
 
 \subsection{Scrum}
+\label{subsec:scrum}
 
-O Scrum é uma das abordagens ágeis mais conhecidas e organiza o trabalho em ciclos curtos, chamados 	extit{sprints}, com papéis definidos, backlog priorizado e cerimônias de planejamento, revisão e retrospectiva \cite{cohn2009}. A estrutura do Scrum é especialmente útil em equipes maiores e em projetos em que a mudança de requisitos é frequente, pois favorece a entrega incremental de valor e a revisão contínua do produto. No caso do estágio, a metodologia não foi seguida em sua forma estrita, mas os princípios de priorização, transparência e acompanhamento incremental foram relevantes para organizar o desenvolvimento do módulo.
+O Scrum é uma das abordagens ágeis mais conhecidas e organiza o trabalho em ciclos curtos,
+chamados \textit{sprints}, com papéis definidos, backlog priorizado e cerimônias de
+planejamento, revisão e retrospectiva \cite{cohn2009}. A estrutura do Scrum é especialmente útil
+em equipes maiores e em projetos em que a mudança de requisitos é frequente, pois favorece a
+entrega incremental de valor e a revisão contínua do produto. No caso do estágio, a metodologia
+não foi seguida em sua forma estrita, mas os princípios de priorização, transparência e
+acompanhamento incremental foram relevantes para organizar o desenvolvimento do módulo.
+
 
 \subsection{Extreme Programming (XP)}
+\label{subsec:extreme-programming-xp}
 
-O Extreme Programming (XP) enfatiza práticas de engenharia que aumentam a qualidade do software e a capacidade de responder rapidamente às mudanças de requisitos \cite{beck2004extreme}. Entre suas práticas mais conhecidas estão pequenas entregas, feedback frequente, desenvolvimento orientado a testes, integração contínua, refatoração e foco em simplicidade. Como o módulo foi implementado em um sistema legado, com regras de negócio bem definidas e necessidade de validação constante, o XP se mostrou mais alinhado ao ritmo de trabalho do que a execução rígida de cerimônias do Scrum. As entregas menores, os testes automatizados e a revisão contínua reduziram o risco de regressão e facilitaram a adaptação à estrutura já existente do Banco de Especialistas.
+O Extreme Programming (XP) enfatiza práticas de engenharia que aumentam a qualidade do software
+e a capacidade de responder rapidamente às mudanças de requisitos \cite{beck2004extreme}. Entre
+suas práticas mais conhecidas estão pequenas entregas, feedback frequente, desenvolvimento
+orientado a testes, integração contínua, refatoração e foco em simplicidade. Como o módulo foi
+implementado em um sistema legado, com regras de negócio bem definidas e necessidade de
+validação constante, o XP se mostrou mais alinhado ao ritmo de trabalho do que a execução
+rígida
+de cerimônias do Scrum. As entregas menores, os testes automatizados e a revisão contínua
+reduziram o risco de regressão e facilitaram a adaptação à estrutura já existente do Banco de
+Especialistas.
 
-A combinação de priorização em backlog, uso do OpenProject para o acompanhamento das atividades e adoção de práticas do XP permitiu manter um fluxo de trabalho disciplinado, mesmo em um contexto de desenvolvimento com escopo específico e um único responsável técnico. Essa abordagem equilibrou organização gerencial e rigor técnico, o que foi fundamental para a construção do módulo de solicitações.
+A combinação de priorização em backlog, uso do OpenProject para o acompanhamento das atividades
+e adoção de práticas do XP permitiu manter um fluxo de trabalho disciplinado, mesmo em um
+contexto de desenvolvimento com escopo específico e um único responsável técnico. Essa abordagem
+equilibrou organização gerencial e rigor técnico, o que foi fundamental para a construção do
+módulo de solicitações.
 
-\section{Flask}
 
-O Flask foi utilizado na API do módulo por permitir incorporar suas rotas à aplicação existente sem impor uma reorganização do sistema. Os \textit{blueprints} agruparam as operações de criação, análise, acompanhamento e reversão das solicitações em um componente isolado, preservando as demais funcionalidades e facilitando a manutenção do módulo \cite{flask2024}.
+\section{Tecnologias do Back-end}
+\label{sec:tecnologias-backend}
 
-\section{Persistência de dados com PostgreSQL e SQLAlchemy}
+\subsection{Flask e Blueprints}
+\label{subsec:flask-blueprints}
 
-O módulo utiliza PostgreSQL para armazenar solicitações, alterações cadastrais e registros de auditoria. A persistência dessas informações precisa manter o cadastro e o histórico coerentes, sobretudo quando uma decisão altera mais de uma entidade.
+O Flask foi utilizado na API do módulo por permitir incorporar suas rotas à aplicação existente
+sem impor uma reorganização do sistema. Os \textit{blueprints} agruparam as operações de
+criação, análise, acompanhamento e reversão das solicitações em um componente isolado,
+preservando as demais funcionalidades e facilitando a manutenção do módulo \cite{flask2024}.
 
 \subsection{PostgreSQL}
+\label{subsec:postgresql-transacoes}
 
-O PostgreSQL foi adequado por oferecer transações para as operações compostas do fluxo. Na aprovação, a mudança de categoria, a atualização da pontuação, a gravação do \textit{snapshot} do estado anterior e a atualização do status da solicitação devem ser confirmadas em conjunto; se uma etapa falhar, nenhuma alteração deve permanecer aplicada \cite{postgresql2024}.
+O módulo utiliza PostgreSQL para armazenar solicitações, alterações cadastrais e registros de
+auditoria. A persistência dessas informações precisa manter o cadastro e o histórico coerentes,
+sobretudo quando uma decisão altera mais de uma entidade.
 
-\subsection{JSONB}
+O PostgreSQL foi adequado por oferecer transações para as operações compostas do fluxo. Na
+aprovação, a mudança de categoria, a atualização da pontuação, a gravação do \textit{snapshot} 
+do estado anterior e a atualização do status da solicitação devem ser confirmadas em conjunto; 
+se uma etapa falhar, nenhuma alteração deve permanecer aplicada \cite{postgresql2024}.
 
-O PostgreSQL oferece o tipo de dado JSONB, que armazena documentos JSON de forma binária, permitindo consultas e indexação eficientes \cite{postgresql2024}. O módulo utiliza esse recurso para registrar o estado do especialista no momento da solicitação, preservando a categoria, a pontuação e outros atributos relevantes. Essa abordagem facilita a reversão de alterações e a auditoria das mudanças, mantendo o histórico completo das operações realizadas.
 
-\subsection{SQLAlchemy}
+\subsection{JSONB e Modelagem de Estado}
+\label{subsec:jsonb}
 
-O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades relacionadas em uma única unidade de trabalho \cite{bayer2012}. A sessão acumula as mudanças e, no \textit{commit}, efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo status da solicitação.
+O PostgreSQL oferece o tipo de dado JSONB, que armazena documentos JSON de forma binária,
+permitindo consultas e indexação eficientes \cite{postgresql2024}. O módulo utiliza esse recurso
+para registrar o estado do especialista no momento da solicitação, preservando a categoria, a
+pontuação e outros atributos relevantes. Essa abordagem facilita a reversão de alterações e a
+auditoria das mudanças, mantendo o histórico completo das operações realizadas.
+
+
+\subsection{SQLAlchemy e Unidade de Trabalho}
+\label{subsec:sqlalchemy-unidade-trabalho}
+
+O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades relacionadas em uma
+única unidade de trabalho \cite{bayer2012}. A sessão acumula as mudanças e, no \textit{commit},
+efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a
+aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo
+status da solicitação.
+
 
 \subsubsection{Mapeamento Objeto-Relacional e Estratégias de Herança}
+\label{subsubsec:mapeamento-objeto-relacional-estrategias-heranca}
 
-O SQLAlchemy oferece diferentes estratégias de herança para mapear hierarquias de classes. A estratégia Joined Table Inheritance (herança de tabela unida) cria tabelas separadas para a classe base e suas subclasses, sendo útil quando há muitos atributos exclusivos. Já a estratégia Single Table Inheritance (herança de tabela única) armazena os diferentes tipos de entidades em uma única tabela, utilizando uma coluna discriminadora. No módulo de solicitações, adotou-se o Single Table Inheritance para os tipos de solicitação (mudança de categoria, recurso e pontuação), pois eles compartilham a maior parte dos atributos, o que evita junções complexas e otimiza as consultas de listagem.
+O SQLAlchemy oferece diferentes estratégias de herança para mapear hierarquias de classes. A
+estratégia Joined Table Inheritance (herança de tabela unida) cria tabelas separadas para a
+classe base e suas subclasses, sendo útil quando há muitos atributos exclusivos. Já a estratégia
+Single Table Inheritance (herança de tabela única) armazena os diferentes tipos de entidades em
+uma única tabela, utilizando uma coluna discriminadora. No módulo de solicitações, adotou-se o
+Single Table Inheritance para os tipos de solicitação (mudança de categoria, recurso e
+pontuação), pois eles compartilham a maior parte dos atributos, o que evita junções complexas e
+otimiza as consultas de listagem.
 
-\section{Validação de Dados com Marshmallow e Flasgger}
 
-Na fronteira da API, os \textit{schemas} do Marshmallow validam os campos e formatos recebidos antes que os dados cheguem às regras de negócio \cite{marshmallow2024}. Ao declarar os formatos esperados para as solicitações e suas respostas, também estabelecem o contrato consumido pelas interfaces de criação, acompanhamento e análise do módulo.
+\subsection{Validação de Dados com Marshmallow e Flasgger}
+\label{subsec:validacao-dados-marshmallow-flasgger}
 
-Complementarmente, o Flasgger permite externalizar a documentação OpenAPI/Swagger dos endpoints em arquivos YAML, mantendo as descrições fora das funções das rotas e contribuindo para um código mais limpo \cite{flasgger2024}. Essa abordagem é aplicada no módulo por meio do decorador \texttt{@swag\_from}, como ilustrado no Algoritmo~\ref{alg:rota-criacao}.
-\section{Auditoria, Rastreabilidade e Versionamento de Dados}
+Na fronteira da API, os \textit{schemas} do Marshmallow validam os campos e formatos recebidos
+antes que os dados cheguem às regras de negócio \cite{marshmallow2024}. Ao declarar os formatos
+esperados para as solicitações e suas respostas, também estabelecem o contrato consumido pelas
+interfaces de criação, acompanhamento e análise do módulo.
 
-Esta seção reúne os conceitos que sustentam a principal contribuição do módulo: a capacidade de registrar, consultar e desfazer alterações cadastrais com garantias de rastreabilidade.
 
-\subsection{Auditoria e rastreabilidade}
+\section{Auditoria, Rastreabilidade e Versionamento}
+\label{sec:auditoria-rastreabilidade-versionamento}
 
-Auditoria, no contexto de sistemas de informação, é o registro sistemático de quem realizou determinada operação, quando, sobre qual dado e com qual resultado. A rastreabilidade é a propriedade que permite reconstituir o histórico de uma informação a partir desses registros. Fowler \cite{fowler2004} descreve o padrão \textit{Audit Log} como um registro de alterações feitas nos dados, com o objetivo de permitir verificar o que ocorreu e, quando necessário, compreender a origem de um estado atual. Em sistemas que envolvem decisões de classificação e seleção de pessoas, como o Banco de Especialistas, esse registro contribui para a transparência e para a responsabilização dos agentes envolvidos.
+Esta seção reúne os conceitos que sustentam a principal contribuição do módulo: a capacidade
+de registrar, consultar e desfazer alterações cadastrais com garantias de rastreabilidade.
 
-O fluxo anterior ao módulo, baseado em e-mail e execução manual de SQL, ilustra a ausência dessas propriedades: não havia registro formal do solicitante, da justificativa, do responsável pela decisão ou do estado anterior do cadastro. Ao formalizar a solicitação como uma entidade persistente, com status, autoria e datas, o sistema passa a produzir esse registro como efeito natural do próprio fluxo de trabalho.
 
-\subsection{Fluxo de aprovação com máquina de estados}
-\label{sec:maquina-estados}
+\subsection{Auditoria e Rastreabilidade}
+\label{subsec:auditoria-rastreabilidade}
 
-Uma solicitação percorre um ciclo de vida bem definido, que pode ser modelado como uma máquina de estados finitos: um conjunto de estados (por exemplo, pendente, aprovada e rejeitada) e de transições permitidas entre eles \cite{sommerville2011}. Explicitar as transições válidas evita estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o fluxo seja respeitado independentemente da interface utilizada.
+Auditoria, no contexto de sistemas de informação, é o registro sistemático de quem realizou
+determinada operação, quando, sobre qual dado e com qual resultado. A rastreabilidade é a
+propriedade que permite reconstituir o histórico de uma informação a partir desses registros.
+Fowler \cite{fowler2004} descreve o padrão \textit{Audit Log} como um registro de alterações
+feitas nos dados, com o objetivo de permitir verificar o que ocorreu e, quando necessário,
+compreender a origem de um estado atual. Em sistemas que envolvem decisões de classificação e
+seleção de pessoas, como o Banco de Especialistas, esse registro contribui para a transparência
+e para a responsabilização dos agentes envolvidos.
 
-\subsection{Snapshot e reversão}
+O fluxo anterior ao módulo, baseado em e-mail e execução manual de SQL, ilustra a ausência
+dessas propriedades: não havia registro formal do solicitante, da justificativa, do responsável
+pela decisão ou do estado anterior do cadastro. Ao formalizar a solicitação como uma entidade
+persistente, com status, autoria e datas, o sistema passa a produzir esse registro como efeito
+natural do próprio fluxo de trabalho.
 
-Para possibilitar a reversão de uma alteração, é necessário preservar o estado anterior dos dados. O conceito de \textit{snapshot} (instantâneo) consiste em capturar e armazenar o estado de um objeto em determinado momento. Ele se aproxima do padrão \textit{Memento}, descrito por Gamma et al. \cite{gamma1994}, cujo propósito é capturar o estado interno de um objeto, sem violar seu encapsulamento, para que ele possa ser restaurado posteriormente.
 
-No módulo, a entidade \textit{Snapshot} registra o estado relevante do especialista (como categoria e pontuação) antes da aplicação de uma alteração aprovada. A reversão consiste em restaurar esses valores, mantendo a consistência entre categoria e pontuação. Cabe distinguir essa abordagem da simples exclusão do registro de histórico: a reversão é, ela mesma, uma operação registrada, de modo que o histórico permanece completo e a operação inversa pode ser auditada. Esse comportamento é análogo à ideia de transações compensatórias, em que o efeito de uma operação já efetivada é desfeito por uma nova operação, e não pela remoção do passado.
+\subsection{Fluxo de Aprovação com Máquina de Estados}
+\label{subsec:fluxo-aprovacao-maquina-estados}
 
-Existem abordagens mais gerais para o versionamento de dados, como o \textit{Event Sourcing}, em que o estado é derivado de uma sequência imutável de eventos \cite{fowler2005, kleppmann2017}. O módulo adota uma solução mais simples e proporcional ao escopo, combinando \textit{snapshots} do estado anterior com um registro de eventos, e o conceito de \textit{Event Sourcing} é aqui mencionado como referência conceitual para a ideia de histórico imutável.
+Uma solicitação percorre um ciclo de vida bem definido, que pode ser modelado como uma máquina
+de estados finitos: um conjunto de estados (por exemplo, pendente, aprovada e rejeitada) e de
+transições permitidas entre eles \cite{sommerville2011}. Explicitar as transições válidas evita
+estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente
+uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o
+fluxo seja respeitado independentemente da interface utilizada.
 
-\subsection{Timeline e registro de eventos}
 
-A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos associados a uma entidade. Cada evento (criação, aprovação, rejeição, reversão) é registrado com seu tipo, autor, data e informações complementares, e a interface os exibe como uma linha do tempo. Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao administrador do banco de dados.
+\subsection{Snapshot e Reversão}
+\label{subsec:snapshot-reversao}
 
-\section{Front-end e interfaces}
+Para possibilitar a reversão de uma alteração, é necessário preservar o estado anterior dos
+dados. O conceito de \textit{snapshot} (instantâneo) consiste em capturar e armazenar o estado
+de um objeto em determinado momento. Ele se aproxima do padrão \textit{Memento}, descrito por
+Gamma et al. \cite{gamma1994}, cujo propósito é capturar o estado interno de um objeto, sem
+violar seu encapsulamento, para que ele possa ser restaurado posteriormente.
+
+No módulo, a entidade \textit{Snapshot} registra o estado relevante do especialista (como
+categoria e pontuação) antes da aplicação de uma alteração aprovada. A reversão consiste em
+restaurar esses valores, mantendo a consistência entre categoria e pontuação. Cabe distinguir
+essa abordagem da simples exclusão do registro de histórico: a reversão é, ela mesma, uma
+operação registrada, de modo que o histórico permanece completo e a operação inversa pode ser
+auditada. Esse comportamento é análogo à ideia de transações compensatórias, em que o efeito
+de uma operação já efetivada é desfeito por uma nova operação, e não pela remoção do
+passado.
+
+Existem abordagens mais gerais para o versionamento de dados, como o \textit{Event Sourcing}, em
+que o estado é derivado de uma sequência imutável de eventos \cite{fowler2005, kleppmann2017}. Embora o 
+Event Sourcing seja uma alternativa robusta, o módulo adota uma solução mais simples e proporcional ao 
+escopo, combinando \textit{snapshots} do estado anterior com um registro de eventos, e o conceito 
+de \textit{Event Sourcing} é aqui mencionado como referência conceitual para a ideia de histórico imutável.
+
+\subsection{Evento de Domínio e Domain-Driven Design}
+\label{subsec:evento-dominio-ddd}
+O Domain-Driven Design (DDD) é uma abordagem de design de software que coloca o domínio do
+negócio no centro do desenvolvimento, utilizando uma linguagem ubíqua para alinhar especialistas
+de negócio e desenvolvedores \cite{evans2003}. Dentro do DDD, o conceito de Evento de Domínio
+(Domain Event) representa algo significativo que aconteceu no domínio do problema. Um evento de
+domínio é, por definição, um registro imutável de um fato passado (por exemplo, "Solicitação
+Aprovada" ou "Categoria Alterada"), que captura a intenção e o contexto da operação
+\cite{evans2003}.
+
+No contexto do Banco de Especialistas, o módulo de revisão foi modelado sob essa ótica. A
+entidade SolicitationReview não atua apenas como uma tabela de auditoria, mas como o registro do
+Evento de Domínio que materializa a decisão tomada pelo avaliador. Ao registrar o evento (a
+revisão) de forma imutável e com autoria definida, o sistema garante que as transições de estado
+do especialista (como a mudança de categoria) sejam disparadas a partir de um fato consumado e
+rastreável, promovendo o desacoplamento entre a intenção (solicitação) e a sua efetivação
+(evento de aprovação).
+
+\subsection{Timeline e Registro de Eventos}
+\label{subsec:timeline-registro-eventos}
+
+A \textit{timeline} é a apresentação ordenada cronologicamente dos eventos associados a uma
+entidade. Cada evento (criação, aprovação, rejeição, reversão) é registrado com seu tipo,
+autor, data e informações complementares, e a interface os exibe como uma linha do tempo.
+Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao
+administrador do banco de dados.
+
+\section{Front-end e Controle de Acesso}
+\label{sec:front-end-controle-acesso}
 
 \subsection{Vue.js}
+\label{subsec:vue-js}
 
-O Vue.js é um framework progressivo para construção de interfaces de usuário, que permite criar componentes reativos e reutilizáveis. Ele facilita a ligação entre os dados do modelo e a apresentação na interface, garantindo que alterações nos dados sejam refletidas automaticamente na visualização \cite{vuejs2024}.
+O Vue.js é um framework progressivo para construção de interfaces de usuário, que permite criar
+componentes reativos e reutilizáveis. Ele facilita a ligação entre os dados do modelo e a
+apresentação na interface, garantindo que alterações nos dados sejam refletidas automaticamente
+na visualização \cite{vuejs2024}.
+
 
 \subsection{Nuxt}
-O Nuxt é um framework baseado em Vue.js que simplifica a criação de aplicações universais, com renderização no lado do servidor e geração de páginas estáticas. Ele oferece uma estrutura organizada
+\label{subsec:nuxt}
+
+O Nuxt é um framework baseado em Vue.js que simplifica a criação de aplicações universais, com
+renderização no lado do servidor e geração de páginas estáticas. Ele oferece uma estrutura
+organizada
+
 
 \subsection{RBAC e Controle de Acesso}
+\label{subsec:rbac-controle-acesso}
 
-O controle de acesso baseado em papéis (RBAC - Role-Based Access Control) é um modelo de segurança que restringe o acesso a recursos do sistema com base nas funções atribuídas aos usuários \cite{sandhu1996}. No módulo, diferentes papéis (como solicitante, analista e administrador) determinam as operações que cada usuário pode realizar, garantindo que apenas indivíduos autorizados possam aprovar, rejeitar ou reverter solicitações.
+O controle de acesso baseado em papéis (RBAC - Role-Based Access Control) é um modelo de
+segurança que restringe o acesso a recursos do sistema com base nas funções atribuídas aos
+usuários \cite{sandhu1996}. No módulo, diferentes papéis (como solicitante, analista e
+administrador) determinam as operações que cada usuário pode realizar, garantindo que apenas
+indivíduos autorizados possam aprovar, rejeitar ou reverter solicitações.
 
-\section{Verificação das Transições com Pytest}
 
-O Pytest foi empregado para verificar as regras de negócio do módulo, em especial as transições permitidas da máquina de estados: criação, aprovação, rejeição e reversão \cite{pytest2024}. Os testes também verificaram os efeitos dessas transições sobre a categoria, a pontuação e o histórico da solicitação.
+\section{Verificação e Ambiente}
+\label{sec:verificacao-ambiente}
 
-\section{Ambiente Reprodutível de Testes com Docker}
+\subsection{Testes Automatizados com Pytest}
+\label{subsec:testes-automatizados-pytest}
 
-O Docker foi utilizado para reproduzir o ambiente necessário aos testes de integração, incluindo a API e o PostgreSQL, de modo que a validação dos fluxos ocorresse sob uma configuração consistente entre execuções \cite{docker2024}.
+O Pytest foi empregado para verificar as regras de negócio do módulo, em especial as transições
+permitidas da máquina de estados: criação, aprovação, rejeição e reversão \cite{pytest2024}.
+Os testes também verificaram os efeitos dessas transições sobre a categoria, a pontuação e o
+histórico da solicitação.
 
-\section{Controle de Versão e Gestão de Configuração}
+\subsection{Ambiente Reprodutível com Docker}
+\label{subsec:ambiente-reprodutivel-docker}
 
-A gestão de configuração de software compreende a identificação, o controle e o registro das alterações realizadas nos artefatos de um projeto ao longo do tempo, de modo que seja possível reconstituir versões anteriores e identificar a origem de cada mudança \cite{sommerville2011}. O controle de versão é o mecanismo que concretiza esse registro sobre o código-fonte: cada alteração é capturada em um commit, com autor, data e descrição, e o histórico resultante permite recuperar estados anteriores do sistema.
+O Docker foi utilizado para reproduzir o ambiente necessário aos testes de integração, incluindo
+a API e o PostgreSQL, de modo que a validação dos fluxos ocorresse sob uma configuração
+consistente entre execuções \cite{docker2024}.
 
-O módulo utilizou Git \cite{git2026} para esse fim, com ramificações (branches) por funcionalidade, o que isolou o desenvolvimento do módulo das demais partes do Banco de Especialistas até que as alterações fossem verificadas. Os repositórios foram hospedados no GitLab \cite{gitlab2026}, adotado como padrão pelo Laboratório Assert para os projetos do Polo de Inovação. A integração contínua automatiza a execução de verificações, como a suíte de testes Pytest, a cada commit enviado ao repositório; neste projeto, essa execução é realizada por uma pipeline, impedindo que alterações que quebrem as regras de negócio sejam incorporadas à base principal.
+\section{Controle de Versão e Integração Contínua}
+\label{sec:controle-versao-integracao-continua}
 
-Cabe observar que o controle de versão atua sobre o código-fonte, e não sobre os dados da aplicação. A rastreabilidade das alterações cadastrais dos especialistas, tratada na seção 2.5, é um problema distinto, resolvido no domínio da aplicação por meio de solicitações, snapshots e registro de eventos.
+A gestão de configuração de software compreende a identificação, o controle e o registro das
+alterações realizadas nos artefatos de um projeto ao longo do tempo, de modo que seja possível
+reconstituir versões anteriores e identificar a origem de cada mudança \cite{sommerville2011}. O
+controle de versão é o mecanismo que concretiza esse registro sobre o código-fonte: cada
+alteração é capturada em um commit, com autor, data e descrição, e o histórico resultante
+permite recuperar estados anteriores do sistema.
+
+O módulo utilizou Git \cite{git2026} para esse fim, com ramificações (branches) por
+funcionalidade, o que isolou o desenvolvimento do módulo das demais partes do Banco de
+Especialistas até que as alterações fossem verificadas. Os repositórios foram hospedados no
+GitLab \cite{gitlab2026}, adotado como padrão pelo Laboratório Assert para os projetos do Polo
+de Inovação. A integração contínua automatiza a execução de verificações, como a suíte de
+testes Pytest, a cada commit enviado ao repositório; neste projeto, essa execução é realizada
+por uma pipeline, impedindo que alterações que quebrem as regras de negócio sejam incorporadas à
+base principal.
+
+Cabe observar que o controle de versão atua sobre o código-fonte, e não sobre os dados da
+aplicação. A rastreabilidade das alterações cadastrais dos especialistas, tratada na seção \ref{sec:auditoria-rastreabilidade-versionamento},
+é um problema distinto, resolvido no domínio da aplicação por meio de solicitações,
+snapshots e registro de eventos.
+
 
 \section{Síntese do Capítulo}
-
-As tecnologias e os conceitos apresentados compõem a base sobre a qual o módulo de solicitações foi desenvolvido. A arquitetura cliente-servidor e o estilo REST definem a forma de comunicação entre as interfaces e a API; o Flask estrutura a aplicação, o SQLAlchemy e o PostgreSQL garantem a persistência transacional, e o Marshmallow assegura a validação e o contrato dos dados. Os conceitos de auditoria, máquina de estados, \textit{snapshot} e registro de eventos sustentam os requisitos de rastreabilidade e reversão que motivaram o estágio. Por fim, o Pytest garante a verificação das regras de negócio, o Git organiza a colaboração e o Docker fornece o ambiente reprodutível de execução. O próximo capítulo descreve como esses elementos foram aplicados nas atividades realizadas.
+\label{sec:resumo-embasamento-teorico}
+As tecnologias e os conceitos apresentados compõem a base sobre a qual o
+módulo de solicitações foi desenvolvido. A arquitetura cliente-servidor e o
+estilo REST definem a forma de comunicação entre as interfaces e a API; o Flask
+estrutura a aplicação, o SQLAlchemy e o PostgreSQL garantem a persistência
+transacional, e o Marshmallow assegura a validação e o contrato dos dados. Os
+conceitos de auditoria, máquina de estados, \textit{snapshot} e registro de eventos
+sustentam os requisitos de rastreabilidade e reversão que motivaram o estágio. Por
+fim, o Pytest garante a verificação das regras de negócio, o Git organiza a
+colaboração e o Docker fornece o ambiente reprodutível de execução. O próximo
+capítulo descreve como esses elementos foram aplicados nas atividades realizadas.

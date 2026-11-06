@@ -3,15 +3,42 @@
 \chapter{INTRODUÇÃO}
 \label{chap:introducao}
 
-O presente relatório descreve as atividades desenvolvidas durante o estágio supervisionado realizado entre fevereiro e junho de 2026 no Laboratório Assert, vinculado ao Polo de Inovação do Instituto Federal da Paraíba (IFPB). As atividades concentraram-se na evolução do sistema Banco de Especialistas, plataforma destinada ao gerenciamento de especialistas e ao apoio à composição de equipes para projetos de Pesquisa, Desenvolvimento e Inovação (PD\&I).
+O presente relatório descreve as atividades desenvolvidas durante o estágio 
+supervisionado realizado entre fevereiro e junho de 2026 no Laboratório Assert, 
+ambiente de desenvolvimento do Polo de Inovação do Instituto Federal da Paraíba (IFPB). 
+O estágio contou com bolsa concedida pela Agência de Inovação (NEO-IFPB), e as atividades 
+concentraram-se na evolução do sistema Banco de Especialistas, plataforma destinada ao 
+gerenciamento de especialistas e ao apoio à composição de equipes para projetos de 
+Pesquisa, Desenvolvimento e Inovação (PD&I).
 
-O Banco de Especialistas permite o cadastro, a classificação e a avaliação de candidatos com base em critérios como formação acadêmica, experiência profissional e participação em projetos. Nesse contexto, a plataforma reúne informações utilizadas na gestão dos especialistas e nos processos de seleção e composição de equipes vinculadas às iniciativas do Polo de Inovação.
+O Banco de Especialistas permite o cadastro, a classificação e a avaliação 
+de candidatos com base em critérios como formação acadêmica, experiência 
+profissional e participação em projetos. Nesse contexto, a plataforma 
+reúne informações utilizadas na gestão dos especialistas e nos processos 
+de seleção e composição de equipes vinculadas às iniciativas do Polo de Inovação.
 
-Durante o estágio, identificou-se uma demanda relacionada à alteração de categoria dos especialistas. O procedimento então utilizado exigia que o interessado solicitasse a mudança por e-mail e que um administrador realizasse manualmente uma consulta SQL diretamente no banco de dados. A ausência de um fluxo formal de solicitações dificultava o acompanhamento das alterações e a recuperação do estado anterior dos registros, além de aumentar o risco de inconsistências decorrentes de intervenções diretas na base de dados.
+Durante o estágio, identificou-se uma demanda relacionada à alteração de 
+categoria dos especialistas. O procedimento então utilizado exigia que o 
+interessado solicitasse a mudança por e-mail e que um administrador realizasse 
+manualmente uma consulta SQL diretamente no banco de dados. A ausência de 
+um fluxo formal de solicitações dificultava o acompanhamento das alterações 
+e a recuperação do estado anterior dos registros, além de aumentar o risco de 
+inconsistências decorrentes de intervenções diretas na base de dados.
 
-Diante desse cenário, o trabalho concentrou-se no desenvolvimento de um módulo de solicitações para formalizar e gerenciar operações de alteração cadastral e de classificação dos especialistas. A solução contempla mecanismos para registrar solicitações, acompanhar seu andamento, permitir sua análise e decisão e manter informações necessárias à rastreabilidade das operações. Dessa forma, busca-se reduzir a dependência de intervenções manuais no banco de dados e estabelecer um processo mais controlado e verificável.
+Diante desse cenário, o trabalho concentrou-se no desenvolvimento de um 
+módulo de solicitações para formalizar e gerenciar operações de alteração 
+cadastral e de classificação dos especialistas. A solução contempla mecanismos 
+para registrar solicitações, acompanhar seu andamento, permitir sua análise 
+e decisão e manter informações necessárias à rastreabilidade das operações. 
+Dessa forma, busca-se reduzir a dependência de intervenções manuais no banco 
+de dados e estabelecer um processo mais controlado e verificável.
 
-Do ponto de vista técnico, o desenvolvimento envolveu conceitos de engenharia de software, aplicações web, persistência de dados relacionais, testes automatizados e conteinerização. Destacam-se a integração entre componentes de front-end e back-end, o uso de mecanismos de registro e recuperação do estado dos usuários e a manutenção de um histórico das operações. Esses fundamentos são apresentados no capítulo dedicado ao embasamento teórico.
+Do ponto de vista técnico, o desenvolvimento envolveu conceitos de engenharia 
+de software, aplicações web, persistência de dados relacionais, testes 
+automatizados e conteinerização. Destacam-se a integração entre componentes 
+de front-end e back-end, o uso de mecanismos de registro e recuperação do 
+estado dos usuários e a manutenção de um histórico das operações. Esses 
+fundamentos são apresentados no capítulo dedicado ao embasamento teórico.
 
 \input{estrutura/textuais/introducao/01-objetivos}
 \input{estrutura/textuais/introducao/02-escopo-limitacoes}
