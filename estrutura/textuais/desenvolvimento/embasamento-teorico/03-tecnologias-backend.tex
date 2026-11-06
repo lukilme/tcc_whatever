@@ -1,0 +1,60 @@
+\section{Tecnologias do Back-end}
+\label{sec:tecnologias-backend}
+
+\subsection{Flask e Blueprints}
+\label{subsec:flask-blueprints}
+
+O Flask foi utilizado na API do módulo por permitir incorporar suas rotas à aplicação existente
+sem impor uma reorganização do sistema. Os \textit{blueprints} agruparam as operações de
+criação, análise, acompanhamento e reversão das solicitações em um componente isolado,
+preservando as demais funcionalidades e facilitando a manutenção do módulo \cite{flask2024}.
+
+\subsection{PostgreSQL}
+\label{subsec:postgresql-transacoes}
+
+O módulo utiliza PostgreSQL para armazenar solicitações, alterações cadastrais e registros de
+auditoria. A persistência dessas informações precisa manter o cadastro e o histórico coerentes,
+sobretudo quando uma decisão altera mais de uma entidade.
+
+O PostgreSQL foi adequado por oferecer transações para as operações compostas do fluxo. Na
+aprovação, a mudança de categoria, a atualização da pontuação, a gravação do \textit{snapshot}
+do estado anterior e a atualização do status da solicitação devem ser confirmadas em conjunto;
+se uma etapa falhar, nenhuma alteração deve permanecer aplicada \cite{postgresql2024}.
+
+\subsection{JSONB e Modelagem de Estado}
+\label{subsec:jsonb}
+
+O PostgreSQL oferece o tipo de dado JSONB, que armazena documentos JSON de forma binária,
+permitindo consultas e indexação eficientes \cite{postgresql2024}. O módulo utiliza esse recurso
+para registrar o estado do especialista no momento da solicitação, preservando a categoria, a
+pontuação e outros atributos relevantes. Essa abordagem facilita a reversão de alterações e a
+auditoria das mudanças, mantendo o histórico completo das operações realizadas.
+
+\subsection{SQLAlchemy e Unidade de Trabalho}
+\label{subsec:sqlalchemy-unidade-trabalho}
+
+O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades relacionadas em uma
+única unidade de trabalho \cite{bayer2012}. A sessão acumula as mudanças e, no \textit{commit},
+efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a
+aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo
+status da solicitação.
+
+\subsubsection{Mapeamento Objeto-Relacional e Estratégias de Herança}
+\label{subsubsec:mapeamento-objeto-relacional-estrategias-heranca}
+
+O SQLAlchemy oferece diferentes estratégias de herança para mapear hierarquias de classes. A
+estratégia Joined Table Inheritance (herança de tabela unida) cria tabelas separadas para a
+classe base e suas subclasses, sendo útil quando há muitos atributos exclusivos. Já a estratégia
+Single Table Inheritance (herança de tabela única) armazena os diferentes tipos de entidades em
+uma única tabela, utilizando uma coluna discriminadora. No módulo de solicitações, adotou-se o
+Single Table Inheritance para os tipos de solicitação (mudança de categoria, recurso e
+pontuação), pois eles compartilham a maior parte dos atributos, o que evita junções complexas e
+otimiza as consultas de listagem.
+
+\subsection{Validação de Dados com Marshmallow e Flasgger}
+\label{subsec:validacao-dados-marshmallow-flasgger}
+
+Na fronteira da API, os \textit{schemas} do Marshmallow validam os campos e formatos recebidos
+antes que os dados cheguem às regras de negócio \cite{marshmallow2024}. Ao declarar os formatos
+esperados para as solicitações e suas respostas, também estabelecem o contrato consumido pelas
+interfaces de criação, acompanhamento e análise do módulo.

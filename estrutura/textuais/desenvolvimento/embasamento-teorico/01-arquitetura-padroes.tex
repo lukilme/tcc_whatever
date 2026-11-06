@@ -1,0 +1,81 @@
+\section{Arquitetura e Padrões de Aplicações Web}
+\label{sec:arquitetura-padroes-aplicacoes-web}
+
+\subsection{Cliente-Servidor}
+\label{subsec:cliente-servidor}
+A arquitetura cliente-servidor organiza um sistema distribuído em provedores de
+serviços e requisitantes \cite{Tanenbaum2007}. Nesse contexto, a comunicação
+orientada pelo estilo REST e pelo protocolo HTTP define interações sem estado,
+nas quais cada requisição é independente e deve carregar as informações
+necessárias ao seu processamento \cite{rfc9110}.
+
+\subsection{REST e HTTP}
+\label{subsec:rest-http}
+O estilo arquitetural REST (Representational State Transfer) define um conjunto de
+restrições que, quando aplicadas, promovem escalabilidade, simplicidade e independência
+entre cliente e servidor \cite{fielding2000}. A comunicação entre os componentes do
+sistema ocorre por meio de recursos identificados por URIs, manipulados por métodos
+HTTP (GET, POST, PUT, DELETE e etc.) e representados em formatos padronizados, como
+JSON ou XML. A aplicação dessas restrições permite que o cliente e o servidor
+evoluam de forma independente, desde que a interface entre eles permaneça consistente
+
+\begin{table}[!htb]
+    \centering
+    \caption[Códigos HTTP e suas aplicações no módulo]{Códigos HTTP, significados padrão e aplicações no módulo.
+    \label{tab:codigos-http}}
+    \begin{tabular}{@{}p{2.4cm}p{4cm}p{7.7cm}@{}}
+        \toprule
+        \textbf{Código HTTP} & \textbf{Significado padrão} & \textbf{Aplicação no módulo} \\
+        \midrule
+        200 & Sucesso & Consultas e operações concluídas com êxito. \\
+        201 & Recurso criado & Criação de uma nova solicitação. \\
+        400 & Requisição inválida & Erros de validação nos dados enviados. \\
+        401 & Falha de autenticação & Credenciais inválidas. \\
+        403 & Proibido & Tentativa de acesso a recurso sem permissão. \\
+        404 & Não encontrado & Solicitação ou recurso inexistente. \\
+        409 & Conflito de estado & Tentativa de transição inválida (por exemplo, reverter solicitação não aprovada). \\
+        \bottomrule
+    \end{tabular}
+    \fonte{Elaboração própria, com base em RFC 9110 \cite{rfc9110}.}
+\end{table}
+
+\subsection{MVC e Separação de Responsabilidade (SoC)}
+\label{subsec:mvc-soc}
+O padrão de arquitetura MVC (Model-View-Controller) organiza a aplicação em três
+componentes: o \textit{Model} representa os dados e as regras de negócio, a \textit{View}
+é responsável pela apresentação e interação com o usuário, e o \textit{Controller} atua
+como intermediário, recebendo as requisições da interface, manipulando os dados e retornando
+respostas \cite{gamma1994}. A separação de responsabilidades (SoC - Separation of Concerns)
+permite que cada componente evolua independentemente, desde que a interface entre eles
+permaneça consistente.
+
+\subsection{Service Layer}
+\label{subsec:service-layer}
+O padrão Service Layer organiza a lógica de negócio em uma camada intermediária entre
+o \textit{Controller} e o \textit{Model}, promovendo a reutilização de regras de negócio
+e a centralização das operações que envolvem múltiplas entidades \cite{fowler2002}. Essa
+abordagem facilita a manutenção do sistema, pois as alterações nas regras de negócio
+podem ser implementadas em um único local, sem impactar diretamente os controladores
+ou modelos individuais.
+
+\subsection{Additive Change}
+\label{subsec:additive-change}
+
+O padrão Additive Change descreve a evolução de um sistema por meio da adição de novas
+funcionalidades, em vez de modificar diretamente o código existente \cite{fowler2004}. Essa
+abordagem minimiza o risco de introduzir erros em funcionalidades já implementadas e permite que
+o sistema cresça de forma incremental, preservando a estabilidade e a confiabilidade das
+operações existentes. No contexto do módulo de solicitações, o Additive Change foi aplicado ao
+desenvolver novas rotinas para criação, análise e reversão de solicitações, sem alterar as
+funcionalidades já presentes no Banco de Especialistas.
+
+\subsection{OWASP e Segurança de Aplicações Web}
+\label{subsec:owasp-seguranca-aplicacoes-web}
+O Open Worldwide Application Security Project (OWASP) mantém o OWASP Top 10, uma lista
+de referência global que elenca os dez riscos de segurança mais críticos para aplicações
+web \cite{owasp2025}. A edição mais recente (2025) destaca que o Controle de Acesso Quebrado
+(Broken Access Control) permanece no topo do ranking como o risco mais sério, seguido por
+Configuração Insegura (Security Misconfiguration). Para um sistema que lida com dados de
+usuários e decisões administrativas, como o Banco de Especialistas, alinhar o desenvolvimento
+a esse referencial não é apenas uma boa prática, mas uma necessidade para mitigar
+vulnerabilidades exploráveis.

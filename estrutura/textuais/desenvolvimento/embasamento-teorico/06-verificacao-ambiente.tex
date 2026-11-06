@@ -1,0 +1,17 @@
+\section{Verificação e Ambiente}
+\label{sec:verificacao-ambiente}
+
+\subsection{Testes Automatizados com Pytest}
+\label{subsec:testes-automatizados-pytest}
+
+O Pytest foi empregado para verificar as regras de negócio do módulo, em especial as transições
+permitidas da máquina de estados: criação, aprovação, rejeição e reversão \cite{pytest2024}.
+Os testes também verificaram os efeitos dessas transições sobre a categoria, a pontuação e o
+histórico da solicitação.
+
+\subsection{Ambiente Reprodutível com Docker}
+\label{subsec:ambiente-reprodutivel-docker}
+
+O Docker foi utilizado para reproduzir o ambiente necessário aos testes de integração, incluindo
+a API e o PostgreSQL, de modo que a validação dos fluxos ocorresse sob uma configuração
+consistente entre execuções \cite{docker2024}.

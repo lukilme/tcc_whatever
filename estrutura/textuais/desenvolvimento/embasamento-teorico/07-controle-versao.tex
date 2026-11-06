@@ -1,0 +1,23 @@
+\section{Controle de Versão e Integração Contínua}
+\label{sec:controle-versao-integracao-continua}
+
+A gestão de configuração de software compreende a identificação, o controle e o registro das
+alterações realizadas nos artefatos de um projeto ao longo do tempo, de modo que seja possível
+reconstituir versões anteriores e identificar a origem de cada mudança \cite{sommerville2011}. O
+controle de versão é o mecanismo que concretiza esse registro sobre o código-fonte: cada
+alteração é capturada em um commit, com autor, data e descrição, e o histórico resultante
+permite recuperar estados anteriores do sistema.
+
+O módulo utilizou Git \cite{git2026} para esse fim, com ramificações (branches) por
+funcionalidade, o que isolou o desenvolvimento do módulo das demais partes do Banco de
+Especialistas até que as alterações fossem verificadas. Os repositórios foram hospedados no
+GitLab \cite{gitlab2026}, adotado como padrão pelo Laboratório Assert para os projetos do Polo
+de Inovação. A integração contínua automatiza a execução de verificações, como a suíte de
+testes Pytest, a cada commit enviado ao repositório; neste projeto, essa execução é realizada
+por uma pipeline, impedindo que alterações que quebrem as regras de negócio sejam incorporadas à
+base principal.
+
+Cabe observar que o controle de versão atua sobre o código-fonte, e não sobre os dados da
+aplicação. A rastreabilidade das alterações cadastrais dos especialistas, tratada na seção \ref{sec:auditoria-rastreabilidade-versionamento},
+é um problema distinto, resolvido no domínio da aplicação por meio de solicitações,
+snapshots e registro de eventos.
