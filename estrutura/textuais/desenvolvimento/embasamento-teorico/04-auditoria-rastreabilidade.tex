@@ -22,6 +22,9 @@ pela decisão ou do estado anterior do cadastro. Ao formalizar a solicitação c
 persistente, com status, autoria e datas, o sistema passa a produzir esse registro como efeito
 natural do próprio fluxo de trabalho.
 
+% #TO-DO: Ilustração que represente o fluxo anterior baseado em e-mails em constraste com o fluxo
+% formalizado pelo módulo.
+
 \subsection{Fluxo de Aprovação com Máquina de Estados}
 \label{subsec:fluxo-aprovacao-maquina-estados}
 
@@ -31,6 +34,8 @@ transições permitidas entre eles \cite{sommerville2011}. Explicitar as transi�
 estados incoerentes: uma solicitação rejeitada não pode ser aprovada sem nova análise, e somente
 uma solicitação aprovada pode ser revertida. A validação dessas regras no servidor garante que o
 fluxo seja respeitado independentemente da interface utilizada.
+
+% #TO-DO: diagrama UML de máquina de estados, mostrando estados reais do sistema.
 
 \subsection{Snapshot e Reversão}
 \label{subsec:snapshot-reversao}
@@ -55,6 +60,8 @@ que o estado é derivado de uma sequência imutável de eventos \cite{fowler2005
 Event Sourcing seja uma alternativa robusta, o módulo adota uma solução mais simples e proporcional ao
 escopo, combinando \textit{snapshots} do estado anterior com um registro de eventos, e o conceito
 de \textit{Event Sourcing} é aqui mencionado como referência conceitual para a ideia de histórico imutável.
+
+% TO-DO: Diagrama temporal que explique o antes, alteração e a restauração.
 
 \subsection{Evento de Domínio e Domain-Driven Design}
 \label{subsec:evento-dominio-ddd}
@@ -82,3 +89,6 @@ entidade. Cada evento (criação, aprovação, rejeição, reversão) é registr
 autor, data e informações complementares, e a interface os exibe como uma linha do tempo.
 Trata-se de uma forma de tornar a auditoria acessível ao usuário final, e não apenas ao
 administrador do banco de dados.
+
+% TO-DO: Imagem da tela da timeline mostrando diversos eventos de uma solicitação, 
+% incluindo a reversão de uma alteração.

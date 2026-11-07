@@ -39,6 +39,11 @@ evoluam de forma independente, desde que a interface entre eles permaneça consi
     \fonte{Elaboração própria, com base em RFC 9110 \cite{rfc9110}.}
 \end{table}
 
+% TO-DO: Um diagrama de arquitetura cliente-servidor, ilustrando a comunicação 
+% entre a interface, a API e o banco de dados, com destaque para a separação de 
+% responsabilidades e a independência entre os componentes.
+
+
 \subsection{MVC e Separação de Responsabilidade (SoC)}
 \label{subsec:mvc-soc}
 O padrão de arquitetura MVC (Model-View-Controller) organiza a aplicação em três
@@ -57,6 +62,9 @@ e a centralização das operações que envolvem múltiplas entidades \cite{fowl
 abordagem facilita a manutenção do sistema, pois as alterações nas regras de negócio
 podem ser implementadas em um único local, sem impactar diretamente os controladores
 ou modelos individuais.
+
+% TO-DO: Diagrama de camadas mostrando a separação entre Controller, Service Layer e Model,
+% com setas indicando a direção das chamadas e a independência entre as camadas.
 
 \subsection{Additive Change}
 \label{subsec:additive-change}

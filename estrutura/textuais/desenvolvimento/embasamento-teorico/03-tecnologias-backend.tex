@@ -30,6 +30,9 @@ para registrar o estado do especialista no momento da solicitação, preservando
 pontuação e outros atributos relevantes. Essa abordagem facilita a reversão de alterações e a
 auditoria das mudanças, mantendo o histórico completo das operações realizadas.
 
+% TO-DO: Exemplo visual de um registro JSONB, mostrando a categoria e pontuação antes da 
+% alteração, e o status da solicitação.
+
 \subsection{SQLAlchemy e Unidade de Trabalho}
 \label{subsec:sqlalchemy-unidade-trabalho}
 
@@ -38,6 +41,11 @@ O SQLAlchemy foi adotado como ORM para coordenar as alterações de entidades re
 efetiva-as na transação; em caso de falha, o \textit{rollback} descarta o conjunto. Assim, a
 aprovação não deixa a categoria atualizada sem o \textit{snapshot} correspondente ou sem o novo
 status da solicitação.
+
+% TO-DO: Diagrama de sequência mostrando a aprovação de uma solicitação, com a atualização da
+% categoria, a gravação do snapshot e a alteração do status da solicitação, tudo dentro
+% de uma única transação.
+ 
 
 \subsubsection{Mapeamento Objeto-Relacional e Estratégias de Herança}
 \label{subsubsec:mapeamento-objeto-relacional-estrategias-heranca}
