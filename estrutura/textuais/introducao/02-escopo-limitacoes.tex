@@ -1,37 +1,39 @@
 \section{Escopo e limitações}
 \label{sec:escopo-limitacoes}
 
-O trabalho abrange o desenvolvimento do módulo de solicitações e as
-funcionalidades necessárias ao gerenciamento das operações de alteração
-cadastral e de classificação dos especialistas no sistema Banco de
-Especialistas. Estão incluídos os mecanismos de registro, acompanhamento,
-decisão e reversão das solicitações, bem como os recursos de persistência e
-rastreabilidade associados a esse fluxo.
+O trabalho compreende o desenvolvimento de um módulo de solicitações para o
+gerenciamento das operações de alteração cadastral e de classificação dos
+especialistas no sistema Banco de Especialistas. O escopo contempla o registro,
+o acompanhamento, a análise e a decisão das solicitações, incluindo os
+mecanismos de persistência e rastreabilidade necessários à manutenção do
+histórico das operações.
 
-Para os fins deste trabalho, adotam-se as seguintes definições:
+Nesse contexto, são consideradas duas modalidades de solicitação:
 
 \begin{itemize}
-  \item \textbf{Solicitação de complemento cadastral:} requisição para que o
-  especialista seja submetido a nova avaliação, com a alteração de seu status
-  para COMPLEMENTAÇÃO e o consequente recálculo de sua pontuação, conforme as
-  regras de negócio aplicáveis.
+    \item \textbf{Complemento cadastral:} solicitação que submete o especialista
+    a uma nova avaliação, alterando seu status para COMPLEMENTAÇÃO e
+    desencadeando o recálculo de sua pontuação, conforme as regras de negócio
+    vigentes.
 
-  \item \textbf{Solicitação de mudança de classificação:} requisição de
-  alteração da categoria do especialista entre as categorias existentes
-  (estudante, colaborador externo e servidor), observadas as regras de negócio
-  que impedem, por exemplo, a transição para a mesma categoria e a aprovação
-  quando já existe retificação em curso.
+    \item \textbf{Mudança de classificação:} solicitação de alteração da
+    categoria do especialista entre estudante, colaborador externo e servidor.
+    A operação está sujeita às regras de negócio do sistema, incluindo
+    restrições à transição para a categoria atual e à aprovação quando já existe
+    uma retificação em andamento.
 \end{itemize}
 
-Não fazem parte do escopo a redefinição dos critérios de pontuação dos
-especialistas, a modificação do processo seletivo, a substituição do sistema de
-avaliação existente e a implementação de notificações por e-mail. Também não é
-contemplado o tratamento de múltiplas solicitações simultâneas para um mesmo
-especialista.
+O desenvolvimento não contempla a redefinição dos critérios de pontuação dos
+especialistas, a modificação do processo seletivo, a substituição do mecanismo
+de avaliação existente ou a implementação de notificações por e-mail.
+Também não faz parte do escopo o tratamento de múltiplas solicitações
+simultâneas para um mesmo especialista.
 
-O desenvolvimento foi conduzido por um único desenvolvedor, com restrições de
-prazo e de experiência. As decisões de arquitetura e de implementação foram
-fundamentadas em pesquisa, documentação técnica e experimentação, e validadas
-por testes automatizados e entregas incrementais. Como consequência, algumas
-escolhas privilegiam simplicidade e aderência ao sistema legado, em vez de uma
-solução ótima para todos os cenários.
+Quanto às limitações de execução, o trabalho foi desenvolvido por um único
+desenvolvedor, sob restrições de prazo e experiência. As decisões de
+arquitetura e implementação foram fundamentadas em pesquisa, documentação
+técnica e experimentação, sendo verificadas por meio de testes automatizados
+e entregas incrementais. Nesse cenário, algumas escolhas priorizaram a
+simplicidade de implementação e a compatibilidade com a arquitetura legada,
+em detrimento de soluções mais abrangentes para cenários não contemplados
+pelos requisitos do projeto.
