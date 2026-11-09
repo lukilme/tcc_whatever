@@ -1,21 +1,192 @@
 \section{Desenvolvimento das Interfaces Web}
 \label{sec:interfaces-web}
 
+A camada de interface do módulo de solicitações foi desenvolvida em Nuxt.js sobre Vue.js e
+Vuetify, seguindo a arquitetura já adotada pelo Banco de Especialistas. As telas e componentes
+descritos nesta seção materializam, no lado do cliente, os requisitos funcionais de criação,
+consulta e decisão definidos na Seção~3.1.5, consumindo a API implementada em Flask (Seção~3.2)
+e respeitando o controle de acesso por perfil (RNF03). A organização em \texttt{pages/},
+\texttt{components/}, \texttt{store/} e \texttt{layouts/} foi preservada, e o módulo novo foi
+incorporado como extensão das rotas e dos stores existentes, em coerência com a estratégia de
+\textit{Additive Change} (Seção~3.1.2).
+
 \subsection{Telas Criadas}
 
-Ainda a ser feito
+Foram implementadas três telas que cobrem o ciclo completo de uma solicitação: listagem
+administrativa, listagem do próprio solicitante e detalhe com revisão. As três
+compartilham o layout base da aplicação e a identidade visual do sistema, mas diferem em
+escopo, público e operações disponíveis.
+
+\subsubsection{Listagem administrativa --- \texttt{pages/solicitations/index.vue}}
+
+A tela \texttt{pages/solicitations/index.vue} é o painel administrativo de solicitações.
+Ela atende ao RF04 (consulta com filtros) e é destinada a usuários com perfil de
+visualização, em conformidade com o Quadro~3 da Seção~3.2.1.
+
+A tela carrega a lista via API no hook \texttt{created}, com paginação, ordenação e
+controle de itens por página. O estado local armazena \texttt{data} e
+\texttt{pagination} separadamente, o que permite atualizar a página sem recarregar o
+componente. Os campos exibidos são categoria, tipo do especialista, data de atualização
+e status, com CPF e tipo formatados para leitura. A tabela usa \texttt{v-data-table},
+com chips de status coloridos por chave e navegação para o detalhe ao clicar na linha.
+
+Do ponto de vista de projeto, a tela segue o padrão de composição do restante da aplicação:
+\texttt{template} para estrutura, \texttt{script} para carregamento, paginação e formatação,
+\texttt{style} para ajustes visuais e responsividade. O carregamento é tratado com indicador de
+\textit{loading} e mensagem de erro em caso de falha da API, o que evita que o usuário
+interprete uma tabela vazia como ausência de solicitações.
+
+\subsubsection{Listagem do solicitante --- \texttt{pages/solicitations/my\_solicitation.vue}}
+
+A tela \texttt{pages/solicitations/my\_solicitation.vue} é a visão do usuário final. Ela
+lista somente as solicitações do usuário autenticado, consumindo a rota
+\texttt{/solicitations/me} descrita na Seção~3.2.1, e restringe o resultado ao próprio
+solicitante independentemente do perfil --- o que concretiza, na interface, a regra de
+escopo já garantida no servidor.
+
+Diferentemente da listagem administrativa, que usa tabela, esta tela usa \textit{cards}
+com dados resumidos (título, tipo, status e data) e navegação por número de páginas. A
+escolha é deliberada: o público-alvo é o solicitante, que precisa acompanhar poucos
+pedidos e reconhecê-los rapidamente; a tabela, mais densa, é adequada ao avaliador, que
+precisa comparar muitos registros.
+
+A tela também concentra a regra de criação de novas solicitações. O botão ``Criar
+Solicitação'' é habilitado ou bloqueado conforme o retorno de
+\texttt{getDraftSolicitation()}: se a API responde 204 (sem rascunho em andamento), o
+botão é liberado; caso contrário, permanece bloqueado. Essa verificação espelha, no
+cliente, a regra de unicidade de solicitação em andamento descrita na Seção~3.1.3 e
+impede que o usuário inicie um segundo pedido antes de concluir o primeiro. A criação é
+feita em modal separado (\texttt{SolicitationModal}), o que mantém a listagem e o
+formulário desacoplados.
+
+\subsubsection{Detalhe e revisão --- \texttt{pages/solicitations/\_id.vue}}
+
+A tela \texttt{pages/solicitations/\_id.vue} é a mais completa do fluxo e atende aos
+RF04, RF05, RF06 e RF07. Ela carrega a solicitação por identificador, monta um objeto
+\texttt{solicitation} a partir da resposta da API (título, descrição, categoria,
+solicitante, CPF, perfil e anexo) e apresenta o painel de revisão com \texttt{v-form},
+\texttt{v-textarea} e botões de aprovar e recusar.
+
+A decisão é antecedida por três etapas. A primeira é a validação do formulário de revisão, que
+exige comentário e impede o envio em branco. A segunda é a confirmação explícita, exibida em
+diálogo que descreve o efeito da decisão --- por exemplo, ``a categoria do usuário será alterada
+de X para Y'' ---, o que reduz o risco de aprovação por engano em uma operação cujo efeito é
+sobre o cadastro do especialista. A terceira é o envio à API via
+\texttt{createReviewSolicitation}, com atualização imediata do estado local da interface em caso
+de sucesso.
+
+O tratamento de erros é específico por regra de negócio, e não genérico. O método
+\texttt{handleSubmissionError} diferencia casos como \texttt{RectifySpecialistNotAllowedError}
+(especialista impedido de finalizar a ação), \texttt{SolicitationNotAllowedError} e
+\texttt{SolicitationNotFoundError} (redirecionamento para a lista do usuário). Essa distinção é
+relevante porque a API já retorna códigos semânticos (Seção~3.2.4.3); a interface limita-se a
+traduzi-los em mensagens e fluxos adequados, sem reimplementar as regras no cliente.
 
 \subsection{Componentes Vue}
-\label{sec:componentes-vue}
 
-Ainda a ser feito
+Os componentes reutilizáveis concentram a lógica de apresentação e de entrada de dados que não
+pertence a uma tela específica. No escopo do módulo, o principal é o
+\texttt{SolicitationModal.vue}, que encapsula o formulário de criação de solicitações.
+
+O componente é um modal Vuetify com \texttt{v-form} e validação imediata, cobrindo
+título (máximo 128 caracteres), descrição (mínimo e máximo definidos por regra) e tipo
+da solicitação. Para o tipo ``mudança de categoria'', o campo ``Nova Categoria'' é
+exibido condicionalmente por meio de \texttt{v-if} e \texttt{transition}, refletindo no
+cliente a mesma lógica de esquema dinâmico que o backend implementa com
+\texttt{SCHEMA\_POR\_TIPO} (Algoritmo~2 da Seção~3.1.2). A correspondência entre os dois
+lados é intencional: a interface apenas antecipa, para conforto do usuário, uma
+restrição que o servidor já valida de forma autoritativa (RNF04).
+
+O componente também trata do upload de documentos. Quando o tipo de solicitação exige
+comprovação, o envio é bloqueado se o arquivo estiver ausente ou exceder o limite de
+2~MB. O envio é feito com \texttt{FormData}, o que permite transmitir campos textuais e
+o arquivo binário na mesma requisição, coerente com a rota \texttt{POST /solicitations}
+descrita na Seção~3.2.1, que aceita \texttt{multipart/form-data} quando há anexo. A
+validação no cliente é, novamente, antecipação da validação do servidor --- não
+substitui a checagem no backend, que permanece autoritativa.
+
+Além do \texttt{SolicitationModal}, o módulo reutiliza o \texttt{PreviewDocumentDialog},
+empregado na tela de detalhe para visualizar o anexo antes da decisão. O componente é
+anterior ao módulo e foi reaproveitado sem alteração, o que evidencia a compatibilidade
+da estratégia aditiva: a interface nova consome componentes já consolidados, sem
+reescrevê-los.
+
+No que diz respeito ao estado, as ações de acesso à API foram encapsuladas em módulos Vuex, em
+coerência com a organização existente. O módulo \texttt{store/specialists} expõe
+\texttt{getSolicitations} e demais ações consumidas pelas telas; o módulo \texttt{store/appeal}
+isola as operações de recurso (buscar por usuário, criar e concluir apelação). A separação por
+domínio mantém as páginas focadas em apresentação e delega o acesso a dados ao store, o que
+reduz acoplamento e facilita a reutilização das mesmas ações em telas distintas.
 
 \subsection{Integração frontend/backend}
-\label{sec:integracao-frontend-backend}
 
-Ainda a ser feito
+A integração entre a interface e a API foi implementada com Axios, configurado no
+contexto do Nuxt. As telas não fazem chamadas HTTP diretas: elas despacham ações Vuex ou
+utilizam o cliente injetado (\texttt{this.\$axios}), o que centraliza o tratamento de
+cabeçalhos, tokens e erros. Essa escolha é coerente com a arquitetura cliente-servidor e
+com o estilo REST descritos nas Seções~2.1.1 e 2.1.2, e é o que permite que a interface
+trate respostas de erro de forma padronizada.
+
+O contrato entre os dois lados é o definido pelos schemas Marshmallow (Seção~2.3.5) e
+documentado em Swagger. A interface envia os campos esperados e consome os campos retornados,
+sem depender de estruturas internas do backend. O mapeamento explícito feito em
+\texttt{getDetailSolicitation} --- que converte a resposta da API em um objeto
+\texttt{solicitation} com \texttt{createdBy}, \texttt{review} e \texttt{new\_specialist\_type}
+--- ilustra essa separação: a forma da resposta pode evoluir sem que os componentes da interface
+precisem ser reescritos, bastando ajustar o mapeamento na tela.
+
+O envio de arquivos usa \texttt{FormData}, como descrito em 3.4.2. O carregamento e o envio são
+acompanhados por indicadores visuais (\texttt{loading}, \texttt{loadingSolicitation},
+\texttt{loading.approve}), e o retorno é apresentado com \textit{snackbar} de sucesso ou de
+erro. O tratamento de erro distingue falhas de validação, de autorização e de regra de negócio,
+e redireciona o usuário quando a solicitação não existe ou não pertence a ele, o que evita que a
+interface permaneça em um estado inconsistente.
+
+Cabe registrar que a paginação é tratada de forma explícita nas duas listagens. Em
+\texttt{index.vue}, o objeto \texttt{localSolicitations} mantém \texttt{data} e
+\texttt{pagination} separados, e a tela atualiza apenas a página corrente ao navegar. Em
+\texttt{my\_solicitation.vue}, a navegação é feita por número de páginas, com o mesmo princípio.
+A consistência entre as duas telas foi deliberada: ambas consomem a mesma função auxiliar
+\texttt{\_fetch\_solicitations} no servidor (Seção~3.2.1), e manter o mesmo modelo de paginação
+no cliente simplifica a manutenção.
 
 \subsection{RBAC e controle de acesso}
-\label{sec:rbac-controle-acesso}
 
-Ainda a ser feito
+O controle de acesso foi implementado em duas camadas complementares. A camada
+autoritativa está no servidor, como descrito na Seção~3.2.3: as rotas verificam
+autenticação e perfil, e o serviço verifica se o solicitante tem acesso ao recurso. A
+camada de interface apenas reflete, para o usuário, o que o servidor já garante --- não
+substitui a verificação no backend e não é tratada como mecanismo de segurança.
+
+No cliente, o controle se manifesta de três formas. A primeira é a restrição de navegação: a
+listagem geral \texttt{index.vue} é acessível a usuários com perfil de visualização, enquanto
+\texttt{my\_solicitation.vue} é a visão do solicitante, restrita por natureza ao próprio
+usuário. A segunda é a exibição condicional de operações: o botão de criação é habilitado
+somente quando a API confirma que não há rascunho em andamento, e o painel de revisão em
+\texttt{\_id.vue} só é exibido a usuários com permissão de revisão. A terceira é o tratamento de
+erros de autorização: quando o servidor responde 403, a interface apresenta mensagem adequada e
+não insiste na operação.
+
+Essa divisão de responsabilidades é coerente com o modelo RBAC descrito na Seção~2.5.3. O perfil
+\texttt{SPECIALIST\_REVIEW} é exigido pelas rotas de revisão no servidor, e a interface apenas
+oculta o painel de decisão de quem não possui o perfil. A ocultação é conveniência de
+usabilidade, não controle de segurança: um usuário sem perfil que tente chamar a rota
+diretamente recebe 403 do servidor, o que preserva a integridade do fluxo independentemente da
+interface utilizada.
+
+\subsection{Síntese da seção}
+
+As interfaces web desenvolvidas cobrem o ciclo completo da solicitação: criação pelo
+solicitante, listagem administrativa, detalhe e decisão pelo avaliador. As três telas consomem a
+API implementada em Flask e respeitam o contrato definido pelos schemas, o que mantém a
+separação entre apresentação e regra de negócio. Os componentes reutilizáveis ---
+\texttt{SolicitationModal} e \texttt{PreviewDocumentDialog} --- e os módulos Vuex por domínio
+reduzem duplicação e preservam a organização existente. O controle de acesso é exercido de forma
+autoritativa no servidor e refletido na interface apenas como conveniência, em coerência com o
+modelo RBAC adotado.
+
+Com isso, os requisitos RF04, RF05, RF06 e RF07 passam a ter correspondência direta nas
+telas descritas, e o RF11 (restrição de operações a usuários autorizados) é atendido
+pela combinação entre as verificações do servidor e a exibição condicional na interface.
+A Seção~3.5, que trata da verificação, avalia o comportamento dessas telas de forma
+integrada à API.
