@@ -10,14 +10,13 @@ das funcionalidades era feita manualmente, por meio de requisições à API
 e inspeção do banco. Diante disso, a validação do módulo de solicitações 
 exigiu a construção prévia de uma base de testes reutilizável, que 
 pudesse ser aplicada não apenas ao módulo novo, mas a funcionalidades 
-futuras.
+futuras e garantindo o funcionamentos das funcionalidades existentes.
 
 A construção seguiu uma ordem deliberada. Primeiro, foi para funcionaldades básicas, que os novos módulos 
 não deveria nem interferir, as features relacionadas a criação de especialistas, tratamento de documentos,
 pontuação e RBAC. Em seguida, foram implementados 
 testes de regressão para as funcionalidades existentes que o novo módulo 
-afeta ou consome: mudança de categoria (\texttt{test\_change\_category.py}), 
-notificação (\texttt{test\_notification.py}), usuário (\texttt{test\_user.py}) 
+afeta ou consome: timeline (\texttt{test\_timeline.py}), usuário (\texttt{test\_user.py}) 
 e especialista (\texttt{test\_specialist.py}). Esses testes estabeleceram 
 uma linha de base — o comportamento que não poderia ser alterado. Só 
 depois dessa linha de base, foram implementados os testes do próprio 
@@ -142,47 +141,48 @@ seria preferível, desde que o cliente de testes fosse adaptado para
 participar da transação — o que exigiria reescrever os testes em um 
 estilo diferente. A escolha do \texttt{TRUNCATE} privilegia simplicidade 
 e robustez sobre desempenho, o que é adequado ao estágio atual do projeto.
-
-\subsection{Fixtures de Autenticação}
-\label{sec:fixtures-auth}
+\subsubsection{Fixtures de Autenticação}
 
 Os testes do módulo de solicitações exigem, em sua maioria, um usuário 
-autenticado — solicitante ou avaliador. Sem abstração, cada teste 
-precisaria criar o usuário, autenticar, obter o token e montar o cabeçalho 
-de autorização, o que repetiria cerca de quinze linhas de código por 
-teste. Para evitar essa repetição, foram implementadas duas fixtures de 
-autenticação: \texttt{auth\_specialist} e \texttt{auth\_administrator}.
+autenticado — solicitante ou avaliador. Sem abstração, cada teste precisaria 
+criar o usuário, realizar a autenticação, obter o token e montar o cabeçalho 
+de autorização, repetindo aproximadamente quinze linhas de código. 
+Para evitar essa duplicação, foram implementadas duas fixtures de autenticação: 
+\texttt{auth\_specialist} e \texttt{auth\_administrator}.
 
 A fixture \texttt{auth\_specialist} cria um usuário do tipo especialista 
-com dados gerados por \texttt{UserFake}, autentica-o via 
-\texttt{POST /users/login}, extrai o token da resposta e cria os dados 
-pessoais do especialista via \texttt{POST /specialists/personal\_data}. 
-Retorna o cabeçalho de autorização pronto para ser usado pelo cliente de 
-testes. A fixture aceita um payload opcional, o que permite que cada 
-teste ajuste os dados do usuário sem duplicar a lógica de autenticação.
+com dados gerados por \texttt{UserFake}, autentica-o via \texttt{POST /users/login}, 
+extrai o token da resposta e cria os dados pessoais do especialista via 
+\texttt{POST /specialists/personal\_data}. Retorna o cabeçalho de autorização 
+pronto para ser utilizado pelo cliente de testes. A fixture aceita um payload 
+opcional, permitindo que cada teste personalize os dados do usuário sem duplicar 
+a lógica de autenticação.
 
 A fixture \texttt{auth\_administrator} segue o mesmo padrão, mas cria um 
 usuário com perfil de administração (\texttt{ProfileEnum.ADMIN}) e tipo 
-de vínculo servidor. O identificador é fixo (\texttt{99999}), o que 
-permite que a fixture seja idempotente: se o usuário já existe, ele é 
-reaproveitado; se não, é criado. O perfil de administração é o que 
-satisfaz o \texttt{FeatureEnum.SPECIALIST\_REVIEW} exigido pelas rotas 
-de revisão, conforme a Seção~\ref{sec:endpoints}.
+de vínculo servidor. Utiliza identificador fixo (99999) para tornar o 
+usuário previsível nos testes e evitar dependência da sequência de IDs. 
+Como a fixture de sessão executa \texttt{TRUNCATE ... RESTART IDENTITY CASCADE} 
+antes de cada teste, o usuário é recriado a cada execução; não se 
+trata, portanto, de reaproveitamento entre testes, mas de um identificador 
+estável dentro de cada cenário. O perfil de administração satisfaz o 
+\texttt{FeatureEnum.SPECIALIST\_REVIEW}, exigido pelas rotas de revisão, 
+conforme apresentado na Seção~3.2.1.
 
-A separação em duas fixtures, em vez de uma fixture parametrizada, 
-justifica-se pela diferença de fluxo: o especialista precisa de dados 
-pessoais para estar completo no sistema, enquanto o administrador precisa 
-de perfil específico para acessar as rotas de revisão. Unificar em uma 
-única fixture forçaria condicionais no corpo da própria fixture, o que 
-prejudicaria a legibilidade. A duplicação de oito linhas entre as duas é 
-preferível à complexidade de uma fixture condicional.
+A separação em duas fixtures, em vez de uma parametrizada, decorre das 
+diferenças entre os fluxos de preparação: o especialista precisa de 
+dados pessoais para estar completo no sistema, enquanto o administrador 
+requer um perfil específico para acessar as rotas de revisão. A 
+unificação exigiria condicionais na própria fixture, tornando sua 
+implementação menos legível. Nesse contexto, a pequena duplicação de 
+código entre as duas implementações é preferível à introdução dessa 
+complexidade.
 
-O uso das fixtures reduz o boilerplate nos testes e, mais importante, 
-garante que a preparação de cada teste seja consistente: todos os 
-testes que exigem autenticação passam pelo mesmo fluxo, o que elimina 
-variações acidentais na preparação. Quando a lógica de autenticação mudar 
-— por exemplo, se o formato do token mudar —, a correção é feita em um 
-único lugar.
+O uso das fixtures reduz o código de preparação dos testes e centraliza 
+a lógica de autenticação, assegurando um fluxo consistente entre os 
+diferentes cenários. Dessa forma, eventuais alterações no processo de 
+autenticação, como mudanças no formato do token, podem ser tratadas em 
+um único ponto.
 
 \subsection{Testes de integração}
 
@@ -190,4 +190,42 @@ Os testes de integração verificaram a comunicação entre os módulos e a corr
 
 \subsection{Processo de Integração Contínua}
 
-O processo de integração contínua foi adotado como mecanismo de validação recorrente, permitindo automatizar a execução dos testes e reduzir erros durante o desenvolvimento. Esse fluxo contribui para manter a qualidade do código e garantir que novas alterações não comprometam o funcionamento do sistema.
+O processo de integração contínua foi adotado como mecanismo recorrente de validação, permitindo automatizar a execução dos testes e reduzir erros durante o desenvolvimento. Esse fluxo contribui para manter a qualidade do código e garantir que novas alterações não comprometam o funcionamento do sistema. A solução foi implementada com o GitLab CI, usando o Runner interno do Polo de Inovação, o que mantém a execução no ambiente institucional e alinhada à infraestrutura já adotada pelo Laboratório Assert (Seção~2.7).
+
+\subsubsection{Estrutura do Pipeline}
+
+O pipeline foi organizado em dois estágios sequenciais, \texttt{lint} e \texttt{test}, de modo que as verificações de estilo e tipagem precedem a execução da suíte de testes. Essa separação permite obter feedback rápido sobre problemas de formatação antes de se dispender tempo com a execução completa dos testes. A definição do pipeline foi escrita em \texttt{.gitlab-ci.yml}, versionada junto ao código, o que garante que a configuração acompanhe a evolução do projeto e seja reproduzível em outros ambientes.
+
+\paragraph{Estágio de lint}
+
+O job de lint está configurado com \texttt{allow\_failure: true}, o que o torna não bloqueante para o merge. A decisão é deliberada: as ferramentas de análise estática (\texttt{black}, \texttt{mypy} e \texttt{ruff}) foram adicionadas ao pipeline, mas as verificações efetivas encontram-se comentadas no arquivo de configuração; por ora, executa-se apenas a instalação das dependências. A motivação é evitar que ruído de formatação em código legado impeça a integração de alterações funcionais, sobretudo em um módulo novo convivendo com controladores que não seguem um padrão uniforme. A ativação das verificações como bloqueantes foi registrada como evolução prevista, condicionada à padronização prévia do código legado.
+
+\paragraph{Estágio de testes}
+
+Os jobs de teste herdam de um template comum, \texttt{.test\_template}, que define o estágio e a preparação do ambiente. Como a suíte depende de PostgreSQL e Redis, o template aguarda a disponibilidade de ambos antes de iniciar os testes: para o banco, utiliza-se \texttt{pg\_isready} em laço com intervalo de dois segundos; para o Redis, \texttt{redis-cli ping} com a mesma lógica. Essa espera ativa evita a condição de corrida típica de ambientes conteinerizados, em que o job de teste inicia antes de os serviços estarem prontos para aceitar conexões — uma falha intermitente, difícil de diagnosticar e que compromete a confiabilidade do pipeline.
+
+A execução dos testes foi dividida em quatro jobs por módulo, cada um responsável por um diretório de testes:
+
+\begin{itemize}
+\item \texttt{test-geral-module}, para \texttt{test/modules/geral};
+\item \texttt{test-user-module}, para \texttt{test/modules/user};
+\item \texttt{test-specialist-module}, para \texttt{test/modules/specialist};
+\item \texttt{test-solicitation-module}, para \texttt{test/modules/solicitation}.
+\end{itemize}
+
+Todos executam o \texttt{pytest} com saída verbosa e nível de log \texttt{INFO}, o que permite reconstituir a execução em caso de falha. Os jobs de especialista e de solicitação declaram \texttt{needs: [test-user-module]}, refletindo a dependência funcional entre esses módulos e o de usuário: como especialistas e solicitações referenciam usuários, uma falha no módulo base invalida a interpretação dos demais. A divisão por módulo foi preferida a um único \textit{job} com toda a suíte por dois motivos: o paralelismo reduz o tempo total de execução, e o detalhamento por módulo torna o diagnóstico mais direto — quando a pipeline falha, o job indica imediatamente qual área foi afetada.
+
+\subsubsection{Gatilhos e Bloqueio de Merge}
+
+O pipeline é executado tanto em \textit{push} quanto em \textit{merge request}. A 
+execução em \textit{push} fornece feedback contínuo ao desenvolvedor durante o 
+trabalho na ramificação; a execução em \textit{merge request} atua como verificação 
+prévia à integração à base principal. Em caso de falha em qualquer job de teste, 
+o merge é bloqueado, impedindo que alterações que quebrem as regras de negócio 
+ou o comportamento existente sejam incorporadas. A única exceção é o job de lint, 
+que, por estar configurado com \texttt{allow\_failure: true}, não bloqueia o merge 
+enquanto as verificações estiverem desativadas. Essa assimetria é intencional: os 
+testes representam a garantia mínima de correção e, por isso, bloqueiam; o lint, 
+no estágio atual, é informativo.
+
+A adoção do bloqueio no \textit{merge request}, e não apenas no \textit{push}, desloca a verificação para o momento em que ela é efetivamente decisiva: a integração. O desenvolvedor pode iterar livremente em sua ramificação, mas a base principal só recebe alterações que passaram pela suíte completa. Isso concretiza, no fluxo de trabalho, o princípio de que o controle de versão atua sobre o código e a integração contínua atua sobre a sua validade (Seção~2.7).
