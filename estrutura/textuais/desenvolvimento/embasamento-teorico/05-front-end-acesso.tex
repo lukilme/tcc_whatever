@@ -1,28 +1,68 @@
 \section{Front-end e Controle de Acesso}
 \label{sec:front-end-controle-acesso}
 
+As interfaces do módulo de solicitações foram construídas sobre a arquitetura já adotada pelo Banco de Especialistas, baseada em Vue.js, Nuxt e Vuetify. Este capítulo apresenta os conceitos que sustentam essa camada: o modelo de reatividade e composição do Vue.js, a organização de aplicações universais do Nuxt, o gerenciamento de estado com Vuex e o controle de acesso baseado em papéis (RBAC). A compreensão desses fundamentos é necessária porque as decisões de implementação descritas na Seção~\ref{sec:frontend-implementacao} — como a divisão entre listagem administrativa e listagem do solicitante, o uso de módulos Vuex por domínio e a exibição condicional do painel de revisão — não são arbitrárias: decorrem das propriedades dessas tecnologias e do modelo de segurança adotado.
+
 \subsection{Vue.js}
 \label{subsec:vue-js}
 
-O Vue.js é um framework progressivo para construção de interfaces de usuário, que permite criar
-componentes reativos e reutilizáveis. Ele facilita a ligação entre os dados do modelo e a
-apresentação na interface, garantindo que alterações nos dados sejam refletidas automaticamente
-na visualização \cite{vuejs2024}.
+O Vue.js é um \textit{framework} progressivo para construção de interfaces de usuário. O termo \textit{progressivo} designa uma característica central da biblioteca: ela pode ser adotada de forma incremental, desde o uso pontual em uma página existente até a estruturação completa de uma \textit{single-page application} (SPA) \cite{vuejs2024}. Essa propriedade é relevante no contexto do Banco de Especialistas, cujo front-end legado já estava consolidado em Vue.js; o módulo novo pôde ser incorporado sem exigir uma reescrita da camada de apresentação, em coerência com o princípio de \textit{Additive Change} discutido na Seção~\ref{subsec:additive-change}.
+
+O núcleo do Vue.js é o \textbf{sistema de reatividade}. Ao declarar dados no estado de um componente (\texttt{data}), o framework estabelece uma relação de dependência entre esses dados e os pontos da interface que os consomem. Quando o valor muda, o Vue identifica os componentes afetados e atualiza apenas as partes da árvore de renderização que dependem daquele dado, por meio de um \textit{virtual DOM}. Para o desenvolvedor, isso significa que a interface não precisa ser manipulada manualmente: a declaração do estado e a ligação (\textit{binding}) com a visualização bastam para que a atualização ocorra. No módulo de solicitações, essa propriedade sustenta comportamentos como a reação ao retorno de uma decisão de revisão — o estado local do componente é atualizado e a interface reflete o novo status sem que seja necessário recarregar a página (Seção~\ref{subsec:frontend-detalhe}).
+
+O Vue.js organiza a interface em \textbf{componentes}, unidades reutilizáveis que encapsulam estrutura, comportamento e estilo. No formato de \textit{Single-File Components} (SFC), cada componente é um arquivo \texttt{.vue} que reúne três blocos: \texttt{<template>}, com a marcação declarativa da interface; \texttt{<script>}, com a lógica de estado e comportamento; e \texttt{<style>}, com a apresentação visual. Essa coesão por componente é o que permite ao módulo isolar o formulário de criação em um componente próprio (\texttt{SolicitationModal}), reutilizável em telas distintas, e reaproveitar componentes legados como o \texttt{PreviewDocumentDialog} sem alterá-los (Seção~\ref{subsec:frontend-componentes}).
+
+A comunicação entre dados e interface é mediada por \textbf{diretivas}, atributos especiais aplicados no \textit{template} que expressam comportamentos reativos. O \texttt{v-model} estabelece ligação bidirecional entre um campo de formulário e uma propriedade do componente; \texttt{v-if} e \texttt{v-show} condicionam a renderização à avaliação de uma expressão; \texttt{v-for} itera sobre coleções. No módulo, essas diretivas são empregadas de forma sistemática: \texttt{v-model} sustenta todos os campos do formulário de criação; \texttt{v-if} controla a exibição condicional do campo “Nova Categoria” quando o tipo de solicitação é mudança de categoria; e \texttt{v-for} percorre a lista de solicitações na renderização dos \textit{cards}. A combinação dessas diretivas com o sistema de reatividade é o que torna o formulário adaptável ao tipo de pedido sem duplicação de código.
+
+Por fim, cabe distinguir as duas \textit{APIs} de composição do Vue.js. A \textbf{Options API}, adotada no projeto, organiza o componente em propriedades nomeadas (\texttt{data}, \texttt{methods}, \texttt{computed}, \texttt{created}, \texttt{watch}), o que torna explícita a separação entre estado, comportamento e ciclo de vida. A \textbf{Composition API}, introduzida em versões posteriores, permite agrupar a lógica por funcionalidade. A escolha da Options API no módulo não é técnica, mas de compatibilidade: o restante da aplicação a utiliza, e manter o mesmo estilo preserva a consistência e reduz a curva de aprendizado para quem for dar manutenção ao código.
 
 \subsection{Nuxt}
 \label{subsec:nuxt}
 
-O Nuxt é um framework baseado em Vue.js que simplifica a criação de aplicações universais, com
-renderização no lado do servidor e geração de páginas estáticas. Ele oferece uma estrutura
-organizada
+O Nuxt é um \textit{meta-framework} construído sobre o Vue.js que estrutura a aplicação e adiciona funcionalidades ausentes no \textit{framework} base. A principal delas é o \textbf{modo universal}: a aplicação pode ser renderizada no servidor (\textit{Server-Side Rendering}, SSR) e depois assumir o controle no cliente (\textit{Client-Side Rendering}, CSR), resultando em uma experiência híbrida \cite{nuxt2024}. O SSR entrega o HTML já populado na primeira requisição, o que melhora o tempo de primeira renderização percebida e a indexação por mecanismos de busca; a partir daí, a navegação subsequente ocorre como em uma SPA, sem recarregamento completo da página. Para o Banco de Especialistas, esse modelo é vantajoso porque a plataforma tem finalidade institucional e precisa ser acessível e indexável, mas também oferece interações intensas — como os formulários de solicitação e o painel de revisão — que se beneficiam da fluidez de uma SPA.
+
+O Nuxt impõe uma \textbf{estrutura de diretórios} que organiza a aplicação por responsabilidade. Os diretórios centrais são: \texttt{pages/}, que define as rotas por convenção de nome de arquivo; \texttt{components/}, que reúne componentes reutilizáveis; \texttt{layouts/}, que define a estrutura visual compartilhada; \texttt{store/}, que abriga os módulos de gerenciamento de estado (discutidos na Seção~\ref{subsec:vuex}); e \texttt{plugins/}, que registra extensões do \textit{framework} e do cliente HTTP. Essa organização é adotada integralmente no módulo: as telas ficam em \texttt{pages/solicitations/}, o modal em \texttt{components/users/SolicitationModal.vue} e os módulos de estado em \texttt{store/specialists} e \texttt{store/appeal}. A estrutura convencional reduz decisões de organização e garante que qualquer novo desenvolvedor encontre os artefatos nos lugares esperados — propriedade relevante em um contexto de manutenção por equipe.
+
+O \textbf{roteamento por arquivos} é outra característica central. Em vez de declarar rotas em um arquivo de configuração, o Nuxt as deriva da estrutura de \texttt{pages/}: o arquivo \texttt{pages/solicitations/index.vue} corresponde à rota \texttt{/solicitations}, e \texttt{pages/solicitations/_id.vue} corresponde a \texttt{/solicitations/:id}, com o parâmetro dinâmico identificado pelo sublinhado. As três telas do módulo são mapeadas por essa convenção (Seção~\ref{subsec:frontend-telas}), e a navegação entre elas é feita por \texttt{$router.push} a partir do identificador do registro. A convenção também explicita a hierarquia de recursos: o detalhe de uma solicitação é uma subrota da listagem, o que reflete a relação entre os recursos na API (\texttt{/solicitations} e \texttt{/solicitations/{id}}).
+
+O acesso à API é mediado pelo módulo \texttt{@nuxtjs/axios}, que injeta um cliente HTTP no contexto da aplicação e o disponibiliza em componentes e \textit{stores} por meio de \texttt{this.$axios}. No módulo, esse cliente é usado tanto diretamente nas telas (por exemplo, em \texttt{getDetailSolicitation}, que consulta \texttt{/solicitations/{id}}) quanto nos módulos Vuex (que encapsulam chamadas para \texttt{/appeals} e \texttt{/solicitations}). A centralização do cliente HTTP permite configurar cabeçalhos, tokens de autenticação e interceptadores de erro em um único lugar, o que reduz a duplicação e padroniza o tratamento de falhas na camada de interface.
+
+\subsection{Gerenciamento de estado com Vuex}
+\label{subsec:vuex}
+
+A medida que a interface cresce, o estado compartilhado entre componentes deixa de caber no escopo local de cada um. O Vuex resolve esse problema ao centralizar o estado da aplicação em um \textit{store} único, com regras explícitas de leitura e escrita \cite{vuex2024}. A arquitetura do Vuex organiza o fluxo de dados em quatro conceitos: o \textbf{state}, que armazena os dados; os \textbf{getters}, que expõem leituras derivadas; as \textbf{mutations}, que alteram o estado de forma síncrona e rastreável; e as \textbf{actions}, que orquestram operações assíncronas — tipicamente chamadas à API — e, ao final, disparam \textit{mutations} para atualizar o estado. Essa disciplina evita que múltiplos componentes alterem o mesmo dado de formas conflitantes e torna o fluxo de mudança de estado previsível.
+
+O Vuex permite dividir o \textit{store} em \textbf{módulos com namespace}, cada um responsável por um domínio da aplicação. O módulo de solicitações faz uso extensivo desse recurso: \texttt{store/specialists} expõe ações como \texttt{getSolicitations}, consumida pelas telas de listagem; e \texttt{store/appeal} isola as operações de recurso (\texttt{getAppealsListByUserId}, \texttt{createAppeal}, \texttt{completeAppeal}). A separação por domínio mantém as telas focadas em apresentação e delega o acesso a dados e a transformação de estado ao \textit{store}, o que reduz o acoplamento entre interface e API. A nomenclatura segue a convenção do Nuxt, em que o nome do arquivo define o \textit{namespace} do módulo, e as ações são despachadas com \texttt{mapActions} ou com o prefixo do domínio.
+
+No contexto do módulo, a adoção do Vuex não é apenas organizacional: ela é o que permite que a listagem e a criação compartilhem o mesmo estado de solicitações. Quando o modal de criação conclui o envio com sucesso, a listagem do solicitante pode refletir o novo registro sem que os dois componentes precisem se conhecer diretamente — o \textit{store} atua como intermediário. O mesmo princípio se aplica à atualização de status após uma decisão de revisão: a tela de detalhe atualiza o estado local e, se necessário, o \textit{store}, garantindo que a próxima navegação encontre os dados atualizados.
 
 \subsection{RBAC e Controle de Acesso}
 \label{subsec:rbac-controle-acesso}
 
-O controle de acesso baseado em papéis (RBAC - Role-Based Access Control) é um modelo de
-segurança que restringe o acesso a recursos do sistema com base nas funções atribuídas aos
-usuários \cite{sandhu1996}. No módulo, diferentes papéis (como solicitante, analista e
-administrador) determinam as operações que cada usuário pode realizar, garantindo que apenas
-indivíduos autorizados possam aprovar, rejeitar ou reverter solicitações.
+O controle de acesso baseado em papéis (\textit{Role-Based Access Control}, RBAC) é um modelo de segurança que restringe o acesso a recursos com base nas funções atribuídas aos usuários, e não em identidades individuais \cite{sandhu1996}. A ideia central é a separação entre \textbf{usuários}, \textbf{papéis} e \textbf{permissões}: usuários são associados a papéis; papéis agregam permissões; e permissões autorizam operações sobre recursos. Essa indireção simplifica a administração de segurança, porque a concessão ou revogação de um privilégio é feita sobre o papel, e não sobre cada usuário individualmente. Em um sistema que lida com dados de pessoas e decisões administrativas, como o Banco de Especialistas, esse modelo é particularmente adequado: os perfis de acesso são poucos e bem definidos, e a política de autorização precisa ser auditável.
 
-% TO-DO: tabela de papéis e permissões, mostrando quais ações cada papel pode realizar no módulo.
+A escolha do RBAC também se justifica pelo alinhamento com o OWASP Top 10. A edição mais recente do ranking mantém o \textit{Broken Access Control} na primeira posição dos riscos mais críticos para aplicações web \cite{glas2025}, o que reforça a necessidade de um modelo de autorização explícito, verificado no servidor e auditável. O módulo adota essa orientação em duas camadas complementares. A camada \textbf{autoritativa} está no servidor (Seção~\ref{subsec:frontend-rbac}): cada rota declara o perfil exigido por meio de um decorador (\texttt{@auth.login_required}), e o serviço verifica se o solicitante tem acesso ao recurso específico. A camada de \textbf{interface} apenas reflete, para o usuário, o que o servidor já garante — ocultando operações para as quais o usuário não tem permissão, mas sem substituir a verificação no \textit{backend}. Essa divisão é essencial: a ocultação de um botão é conveniência de usabilidade, não mecanismo de segurança; um usuário sem perfil que tente chamar a rota diretamente recebe \texttt{403} do servidor, preservando a integridade do fluxo.
+
+No módulo, os papéis não são mutuamente exclusivos: um mesmo usuário pode ser solicitante e, ao mesmo tempo, possuir a permissão de revisão, dependendo dos perfis e das \textit{features} associados à sua conta. A autorização é expressa, portanto, não apenas por papéis, mas pela combinação entre \textbf{perfil} (\texttt{ProfileEnum.ADMIN}) e \textbf{permissão} (\texttt{FeatureEnum.SPECIALIST_REVIEW}). O Quadro~\ref{quadro:papeis-permissoes} sintetiza as operações disponíveis no módulo e as condições que cada uma exige. As definições refletem o que está implementado no servidor (Seção~\ref{subsec:solicitacao-endpoints}); a interface apenas respeita essas restrições.
+
+\begin{table}[htb]
+\centering
+\caption{Papéis e permissões no módulo de solicitações.}
+\label{quadro:papeis-permissoes}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Operação} & \textbf{Solicitante} & \textbf{Avaliador} & \textbf{Administrador} & \textbf{Requisito} \
+\hline
+Criar solicitação & Sim & Sim & Sim & RF01--RF03 \
+Listar próprias solicitações & Sim & Sim & Sim & RF04 \
+Listar todas as solicitações & Não & Sim & Sim & RF04 \
+Consultar detalhe (própria) & Sim & Sim & Sim & RF04 \
+Consultar detalhe (qualquer) & Não & Sim & Sim & RF04 \
+Aprovar ou rejeitar & Não & Sim & Sim & RF05--RF07 \
+Reverter alteração aprovada & Não & Não & Sim & RF09 \
+\hline
+\end{tabular}
+\fonte{Elaboração própria (2026).}
+\end{table}
+
+A definição dos papéis operacionais é a seguinte. O \textbf{solicitante} é qualquer usuário autenticado que cria solicitações e acompanha as suas próprias; não tem acesso à listagem geral nem à decisão de revisão. O \textbf{avaliador} é o usuário que possui a \textit{feature} \texttt{SPECIALIST_REVIEW}, o que lhe permite listar todas as solicitações, consultar o detalhe de qualquer uma e proferir decisão de aprovação ou rejeição. O \textbf{administrador} acumula o perfil \texttt{ProfileEnum.ADMIN} e a \textit{feature} de revisão, e é o único habilitado a executar a reversão de uma alteração aprovada — operação de efeito sobre o cadastro do especialista que exige, pela sua gravidade, o nível mais alto de autorização. A tabela também explicita o que cada papel \textit{não} pode fazer: a coluna de requisito permite rastrear, para cada operação, o requisito funcional correspondente no Quadro~\ref{quadro:requisitos-funcionais} da Seção~\ref{subsec:requisitos-funcionais}, o que fecha a cadeia de rastreabilidade entre requisito, papel, operação e verificação.
