@@ -72,28 +72,32 @@
 \contentsline {subsection}{\numberline {3.3.4}Rastreabilidade e Limitações}{32}{subsection.3.3.4}%
 \contentsline {section}{\numberline {3.4}Desenvolvimento das Interfaces Web}{33}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}Telas Criadas}{33}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Componentes Vue}{33}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Integração frontend/backend}{33}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}RBAC e controle de acesso}{33}{subsection.3.4.4}%
-\contentsline {section}{\numberline {3.5}Testes e Validação}{34}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Construção da Infraestrutura de Testes}{34}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Isolamento entre Testes}{35}{subsection.3.5.2}%
-\contentsline {subsubsection}{\numberline {3.5.2.1}Fixtures de Autenticação}{37}{subsubsection.3.5.2.1}%
-\contentsline {subsection}{\numberline {3.5.3}Testes de integração}{37}{subsection.3.5.3}%
-\contentsline {subsection}{\numberline {3.5.4}Processo de Integração Contínua}{38}{subsection.3.5.4}%
-\contentsline {subsubsection}{\numberline {3.5.4.1}Estrutura do Pipeline}{38}{subsubsection.3.5.4.1}%
-\contentsline {paragraph}{\numberline {3.5.4.1.1}Estágio de lint}{38}{paragraph.3.5.4.1.1}%
-\contentsline {paragraph}{\numberline {3.5.4.1.2}Estágio de testes}{38}{paragraph.3.5.4.1.2}%
-\contentsline {subsubsection}{\numberline {3.5.4.2}Gatilhos e Bloqueio de Merge}{39}{subsubsection.3.5.4.2}%
-\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{40}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{41}{chapter*.17}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Listagem administrativa --- \texttt {pages/solicitations/index.vue}}{34}{subsubsection.3.4.1.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.2}Listagem do solicitante --- \texttt {pages/solicitations/my\_solicitation.vue}}{34}{subsubsection.3.4.1.2}%
+\contentsline {subsubsection}{\numberline {3.4.1.3}Detalhe e revisão --- \texttt {pages/solicitations/\_id.vue}}{34}{subsubsection.3.4.1.3}%
+\contentsline {subsection}{\numberline {3.4.2}Componentes Vue}{35}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Integração frontend/backend}{36}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}RBAC e controle de acesso}{36}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Síntese da seção}{37}{subsection.3.4.5}%
+\contentsline {section}{\numberline {3.5}Testes e Validação}{37}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Construção da Infraestrutura de Testes}{37}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Isolamento entre Testes}{39}{subsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.1}Fixtures de Autenticação}{39}{subsubsection.3.5.2.1}%
+\contentsline {subsection}{\numberline {3.5.3}Testes de integração}{41}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Processo de Integração Contínua}{41}{subsection.3.5.4}%
+\contentsline {subsubsection}{\numberline {3.5.4.1}Estrutura do Pipeline}{41}{subsubsection.3.5.4.1}%
+\contentsline {paragraph}{\numberline {3.5.4.1.1}Estágio de lint}{41}{paragraph.3.5.4.1.1}%
+\contentsline {paragraph}{\numberline {3.5.4.1.2}Estágio de testes}{41}{paragraph.3.5.4.1.2}%
+\contentsline {subsubsection}{\numberline {3.5.4.2}Gatilhos e Bloqueio de Merge}{42}{subsubsection.3.5.4.2}%
+\contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{43}{chapter.4}%
+\contentsline {chapter}{Refer\^encias}{44}{chapter*.17}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{43}{section*.18}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{44}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{45}{appendix.B}%
+\contentsline {part}{Ap\^endices}{46}{section*.18}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{47}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{48}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{46}{section*.19}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{47}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{48}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{49}{section*.19}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{50}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{51}{appendix.anexochapback.2}%
