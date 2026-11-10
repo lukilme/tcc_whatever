@@ -99,18 +99,18 @@ nos lugares esperados — propriedade relevante em um contexto de manutenção p
 O \textbf{roteamento por arquivos} é outra característica central. Em vez de declarar
 rotas em um arquivo de configuração, o Nuxt as deriva da estrutura de \texttt{pages/}: o
 arquivo \texttt{pages/solicitations/index.vue} corresponde à rota
-\texttt{/solicitations}, e \texttt{pages/solicitations/_id.vue} corresponde a
+\texttt{/solicitations}, e \texttt{pages/solicitations/\_id.vue} corresponde a
 \texttt{/solicitations/:id}, com o parâmetro dinâmico identificado pelo sublinhado. As
 três telas do módulo são mapeadas por essa convenção
 (Seção~\ref{subsec:frontend-telas}), e a navegação entre elas é feita por
-\texttt{$router.push} a partir do identificador do registro. A convenção também
+\texttt{\$router.push} a partir do identificador do registro. A convenção também
 explicita a hierarquia de recursos: o detalhe de uma solicitação é uma subrota da
 listagem, o que reflete a relação entre os recursos na API (\texttt{/solicitations} e
 \texttt{/solicitations/{id}}).
 
 O acesso à API é mediado pelo módulo \texttt{@nuxtjs/axios}, que injeta um cliente HTTP
 no contexto da aplicação e o disponibiliza em componentes e \textit{stores} por meio de
-\texttt{this.$axios}. No módulo, esse cliente é usado tanto diretamente nas telas (por
+\texttt{this.\$axios}. No módulo, esse cliente é usado tanto diretamente nas telas (por
 exemplo, em \texttt{getDetailSolicitation}, que consulta \texttt{/solicitations/{id}})
 quanto nos módulos Vuex (que encapsulam chamadas para \texttt{/appeals} e
 \texttt{/solicitations}). A centralização do cliente HTTP permite configurar cabeçalhos,
@@ -170,7 +170,7 @@ riscos mais críticos para aplicações web \cite{glas2025}, o que reforça a ne
 um modelo de autorização explícito, verificado no servidor e auditável. O módulo adota
 essa orientação em duas camadas complementares. A camada \textbf{autoritativa} está no
 servidor (Seção~\ref{subsec:frontend-rbac}): cada rota declara o perfil exigido por meio
-de um decorador (\texttt{@auth.login_required}), e o serviço verifica se o solicitante
+de um decorador (\texttt{@auth.login\_required}), e o serviço verifica se o solicitante
 tem acesso ao recurso específico. A camada de \textbf{interface} apenas reflete, para o
 usuário, o que o servidor já garante — ocultando operações para as quais o usuário não
 tem permissão, mas sem substituir a verificação no \textit{backend}. Essa divisão é
@@ -183,7 +183,7 @@ solicitante e, ao mesmo tempo, possuir a permissão de revisão, dependendo dos 
 das \textit{features} associados à sua conta. A autorização é expressa, portanto, não
 apenas por papéis, mas pela combinação entre \textbf{perfil}
 (\texttt{ProfileEnum.ADMIN}) e \textbf{permissão}
-(\texttt{FeatureEnum.SPECIALIST_REVIEW}). O Quadro~\ref{quadro:papeis-permissoes}
+(\texttt{FeatureEnum.SPECIALIST\_REVIEW}). O Quadro~\ref{quadro:papeis-permissoes}
 sintetiza as operações disponíveis no módulo e as condições que cada uma exige. As
 definições refletem o que está implementado no servidor
 (Seção~\ref{subsec:solicitacao-endpoints}); a interface apenas respeita essas
@@ -212,7 +212,7 @@ Reverter alteração aprovada & Não & Não & Sim & RF09 \\
 A definição dos papéis operacionais é a seguinte. O \textbf{solicitante} é qualquer
 usuário autenticado que cria solicitações e acompanha as suas próprias; não tem acesso à
 listagem geral nem à decisão de revisão. O \textbf{avaliador} é o usuário que possui a
-\textit{feature} \texttt{SPECIALIST_REVIEW}, o que lhe permite listar todas as
+\textit{feature} \texttt{SPECIALIST\_REVIEW}, o que lhe permite listar todas as
 solicitações, consultar o detalhe de qualquer uma e proferir decisão de aprovação ou
 rejeição. O \textbf{administrador} acumula o perfil \texttt{ProfileEnum.ADMIN} e a
 \textit{feature} de revisão, e é o único habilitado a executar a reversão de uma
