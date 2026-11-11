@@ -17,7 +17,8 @@ administrativa, listagem do próprio solicitante e detalhe com revisão. As trê
 compartilham o layout base da aplicação e a identidade visual do sistema, mas diferem em
 escopo, público e operações disponíveis.
 
-\subsubsection{Listagem administrativa --- \texttt{pages/solicitations/index.vue}}
+\subsubsection{Listagem administrativa}
+\todo{Adicionar descrição da listagem administrativa.}
 
 A tela \texttt{pages/solicitations/index.vue} é o painel administrativo de solicitações.
 Ela atende ao RF04 (consulta com filtros) e é destinada a usuários com perfil de
@@ -36,13 +37,21 @@ Do ponto de vista de projeto, a tela segue o padrão de composição do restante
 \textit{loading} e mensagem de erro em caso de falha da API, o que evita que o usuário
 interprete uma tabela vazia como ausência de solicitações.
 
-\subsubsection{Listagem do solicitante --- \texttt{pages/solicitations/my\_solicitation.vue}}
+% Nota padrão na margem
+% \todo{Revisar este parágrafo e adicionar referências.}
+
+% Nota em linha (inline) dentro do parágrafo
+
+
+\subsubsection{Listagem do solicitante}
 
 A tela \texttt{pages/solicitations/my\_solicitation.vue} é a visão do usuário final. Ela
 lista somente as solicitações do usuário autenticado, consumindo a rota
 \texttt{/solicitations/me} descrita na Seção~3.2.1, e restringe o resultado ao próprio
 solicitante independentemente do perfil --- o que concretiza, na interface, a regra de
 escopo já garantida no servidor.
+
+\todo[inline]{TODO:Imagem da tela de listagem do solicitante.}
 
 Diferentemente da listagem administrativa, que usa tabela, esta tela usa \textit{cards}
 com dados resumidos (título, tipo, status e data) e navegação por número de páginas. A
@@ -59,13 +68,15 @@ impede que o usuário inicie um segundo pedido antes de concluir o primeiro. A c
 feita em modal separado (\texttt{SolicitationModal}), o que mantém a listagem e o
 formulário desacoplados.
 
-\subsubsection{Detalhe e revisão --- \texttt{pages/solicitations/\_id.vue}}
+\subsubsection{Detalhe e revisão}
 
 A tela \texttt{pages/solicitations/\_id.vue} é a mais completa do fluxo e atende aos
 RF04, RF05, RF06 e RF07. Ela carrega a solicitação por identificador, monta um objeto
 \texttt{solicitation} a partir da resposta da API (título, descrição, categoria,
 solicitante, CPF, perfil e anexo) e apresenta o painel de revisão com \texttt{v-form},
 \texttt{v-textarea} e botões de aprovar e recusar.
+
+\todo[inline]{TODO:Imagem da tela de listagem do solicitante.}
 
 A decisão é antecedida por três etapas. A primeira é a validação do formulário de revisão, que
 exige comentário e impede o envio em branco. A segunda é a confirmação explícita, exibida em
@@ -87,6 +98,8 @@ traduzi-los em mensagens e fluxos adequados, sem reimplementar as regras no clie
 Os componentes reutilizáveis concentram a lógica de apresentação e de entrada de dados que não
 pertence a uma tela específica. No escopo do módulo, o principal é o
 \texttt{SolicitationModal.vue}, que encapsula o formulário de criação de solicitações.
+
+\todo[inline]{TODO:Ilustracão de um diagrama mostrando como a reautilização de componentes foi feita.}
 
 O componente é um modal Vuetify com \texttt{v-form} e validação imediata, cobrindo
 título (máximo 128 caracteres), descrição (mínimo e máximo definidos por regra) e tipo
@@ -128,9 +141,9 @@ com o estilo REST descritos nas Seções~2.1.1 e 2.1.2, e é o que permite que a
 trate respostas de erro de forma padronizada.
 
 O contrato entre os dois lados é o definido pelos schemas Marshmallow (Seção~2.3.5) e
-documentado em Swagger. A interface envia os campos esperados e consome os campos retornados,
-sem depender de estruturas internas do backend. O mapeamento explícito feito em
-\texttt{getDetailSolicitation} --- que converte a resposta da API em um objeto
+documentado e em partes legadas ainda validado pelo Swagger. A interface envia os campos 
+esperados e consome os campos retornados, sem depender de estruturas internas do backend. 
+O mapeamento explícito feito em \texttt{getDetailSolicitation} --- que converte a resposta da API em um objeto
 \texttt{solicitation} com \texttt{createdBy}, \texttt{review} e \texttt{new\_specialist\_type}
 --- ilustra essa separação: a forma da resposta pode evoluir sem que os componentes da interface
 precisem ser reescritos, bastando ajustar o mapeamento na tela.
@@ -175,6 +188,11 @@ diretamente recebe 403 do servidor, o que preserva a integridade do fluxo indepe
 interface utilizada.
 
 \subsection{Síntese da seção}
+
+\todo[inline]{TODO: Eu não gostei muito de escrever a parte da interface, então a qualidade do texto pode ser ruim.
+Então eu descidi escrever uma síntese da seção, que pode ser usada como conclusão e ajudar a entender melhor a sessão. 
+Talvez deva remover}
+
 
 As interfaces web desenvolvidas cobrem o ciclo completo da solicitação: criação pelo
 solicitante, listagem administrativa, detalhe e decisão pelo avaliador. As três telas consomem a

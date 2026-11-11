@@ -1,12 +1,12 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {algocf}{\numberline {1}{\ignorespaces Padrão de implementação observado em controladores existentes.}}{18}{algocf.1}%
-\contentsline {algocf}{\numberline {2}{\ignorespaces Estrutura do novo módulo, com separação de responsabilidades.}}{19}{algocf.2}%
-\contentsline {algocf}{\numberline {3}{\ignorespaces Estrutura da rota de criação de solicitação.}}{26}{algocf.3}%
-\contentsline {algocf}{\numberline {4}{\ignorespaces Estrutura da entidade \texttt {Solicitation} e enumerações de domínio (pseudocódigo).}}{28}{algocf.4}%
-\contentsline {algocf}{\numberline {5}{\ignorespaces Fluxo de reversão (pseudocódigo).}}{34}{algocf.5}%
-\contentsline {algocf}{\numberline {6}{\ignorespaces Limpeza de tabelas transacionais entre testes (pseudocódigo).}}{43}{algocf.6}%
+\contentsline {algocf}{\numberline {1}{\ignorespaces Padrão de implementação observado em controladores existentes.}}{19}{algocf.1}%
+\contentsline {algocf}{\numberline {2}{\ignorespaces Estrutura do novo módulo, com separação de responsabilidades.}}{20}{algocf.2}%
+\contentsline {algocf}{\numberline {3}{\ignorespaces Estrutura da rota de criação de solicitação.}}{27}{algocf.3}%
+\contentsline {algocf}{\numberline {4}{\ignorespaces Estrutura da entidade \texttt {Solicitation} e enumerações de domínio (pseudocódigo).}}{29}{algocf.4}%
+\contentsline {algocf}{\numberline {5}{\ignorespaces Fluxo de reversão (pseudocódigo).}}{35}{algocf.5}%
+\contentsline {algocf}{\numberline {6}{\ignorespaces Limpeza de tabelas transacionais entre testes (pseudocódigo).}}{44}{algocf.6}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

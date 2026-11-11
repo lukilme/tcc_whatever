@@ -1,0 +1,22 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nd}{@bp\PYGZus{}solicitacoes}\PYG{o}{.}\PYG{n}{route}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{,} \PYG{n}{methods}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}POST\PYGZsq{}}\PYG{p}{])}
+\PYG{n+nd}{@schema\PYGZus{}required}\PYG{p}{(}\PYG{n}{SolicitacaoCreateSchema}\PYG{p}{)}
+\PYG{k}{def} \PYG{n+nf}{criar\PYGZus{}solicitacao}\PYG{p}{(}\PYG{n}{payload}\PYG{p}{):}
+    \PYG{n}{solicitacao} \PYG{o}{=} \PYG{n}{solicitacao\PYGZus{}service}\PYG{o}{.}\PYG{n}{criar}\PYG{p}{(}
+        \PYG{n}{solicitante\PYGZus{}id}\PYG{o}{=}\PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{,}
+        \PYG{n}{tipo}\PYG{o}{=}\PYG{n}{payload}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}tipo\PYGZsq{}}\PYG{p}{],}
+        \PYG{n}{dados}\PYG{o}{=}\PYG{n}{payload}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}dados\PYGZsq{}}\PYG{p}{],}
+    \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{SolicitacaoSchema}\PYG{p}{()}\PYG{o}{.}\PYG{n}{dump}\PYG{p}{(}\PYG{n}{solicitacao}\PYG{p}{),} \PYG{n}{HTTPStatus}\PYG{o}{.}\PYG{n}{CREATED}
+
+
+\PYG{k}{def} \PYG{n+nf}{criar}\PYG{p}{(}\PYG{n}{solicitante\PYGZus{}id}\PYG{p}{,} \PYG{n}{tipo}\PYG{p}{,} \PYG{n}{dados}\PYG{p}{):}
+    \PYG{n}{campos} \PYG{o}{=} \PYG{n}{SCHEMA\PYGZus{}POR\PYGZus{}TIPO}\PYG{p}{[}\PYG{n}{tipo}\PYG{p}{]}\PYG{o}{.}\PYG{n}{load}\PYG{p}{(}\PYG{n}{dados}\PYG{p}{)}
+    \PYG{n}{solicitacao} \PYG{o}{=} \PYG{n}{Solicitacao}\PYG{p}{(}\PYG{o}{...}\PYG{p}{)}
+
+    \PYG{k}{with} \PYG{n}{db}\PYG{o}{.}\PYG{n}{session}\PYG{o}{.}\PYG{n}{begin\PYGZus{}nested}\PYG{p}{():}
+        \PYG{n}{db}\PYG{o}{.}\PYG{n}{session}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{solicitacao}\PYG{p}{)}
+        \PYG{n}{registrar\PYGZus{}evento}\PYG{p}{(}\PYG{n}{solicitacao}\PYG{p}{,} \PYG{n}{Evento}\PYG{o}{.}\PYG{n}{CRIADA}\PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n}{solicitacao}
+\end{Verbatim}

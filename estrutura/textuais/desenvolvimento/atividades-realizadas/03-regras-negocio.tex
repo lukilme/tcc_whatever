@@ -1,7 +1,19 @@
 \subsection{Análise das Regras de Negócio}
 \label{sec:regras-negocio}
-O sistema possui um modelo de regras de negócio relacionadas à classificação de especialistas e à alteração de seus dados cadastrais. Condições essas que deveriam ser respeitadas pela nova funcionalidade, bem como os efeitos das operações sobre os registros existentes.
+O sistema possui um modelo de regras de negócio relacionadas à classificação de especialistas 
+e à alteração de seus dados cadastrais. Condições essas que deveriam ser respeitadas pela nova 
+funcionalidade, bem como os efeitos das operações sobre os registros existentes.
 
-Um dos principais desafios identificados decorre da organização do modelo de dados da aplicação: a categoria do especialista é definida no modelo \textit{User}, e não diretamente no modelo \textit{Specialist}. Embora os especialistas compartilhem uma estrutura de usuário comum, suas categorias determinam especializações distintas, com atributos específicos para cada tipo. Essa organização exige que as operações de transição considerem as relações entre os modelos envolvidos, de modo a preservar a integridade dos dados durante a alteração cadastral.
+Um dos principais desafios identificados decorre da organização do modelo de dados da 
+aplicação: a categoria do especialista é definida no modelo \textit{User}, e não diretamente 
+no modelo \textit{Specialist}. Embora os especialistas compartilhem uma estrutura de usuário 
+comum, suas categorias determinam especializações distintas, com atributos específicos para 
+cada tipo. Essa organização exige que as operações de transição considerem as relações entre 
+os modelos envolvidos, de modo a preservar a integridade dos dados durante a alteração cadastral.
 
-Outro aspecto relevante consiste em assegurar a rastreabilidade das alterações e a possibilidade de preservar o estado anterior dos registros durante o fluxo de solicitação. Para isso, é necessário distinguir o registro de uma solicitação da efetivação da mudança, condicionando esta última ao resultado do processo de análise. Adicionalmente, as transições devem considerar os critérios de classificação e pontuação aplicáveis a cada categoria, a fim de evitar inconsistências decorrentes da alteração dos dados cadastrais.
+Outro aspecto relevante consiste em assegurar a rastreabilidade das alterações e a possibilidade 
+de preservar o estado anterior dos registros durante o fluxo de solicitação. Para isso, é 
+necessário distinguir o registro de uma solicitação da efetivação da mudança, condicionando 
+esta última ao resultado do processo de análise. Adicionalmente, as transições devem considerar 
+os critérios de classificação e pontuação aplicáveis a cada categoria, a fim de evitar 
+inconsistências decorrentes da alteração dos dados cadastrais.

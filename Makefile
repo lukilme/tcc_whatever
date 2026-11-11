@@ -20,6 +20,8 @@ OPENPDF     = evince
 all: clean compile2 clean2 open
 
 # Compilar o código fonte
+tcc:
+	latexmk -pdf -shell-escape -synctex=1 ifpb-tcc.tex
 
 compile:
 	@echo "Compilando os Arquivos"

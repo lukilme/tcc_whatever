@@ -11,7 +11,7 @@ A seguir, é apresentado o padrão observado em controladores existentes, eviden
 \begin{algorithm}[htbp]
 \caption{Padrão de implementação observado em controladores existentes.}
 \label{alg:legado}
-\begin{verbatim}
+\begin{minted}{python}
 @bp.route('', methods=['POST'])
 @swag.validate('UserRegistration')
 def register():
@@ -43,7 +43,7 @@ def register():
     create_notification(title='Boas vindas!', message=msg, user=user)
 
     return UserSchema().dump(user), HTTPStatus.CREATED
-\end{verbatim}
+\end{minted}
 \end{algorithm}
 
 O padrão exemplificado no Algoritmo~\ref{alg:legado} demonstra a forma como os controladores legados eram organizados. Em uma mesma função, eram concentradas validação de entrada, construção do objeto de domínio, hash de senha, persistência no banco de dados, tratamento de erros de integridade, registro de timeline, envio de notificação e serialização da resposta. A validação dos dados de entrada era realizada pelo Flasgger, por meio do decorador \texttt{@swag.validate}, que verificava os dados conforme o schema associado à operação. Assim, a documentação Swagger também era utilizada como base para a validação das requisições.
@@ -55,7 +55,7 @@ A comparação com o novo módulo evidencia a importância da abordagem incremen
 \begin{algorithm}[htbp]
 \caption{Estrutura do novo módulo, com separação de responsabilidades.}
 \label{alg:novo}
-\begin{verbatim}
+\begin{minted}{python}
 @bp_solicitacoes.route('', methods=['POST'])
 @schema_required(SolicitacaoCreateSchema)
 def criar_solicitacao(payload):
@@ -76,7 +76,7 @@ def criar(solicitante_id, tipo, dados):
         registrar_evento(solicitacao, Evento.CRIADA)
 
     return solicitacao
-\end{verbatim}
+\end{minted}
 \end{algorithm}
 
 O Algoritmo~\ref{alg:novo} ilustra o padrão adotado no novo módulo. A validação ocorre na fronteira, por meio do decorador \texttt{@schema\_required(SolicitacaoCreateSchema)}, de modo que o serviço recebe um payload já validado. O controlador limita-se a delegar a execução ao serviço e serializar a resposta, sem concentrar hash, tratamento de erro do banco ou envio de notificações. A seleção do schema por tipo, por meio de \texttt{SCHEMA\_POR\_TIPO[tipo].load(dados)}, representa o mecanismo das restrições dinâmicas descritas na análise de regras de negócio e reforça a separação entre validação e persistência. Por fim, a persistência e o registro do evento são agrupados em uma mesma unidade de trabalho, eliminando o intervalo entre o commit e os efeitos colaterais observado no Algoritmo~\ref{alg:legado}.

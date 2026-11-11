@@ -72,14 +72,14 @@ referência viva, e não há como garantir que os campos correspondam ao
 esquema atual do especialista depois de migrations futuras. O formato 
 não é validado pelo banco: a estrutura do documento depende da aplicação 
 que o grava. Essas limitações são aceitáveis no escopo do módulo, porque 
-o snapshot é um registro histórico e **deve** preservar o estado como 
+o snapshot é um registro histórico e deve preservar o estado como 
 era no momento da captura, e não acompanhar a evolução do esquema. A 
 alternativa — colunas relacionais com FK para as tabelas de origem — 
 traria integridade, mas produziria snapshots que se corrompem quando a 
 tabela de origem muda, anulando o propósito de preservar o estado anterior.
 
 A captura é feita antes da aplicação dos efeitos e dentro da mesma 
-unidade de trabalho da aprovação (Seção~\ref{sec:efeitos-por-tipo}): o 
+unidade de trabalho da aprovação (Seção~\ref{subsubsec:revisao-como-evento-dominio}): o 
 snapshot, a mudança de categoria e o registro da revisão são confirmados 
 em conjunto. Se qualquer etapa falhar, o snapshot é descartado junto, 
 garantindo que ele exista se e somente se a alteração correspondente foi 

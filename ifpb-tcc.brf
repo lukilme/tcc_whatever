@@ -10,26 +10,26 @@
 \backcite {cohn2009}{{7}{2.2}{section.2.2}}
 \backcite {openproject2026}{{7}{2.2.1}{subsection.2.2.1}}
 \backcite {cohn2009}{{7}{2.2.2}{subsection.2.2.2}}
-\backcite {beck2004extreme}{{7}{2.2.3}{subsection.2.2.3}}
+\backcite {beck2004extreme}{{8}{2.2.3}{subsection.2.2.3}}
 \backcite {flask2024}{{8}{2.3.1}{subsection.2.3.1}}
 \backcite {postgresql2024}{{8}{2.3.2}{subsection.2.3.2}}
-\backcite {postgresql2024}{{8}{2.3.3}{subsection.2.3.3}}
-\backcite {bayer2012}{{8}{2.3.4}{subsection.2.3.4}}
+\backcite {postgresql2024}{{9}{2.3.3}{subsection.2.3.3}}
+\backcite {bayer2012}{{9}{2.3.4}{subsection.2.3.4}}
 \backcite {marshmallow2024}{{9}{2.3.5}{subsection.2.3.5}}
-\backcite {fowler2004}{{9}{2.4.1}{subsection.2.4.1}}
+\backcite {fowler2004}{{10}{2.4.1}{subsection.2.4.1}}
 \backcite {sommerville2011}{{10}{2.4.2}{subsection.2.4.2}}
 \backcite {gamma1994}{{10}{2.4.3}{subsection.2.4.3}}
-\backcite {fowler2005, kleppmann2017}{{10}{2.4.3}{subsection.2.4.3}}
-\backcite {fowler2005, kleppmann2017}{{10}{2.4.3}{subsection.2.4.3}}
-\backcite {evans2003}{{10}{2.4.4}{subsection.2.4.4}}
+\backcite {fowler2005, kleppmann2017}{{11}{2.4.3}{subsection.2.4.3}}
+\backcite {fowler2005, kleppmann2017}{{11}{2.4.3}{subsection.2.4.3}}
 \backcite {evans2003}{{11}{2.4.4}{subsection.2.4.4}}
-\backcite {vuejs2024}{{11}{2.5.1}{subsection.2.5.1}}
-\backcite {nuxt2024}{{12}{2.5.2}{subsection.2.5.2}}
-\backcite {vuex2024}{{13}{2.5.3}{subsection.2.5.3}}
-\backcite {sandhu1996}{{14}{2.5.4}{subsection.2.5.4}}
-\backcite {glas2025}{{14}{2.5.4}{subsection.2.5.4}}
-\backcite {pytest2024}{{15}{2.6.1}{subsection.2.6.1}}
+\backcite {evans2003}{{11}{2.4.4}{subsection.2.4.4}}
+\backcite {vuejs2024}{{12}{2.5.1}{subsection.2.5.1}}
+\backcite {nuxt2024}{{13}{2.5.2}{subsection.2.5.2}}
+\backcite {vuex2024}{{14}{2.5.3}{subsection.2.5.3}}
+\backcite {sandhu1996}{{15}{2.5.4}{subsection.2.5.4}}
+\backcite {glas2025}{{15}{2.5.4}{subsection.2.5.4}}
+\backcite {pytest2024}{{16}{2.6.1}{subsection.2.6.1}}
 \backcite {docker2024}{{16}{2.6.2}{subsection.2.6.2}}
 \backcite {sommerville2011}{{16}{2.7}{section.2.7}}
-\backcite {git2026}{{16}{2.7}{section.2.7}}
-\backcite {gitlab2026}{{16}{2.7}{section.2.7}}
+\backcite {git2026}{{17}{2.7}{section.2.7}}
+\backcite {gitlab2026}{{17}{2.7}{section.2.7}}
