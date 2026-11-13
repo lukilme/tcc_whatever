@@ -1,3 +1,67 @@
 \section{Síntese}
 \label{sec:sintese}
 
+No que se refere ao levantamento de requisitos e à modelagem, 
+o estudo da arquitetura e das regras de negócio do sistema 
+existente, descrito na Seção~\ref{sec:fluxo-antigo} e na 
+Seção~\ref{sec:regras-negocio}, resultou na especificação dos 
+requisitos funcionais RF01–RF11 e não funcionais RNF01-RNF08. 
+A modelagem de persistência materializou-se em uma tabela única 
+polimórfica para os três tipos de solicitação, acompanhada de 
+tabelas de referência para estados e categorias e de índices 
+definidos a partir das consultas efetivamente implementadas, 
+conforme a Seção~\ref{sec:modulo-solicitacoes}, o que 
+concentrou a lógica de listagem e filtragem em uma única 
+consulta e preservou a integridade referencial no banco.
+
+No back-end, a implementação do SolicitationService e das 
+rotas em Blueprint separou a validação de entrada, a regra 
+de negócio e a persistência, em contraste com o padrão 
+concentrado dos controladores legados. A validação na 
+fronteira ficou a cargo dos schemas Marshmallow (RNF04), e o 
+controle de acesso foi aplicado no servidor por meio de 
+verificação de perfil e permissão, em conformidade com o modelo 
+RBAC adotado, conforme descrito na Seção~\ref{sec:modulo-solicitacoes}. 
+A integração transacional com PostgreSQL e SQLAlchemy garantiu 
+que a aprovação, a mudança de categoria, a gravação do snapshot 
+e a atualização do status da solicitação fossem confirmadas em 
+conjunto (RNF01), eliminando o intervalo entre o commit e os 
+efeitos colaterais observado no fluxo legado.
+
+No front-end, foram entregues três telas que cobrem o 
+ciclo completo da solicitação — listagem administrativa, 
+listagem do solicitante e detalhe com revisão —, além do 
+componente reutilizável SolicitationModal e do reaproveitamento 
+do PreviewDocumentDialog sem alteração, conforme a 
+Seção~\ref{sec:interfaces-web}. A integração com a API 
+foi mediada por Axios e por módulos Vuex organizados por 
+domínio, e o controle de acesso foi refletido na interface 
+apenas como conveniência de usabilidade, mantendo a 
+verificação autoritativa no servidor.
+
+Na rastreabilidade, a entidade SpecialistSnapshot com 
+armazenamento em JSONB preservou o estado anterior do 
+especialista antes de cada alteração aprovada; a reversão 
+foi implementada como operação registrada, e não como 
+exclusão de histórico; e a linha do tempo foi derivada 
+das entidades que já registram cada evento, evitando 
+duplicação de informação, conforme a Seção~\ref{sec:snapshot-auditoria}. 
+O conjunto atendeu às três dimensões da 
+rastreabilidade — temporal, autoral e semântica —, 
+permitindo reconstituir, para cada solicitação, quem pediu,
+ quem decidiu, quando, com qual justificativa e de qual estado para qual estado.
+
+Nos testes e na integração contínua, foi construída 
+uma suíte de 89 testes, distribuída entre 44 testes 
+do módulo novo e 45 testes de regressão, com isolamento 
+entre testes por TRUNCATE e fixtures de autenticação que 
+centralizaram a preparação dos cenários, conforme a Seção~\ref{sec:testes-validacao}. 
+O pipeline GitLab CI foi organizado nos estágios de lint e 
+test, com bloqueio de merge em caso de falha nos testes, 
+o que deslocou a verificação para o momento efetivamente decisivo da integração.
+
+Como resultado qualitativo, o módulo substituiu um fluxo 
+sem registro formal — disperso em e-mails e scripts SQL 
+executados manualmente — por um fluxo centralizado, auditável e 
+com efeitos atômicos, reduzindo a dependência de intervenções 
+manuais e ampliando a segurança e a consistência das alterações cadastrais.

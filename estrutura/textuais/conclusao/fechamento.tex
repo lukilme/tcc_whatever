@@ -1,2 +1,41 @@
 \section{Fechamento}
 \label{sec:fechamento}
+
+O trabalho teve como pergunta central se seria possível formalizar, 
+rastrear e controlar as solicitações de transição de categoria no Banco 
+de Especialistas por meio de um módulo integrado ao sistema existente. 
+A avaliação dos resultados apresentados no Capítulo 3 permite afirmar 
+que esse objetivo foi cumprido: o módulo passou a registrar a intenção 
+do pedido, a submetê-la a um fluxo de revisão com controle de acesso e 
+a manter histórico auditável das decisões, com possibilidade de 
+reversão controlada das alterações aprovadas (Seções~\ref{sec:modulo-solicitacoes} e \ref{sec:snapshot-auditoria}).
+
+O salto qualitativo em relação ao cenário anterior é evidente. O 
+fluxo baseado em e-mails e scripts SQL executados manualmente, sem 
+registro formal de autoria, justificativa ou estado anterior (Seção~\ref{sec:fluxo-antigo}), 
+foi substituído por um processo em que cada operação realizada pela 
+aplicação é registrada com autor, data, justificativa e estado anterior 
+(Seção~\ref{sec:snapshot-auditoria}), e em que a reversão deixou de ser uma exclusão de histórico 
+para se tornar um evento ela própria registrado (Seção~\ref{sec:reversao}). A 
+rastreabilidade, antes inexistente, passou a ser garantida nas dimensões 
+temporal, autoral e semântica.
+
+Do ponto de vista formativo, o estágio proporcionou vivência em todas 
+as etapas do desenvolvimento full-stack — levantamento de requisitos, 
+modelagem, implementação de back-end e front-end, testes automatizados e 
+integração contínua — em um sistema real, com regras de negócio definidas e 
+restrições institucionais. O contato com um sistema legado e a necessidade 
+de evoluí-lo sem comprometer o comportamento existente (Seção~\ref{sec:additive-change}) 
+ampliaram a compreensão sobre as decisões de arquitetura e sobre o papel da 
+verificação contínua na manutenção da qualidade.
+
+O trabalho deixa uma base sólida para evoluções futuras, tanto do ponto 
+de vista técnico — com a suíte de testes, o pipeline de CI e o padrão de 
+separação de responsabilidades (Seções~\ref{sec:testes-validacao} e \ref{sec:controle-versao-integracao-continua}) — quanto do ponto de 
+visão conceitual, com as limitações declaradas na Seção~\ref{sec:limitacoes} e os caminhos 
+de evolução sugeridos na Seção~\ref{sec:trabalhos-futuros}. Essas limitações delimitam o que o 
+mecanismo garante, mas não invalidam os resultados alcançados: dentro 
+do escopo proposto, o módulo cumpriu o objetivo de formalizar, rastrear 
+e controlar as solicitações de transição de categoria, reduzindo a 
+dependência de intervenções manuais e ampliando a segurança e a consistência 
+das alterações cadastrais no Banco de Especialistas.

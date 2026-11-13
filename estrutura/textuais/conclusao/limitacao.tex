@@ -1,2 +1,54 @@
 \section{Limitações}
 \label{sec:limitacoes}
+
+No que se refere à rastreabilidade e à reversão, a limitação central é que 
+a reversão restaura o snapshot mais recente do especialista, e não o snapshot 
+de uma solicitação específica, conforme a Seção~\ref{sec:snapshot-auditoria}. Isso decorre da modelagem da 
+entidade SpecialistSnapshot, que referencia o especialista sem vincular-se à 
+solicitação ou à revisão que originou a captura, também na Seção~\ref{sec:snapshot-auditoria}. A consequência 
+é que a reversão desfaz a última alteração aprovada, e não uma alteração 
+qualquer no histórico; a associação entre snapshot e solicitação existe apenas 
+por proximidade temporal e autoral. Para o caso de uso original — corrigir uma 
+mudança de categoria recente que se mostrou inadequada —, a semântica é 
+adequada, mas impede a auditoria retroativa que relacione diretamente cada 
+snapshot à revisão correspondente.
+
+Ainda nessa dimensão, o módulo não implementa exclusão lógica nem política 
+de retenção de dados. O cascade="all, delete-orphan" na relação entre 
+solicitação e revisões implica que a remoção física de uma solicitação apaga 
+o histórico associado, conforme a Seção~\ref{sec:snapshot-auditoria}. Como o módulo não expõe rota de 
+exclusão, o cascade atua apenas como salvaguarda de integridade; a 
+ausência de uma política de retenção, porém, permanece como lacuna a ser 
+endereçada em trabalho futuro. Além disso, alterações realizadas fora do 
+fluxo formal não geram snapshot: intervenções diretas no banco, ainda que 
+possíveis para a equipe de suporte, atualizam apenas o campo last\_update, 
+sem produzir revisão nem captura de estado anterior. O 
+sistema garante a rastreabilidade das operações realizadas pela aplicação; 
+o que está fora do fluxo formal permanece fora do escopo dessa garantia.
+
+Quanto ao escopo funcional, o trabalho foi deliberadamente delimitado na Seção~\ref{sec:escopo-limitacoes}. 
+Não contempla a implementação de notificações por e-mail, o tratamento de 
+múltiplas solicitações simultâneas para um mesmo especialista, a redefinição 
+dos critérios de pontuação, a modificação do processo seletivo ou a substituição 
+do mecanismo de avaliação existente. Essas exclusões não decorrem de limitação 
+técnica, mas de decisão de escopo, e delimitam o conjunto de problemas que o 
+módulo se propôs a resolver.
+
+No processo de integração contínua, o job de lint está configurado com 
+allow\_failure: true, e as verificações de black, mypy e ruff encontram-se 
+comentadas no arquivo de configuração. Na prática, o job 
+é informativo e não bloqueia o merge, o que posterga a padronização de 
+estilo e tipagem para uma etapa condicionada à uniformização prévia do código legado. 
+A garantia mínima de correção recai, portanto, sobre os testes, que bloqueiam a 
+integração em caso de falha, conforme a Seção~\ref{sec:testes-validacao}.
+
+Por fim, o desenvolvimento foi conduzido por um único desenvolvedor, sob 
+restrições de prazo e experiência, conforme a Seção~\ref{sec:escopo-limitacoes}. As decisões de arquitetura e 
+implementação priorizaram a simplicidade e a compatibilidade com a arquitetura 
+legada, em coerência com a estratégia de Additive Change, descrita na Seção~\ref{sec:additive-change}, em 
+detrimento de soluções mais abrangentes para cenários não contemplados pelos 
+requisitos do projeto. Essa escolha foi adequada ao contexto do estágio, mas 
+significa que algumas alternativas tecnicamente viáveis — como o vínculo 
+explícito entre snapshot e solicitação ou o Event Sourcing mencionado como 
+referência conceitual — foram conscientemente descartadas em 
+favor de uma solução proporcional ao escopo

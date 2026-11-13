@@ -1,11 +1,11 @@
 \changetocdepth {4}
 \babel@toc {brazil}{}\relax 
-\contentsline {chapter}{LISTA DE FIGURAS}{viii}{section*.7}%
-\contentsline {chapter}{LISTA DE QUADROS}{ix}{section*.8}%
-\contentsline {chapter}{LISTA DE TABELAS}{x}{section*.9}%
-\contentsline {chapter}{LISTA DE ABREVIATURAS E SIGLAS}{xi}{section*.10}%
-\contentsline {chapter}{LISTA DE S\'{I}MBOLOS}{xi}{section*.10}%
-\contentsline {chapter}{LISTA DE ALGORITMOS}{xi}{section*.10}%
+\contentsline {chapter}{LISTA DE FIGURAS}{viii}{section*.8}%
+\contentsline {chapter}{LISTA DE QUADROS}{ix}{chapter*.9}%
+\contentsline {chapter}{LISTA DE TABELAS}{x}{chapter*.10}%
+\contentsline {chapter}{LISTA DE ABREVIATURAS E SIGLAS}{xi}{chapter*.11}%
+\contentsline {chapter}{LISTA DE S\'{I}MBOLOS}{xi}{chapter*.11}%
+\contentsline {chapter}{LISTA DE ALGORITMOS}{xi}{chapter*.11}%
 \contentsline {chapter}{\chapternumberline {1}INTRODUÇÃO}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Objetivos}{1}{section.1.1}%
 \contentsline {subsection}{\numberline {1.1.1}Objetivo geral}{1}{subsection.1.1.1}%
@@ -91,14 +91,20 @@
 \contentsline {paragraph}{\numberline {3.5.4.1.2}Estágio de testes}{45}{paragraph.3.5.4.1.2}%
 \contentsline {subsubsection}{\numberline {3.5.4.2}Gatilhos e Bloqueio de Merge}{46}{subsubsection.3.5.4.2}%
 \contentsline {chapter}{\chapternumberline {4}CONSIDERAÇÕES FINAIS}{47}{chapter.4}%
-\contentsline {chapter}{Refer\^encias}{48}{chapter*.32}%
+\contentsline {section}{\numberline {4.1}Contexto Geral do Trabalho}{47}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Síntese}{47}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Contribuição}{48}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Limitações}{49}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Trabalhos Futuros}{50}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Fechamento}{51}{section.4.6}%
+\contentsline {chapter}{Refer\^encias}{53}{chapter*.35}%
 \vspace {\cftbeforepartskip }
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
-\contentsline {part}{Ap\^endices}{50}{section*.33}%
-\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{51}{appendix.A}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{52}{appendix.B}%
+\contentsline {part}{Ap\^endices}{55}{section*.36}%
+\contentsline {appendix}{\chapternumberline {A}Nome do apêndice}{56}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro apêndice}{57}{appendix.B}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
-\contentsline {part}{Anexos}{53}{section*.34}%
-\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{54}{appendix.anexochapback.1}%
-\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{55}{appendix.anexochapback.2}%
+\contentsline {part}{Anexos}{58}{section*.37}%
+\contentsline {appendix}{\chapternumberline {A}Nome do anexo}{59}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {B}Nome do outro anexo}{60}{appendix.anexochapback.2}%

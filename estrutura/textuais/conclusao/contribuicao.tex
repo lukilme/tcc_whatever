@@ -1,2 +1,35 @@
 \section{Contribuição}
 \label{sec:contribuicao}
+
+Para o sistema Banco de Especialistas, a principal contribuição foi a formalização 
+do processo de solicitação, revisão e reversão das alterações cadastrais e de 
+categoria. O módulo substituiu um fluxo baseado em e-mail e execução manual de 
+SQL por um fluxo em que a intenção do pedido, a decisão autorizada e o efeito sobre o 
+cadastro são registrados de forma consistente, com histórico completo e controle de 
+acesso aplicado no servidor, conforme as Seções~\ref{sec:modulo-solicitacoes} e \ref{sec:snapshot-auditoria}. Como consequência, as operações 
+passaram a ser auditáveis nas três dimensões — temporal, autoral e 
+semântica, conforme a Seção~\ref{sec:snapshot-auditoria} —, e a reversão deixou de ser uma exclusão de histórico 
+para se tornar um evento registrado, também na Seção~\ref{sec:snapshot-auditoria}.
+
+Para a equipe técnica, o trabalho deixou três legados principais. O primeiro 
+é uma base de testes reutilizável, inexistente antes do módulo, que estabeleceu uma 
+linha de base de regressão para as funcionalidades existentes e pode ser estendida a 
+desenvolvimentos futuros, conforme a Seção~\ref{sec:testes-validacao}. O segundo é um pipeline de integração contínua 
+institucional, executado no Runner interno do Polo de Inovação, com estágios de lint 
+e test e bloqueio de merge em caso de falha, conforme a Seção~\ref{sec:testes-validacao}. O terceiro é um padrão de 
+separação de responsabilidades — controladores finos, Service Layer e validação na 
+fronteira — que serve como referência para a evolução de outros módulos do sistema, 
+em contraste com o padrão concentrado dos controladores legados, como descrito nas Seções~\ref{sec:arquitetura} e \ref{sec:modulo-solicitacoes}.
+
+Para o processo de desenvolvimento, o trabalho constituiu uma demonstração prática da 
+estratégia de Additive Change em um sistema legado, descrita na Seção~\ref{sec:additive-change}. A incorporação do módulo 
+como um componente isolado, por meio de Blueprints e de extensões às rotas e aos stores 
+existentes, preservou o comportamento das funcionalidades já consolidadas e reduziu o 
+risco de regressão, evidenciando que é possível evoluir um sistema em uso sem reescrever suas estruturas centrais.
+
+Para a formação do estagiário, o estágio proporcionou a consolidação de competências 
+full-stack, ao percorrer todas as etapas do desenvolvimento — levantamento de requisitos, 
+modelagem, implementação de back-end e front-end, testes e integração contínua — em um 
+sistema real, com regras de negócio definidas e restrições institucionais. O contato 
+com testes automatizados e com o pipeline de CI, em particular, ampliou a compreensão 
+sobre a importância da verificação contínua e da rastreabilidade no desenvolvimento de software.

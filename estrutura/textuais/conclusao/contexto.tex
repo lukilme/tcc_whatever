@@ -1,2 +1,35 @@
 \section{Contexto Geral do Trabalho}
 \label{sec:contextoGeral}
+
+O trabalho partiu de um problema operacional concreto no Banco de 
+Especialistas: as solicitações de alteração cadastral e de transição 
+de categoria eram feitas por e-mail e executadas manualmente por um 
+técnico, por meio de scripts SQL. O diagnóstico apresentado na Seção~\ref{sec:fluxo-antigo} 
+evidenciou quatro consequências desse fluxo — risco de inconsistência, 
+ausência de rastreabilidade, ineficiência operacional e dependência da 
+equipe de TI —, reforçadas pelo volume de chamados: 141 registros 
+entre maio de 2025 e agosto de 2026, dos quais 48,2\% correspondiam a 
+ajuste cadastral ou de pontuação, e a categoria residual “Outro”, que 
+incluía pedidos de mudança de categoria, respondia por 41,8\% do total.
+
+Diante disso, o objetivo geral foi desenvolver um módulo full-stack de 
+solicitações para o gerenciamento das operações de alteração cadastral 
+e de classificação dos especialistas, com mecanismos de rastreabilidade 
+e registro das operações, conforme os objetivos definidos na Seção~\ref{sec:objetivos}, 
+preservando o comportamento das funcionalidades existentes por meio da 
+estratégia de Additive Change na Seção~\ref{sec:additive-change}. Os objetivos 
+específicos correspondentes — levantamento de requisitos e regras de negócio, 
+modelagem da persistência, implementação do back-end, desenvolvimento das 
+interfaces web, implementação da rastreabilidade, execução de testes e 
+configuração da integração contínua — foram endereçados, respectivamente, nas 
+Seções~\ref{sec:regras-negocio}, \ref{sec:modulo-solicitacoes}, \ref{sec:snapshot-auditoria}, \ref{sec:interfaces-web}, \ref{sec:testes-validacao} e \ref{sec:fluxo-antigo}.
+
+O escopo foi deliberadamente delimitado na Seção~\ref{sec:escopo-limitacoes}: não 
+contemplou a redefinição dos critérios de pontuação, a modificação do processo 
+seletivo, a substituição do mecanismo de avaliação existente, a implementação de 
+notificações por e-mail ou o tratamento de múltiplas solicitações simultâneas para 
+um mesmo especialista. Essas exclusões delimitam o que o módulo se propôs a 
+resolver — formalizar, controlar e rastrear as solicitações de transição de 
+categoria e de complemento cadastral, com histórico das decisões e reversão 
+controlada — e são a base sob a qual os resultados do Capítulo 3 devem ser 
+avaliados.
