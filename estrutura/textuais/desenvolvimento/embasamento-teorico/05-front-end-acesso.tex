@@ -92,7 +92,7 @@ recente do ranking mantém o \textit{Broken Access Control} na primeira posiçã
 riscos mais críticos para aplicações web \cite{glas2025}, o que reforça a necessidade de
 um modelo de autorização explícito, verificado no servidor e auditável. O módulo adota
 essa orientação em duas camadas complementares. A camada \textbf{autoritativa} está no
-servidor (Seção~\ref{subsec:frontend-rbac}): cada rota declara o perfil exigido por meio
+servidor (Seção~\ref{subsec:owasp-seguranca-aplicacoes-web}): cada rota declara o perfil exigido por meio
 de um decorador (\texttt{@auth.login\_required}), e o serviço verifica se o solicitante
 tem acesso ao recurso específico. A camada de \textbf{interface} apenas reflete, para o
 usuário, o que o servidor já garante — ocultando operações para as quais o usuário não

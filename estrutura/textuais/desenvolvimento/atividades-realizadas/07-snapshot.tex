@@ -17,7 +17,14 @@ Quadro~\ref{qua:modelo-snapshot} descreve sua estrutura.
 \label{qua:modelo-snapshot}
 \small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{2.8cm}p{2cm}p{3.4cm}p{4.4cm}}
+\begin{tabularx}{\linewidth}{
+    @{}
+    >{\raggedright\arraybackslash}p{2.4cm}
+    >{\raggedright\arraybackslash}p{1.8cm}
+    >{\raggedright\arraybackslash}p{3cm}
+    >{\raggedright\arraybackslash}X
+    @{}
+}
 \toprule
 \textbf{Coluna} & \textbf{Tipo} & \textbf{Restrição} & \textbf{Observação} \\
 \midrule
@@ -27,7 +34,7 @@ Quadro~\ref{qua:modelo-snapshot} descreve sua estrutura.
 \texttt{authorizer\_id} & Inteiro & Obrigatório & Usuário que autorizou a alteração; sem FK \\
 \texttt{created\_at} & DataHora & Padrão \texttt{agora()} & Momento da captura \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \fonte{Elaboração própria (2026).}
 \end{quadro}
 

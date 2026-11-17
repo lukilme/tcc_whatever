@@ -4,7 +4,7 @@
 A camada de rotas do módulo de solicitações foi implementada como um 
 \textit{Blueprint} do Flask, registrado sob o prefixo \texttt{/solicitations}. 
 A escolha do \textit{Blueprint} decorre diretamente da estratégia de 
-\textit{Additive Change} descrita na Seção~\ref{sec:codigo-existente}: 
+\textit{Additive Change} descrita na Seção~\ref{sec:additive-change}: 
 o módulo é incorporado como um componente isolado, sem alterar os 
 controladores existentes. As rotas atuam como camada de fronteira — 
 recebem a requisição, aplicam o controle de acesso, delegam o 
@@ -100,7 +100,7 @@ processamento ao serviço, conforme ilustrado no Algoritmo~\ref{alg:rota-criacao
 \begin{algorithm}[htbp]
 \caption{Estrutura da rota de criação de solicitação.}
 \label{alg:rota-criacao}
-\begin{verbatim}
+\begin{minted}{python}
 @bp.route("", methods=["POST"])
 @auth.login_required
 @swag_from("docs/create_solicitation.yml", validation=False)
@@ -114,7 +114,75 @@ def save_solicitation():
         form_data=form_data,
         file=file,
     )
-\end{verbatim}
+\end{minted}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Lógica de criação de uma solicitação no serviço.}
+\label{alg:servico-criacao}
+\begin{minted}[fontsize=\footnotesize,framesep=1mm,baselinestretch=0.9]{python}
+@classmethod
+def create_solicitation(cls, user_id, data, file, document_type) -> Solicitation:
+    solicitation_type: SolicitationTypeEnum = (
+        SolicitationService._validate_solicitation(data, file)
+    )
+
+    file_path = None
+    if file:
+        file_path: str = SolicitationService._save_document(
+            user_id, file, document_type
+        )
+
+    category: SolicitationCategory = SolicitationService._resolve_category(
+        solicitation_type
+    )
+
+    if category.id == SolicitationCategoryEnum.RESOURCE:
+        raise MethodNotImplemented(
+            "The request to resource is not valid at this time."
+        )
+
+    specialist: Specialist | None = db.session.execute(
+        db.select(Specialist).filter_by(user_id=user_id)
+    ).scalar_one_or_none()
+
+    specialist_type_id = None
+    if data.get("new_category"):
+        specialist_type: UserSpecialistType = (
+            SolicitationService._resolve_specialist_type(data["new_category"])
+        )
+        specialist_type_id: int = specialist_type.id
+
+        if specialist and specialist.user.specialist_type_id == specialist_type_id:
+            raise SolicitationNotChangedError(
+                "A new category must be different from the current one."
+            )
+    if category.id == SolicitationCategoryEnum.UPDATE_POINTS:
+        if specialist and specialist.status_id == int(
+            SpecialistStatusEnum.RECTIFYING
+        ):
+            raise SolicitationCreationNotAllowedError(
+                "User already rectifying score"
+            )
+    solicitation = cls._build_solicitation(
+        user_id, data, file_path, category, specialist_type_id
+    )
+    create_timeline_log(
+        activity_type_id=ActivityTypeEnum.CREATED_SOLICITATION,
+        description=f"""Usuario criou uma solicitação para {category.name}""",
+        user_id=specialist.user.id,
+    )
+    create_notification(
+        title="Solicitação salva!",
+        message=f"Sua solicitação para {category.name} foi criada com sucesso!",
+        user=specialist.user,
+    )
+
+    db.session.add(solicitation)
+    db.session.commit()
+
+    return solicitation
+\end{minted}
 \end{algorithm}
 
 Quatro características do padrão merecem destaque. A primeira é o 

@@ -1,0 +1,35 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{class} \PYG{n+nc}{SolicitationStatus}\PYG{p}{(}\PYG{n}{Enum}\PYG{p}{):}
+    \PYG{n}{CREATED} \PYG{o}{=} \PYG{l+m+mi}{1}       \PYG{c+c1}{\PYGZsh{} Rascunho, em elaboração}
+    \PYG{n}{PENDING} \PYG{o}{=} \PYG{l+m+mi}{2}       \PYG{c+c1}{\PYGZsh{} Submetida, aguardando análise}
+    \PYG{n}{APPROVED} \PYG{o}{=} \PYG{l+m+mi}{3}      \PYG{c+c1}{\PYGZsh{} Solicitação deferida}
+    \PYG{n}{REJECTED} \PYG{o}{=} \PYG{l+m+mi}{4}      \PYG{c+c1}{\PYGZsh{} Solicitação indeferida}
+
+\PYG{k}{class} \PYG{n+nc}{SolicitationCategory}\PYG{p}{(}\PYG{n}{Enum}\PYG{p}{):}
+    \PYG{n}{CHANGE\PYGZus{}CATEGORY} \PYG{o}{=} \PYG{l+m+mi}{1}  \PYG{c+c1}{\PYGZsh{} Alteração de categoria}
+    \PYG{n}{RESOURCE} \PYG{o}{=} \PYG{l+m+mi}{2}         \PYG{c+c1}{\PYGZsh{} Recurso ou complemento cadastral}
+    \PYG{n}{UPDATE\PYGZus{}POINTS} \PYG{o}{=} \PYG{l+m+mi}{3}    \PYG{c+c1}{\PYGZsh{} Atualização de pontuação}
+
+\PYG{n+nd}{@dataclass}
+\PYG{k}{class} \PYG{n+nc}{Solicitation}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}solicitations\PYGZdq{}}  \PYG{c+c1}{\PYGZsh{} Tabela principal}
+
+    \PYG{n+nb}{id}\PYG{p}{:} \PYG{n+nb}{int}  \PYG{c+c1}{\PYGZsh{} Chave primária}
+    \PYG{n}{id\PYGZus{}user}\PYG{p}{:} \PYG{n+nb}{int}  \PYG{c+c1}{\PYGZsh{} FK para User, obrigatório}
+    \PYG{n}{title}\PYG{p}{:} \PYG{n+nb}{str}  \PYG{c+c1}{\PYGZsh{} Texto com até 128 caracteres}
+    \PYG{n}{description}\PYG{p}{:} \PYG{n+nb}{str}  \PYG{c+c1}{\PYGZsh{} Texto com até 640 caracteres}
+    \PYG{n}{user}\PYG{p}{:} \PYG{n}{User}  \PYG{c+c1}{\PYGZsh{} Relação muitos\PYGZhy{}para\PYGZhy{}um}
+    \PYG{n}{id\PYGZus{}status}\PYG{p}{:} \PYG{n}{SolicitationStatus} \PYG{o}{=} \PYG{n}{SolicitationStatus}\PYG{o}{.}\PYG{n}{CREATED}  \PYG{c+c1}{\PYGZsh{} Estado atual}
+    \PYG{n}{id\PYGZus{}category}\PYG{p}{:} \PYG{n}{SolicitationCategory} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}  \PYG{c+c1}{\PYGZsh{} Discriminador do tipo}
+    \PYG{n}{specialist\PYGZus{}type\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}  \PYG{c+c1}{\PYGZsh{} Categoria de destino}
+    \PYG{n}{file\PYGZus{}path}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}  \PYG{c+c1}{\PYGZsh{} Documento anexado, quando houver}
+    \PYG{n}{created\PYGZus{}at}\PYG{p}{:} \PYG{n}{datetime} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n}{datetime}\PYG{o}{.}\PYG{n}{now}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Data de criação}
+    \PYG{n}{last\PYGZus{}update}\PYG{p}{:} \PYG{n}{datetime} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n}{datetime}\PYG{o}{.}\PYG{n}{now}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Última alteração}
+    \PYG{n}{reviews}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n}{Review}\PYG{p}{]} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n+nb}{list}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Relação um\PYGZhy{}para\PYGZhy{}muitos}
+
+\PYG{n}{INDEXES} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{l+s+s2}{\PYGZdq{}idx\PYGZus{}solicitation\PYGZus{}user\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}id\PYGZus{}user\PYGZdq{}}\PYG{p}{,),}  \PYG{c+c1}{\PYGZsh{} Filtro por usuário}
+    \PYG{l+s+s2}{\PYGZdq{}idx\PYGZus{}solicitation\PYGZus{}status\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}id\PYGZus{}status\PYGZdq{}}\PYG{p}{,),}  \PYG{c+c1}{\PYGZsh{} Filtro por estado}
+    \PYG{l+s+s2}{\PYGZdq{}idx\PYGZus{}solicitation\PYGZus{}created\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}created\PYGZus{}at\PYGZdq{}}\PYG{p}{,),}  \PYG{c+c1}{\PYGZsh{} Ordenação temporal}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

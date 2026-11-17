@@ -16,9 +16,16 @@ colunas e restrições.
 \centering
 \caption[Modelo de dados do módulo de solicitações]{Modelo de dados do módulo de solicitações.}
 \label{qua:modelo-solicitacao}
-\small
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\linewidth}{@{}p{2.2cm}p{2.3cm}p{3.4cm}>{\raggedright\arraybackslash}X@{}}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabularx}{\linewidth}{
+    @{}
+    >{\raggedright\arraybackslash}p{2.2cm}
+    >{\raggedright\arraybackslash}p{3.0cm}
+    >{\raggedright\arraybackslash}p{3.8cm}
+    >{\raggedright\arraybackslash}X
+    @{}
+}
 \toprule
 \textbf{Tabela} & \textbf{Coluna} & \textbf{Tipo / Restrição} & \textbf{Observação} \\
 \midrule
@@ -47,47 +54,43 @@ e relacionamentos, e as enumerações que definem os estados e os tipos de
 solicitação.
 
 \begin{algorithm}[htbp]
-\caption{Estrutura da entidade \texttt{Solicitation} e enumerações de domínio (pseudocódigo).}
+\caption{Estrutura da entidade \texttt{Solicitation} e enumerações de domínio em Python.}
 \label{alg:modelo-solicitation}
-\begin{verbatim}
-ENUMERAÇÃO SolicitationStatus
-    CREATED  = 1    // rascunho, em elaboração
-    PENDING  = 2    // submetida, aguardando análise
-    APPROVED = 3    // deferida
-    REJECTED = 4    // indeferida
+\begin{minted}{python}
+class SolicitationStatus(Enum):
+    CREATED = 1       # Rascunho, em elaboração
+    PENDING = 2       # Submetida, aguardando análise
+    APPROVED = 3      # Solicitação deferida
+    REJECTED = 4      # Solicitação indeferida
 
-ENUMERAÇÃO SolicitationCategory
-    CHANGE_CATEGORY = 1    // alteração de categoria
-    RESOURCE        = 2    // recurso / complemento cadastral
-    UPDATE_POINTS   = 3    // atualização de pontuação
+class SolicitationCategory(Enum):
+    CHANGE_CATEGORY = 1  # Alteração de categoria
+    RESOURCE = 2         # Recurso ou complemento cadastral
+    UPDATE_POINTS = 3    # Atualização de pontuação
 
-ENTIDADE Solicitation
-    TABELA: solicitations
+@dataclass
+class Solicitation:
+    __tablename__ = "solicitations"  # Tabela principal
 
-    ATRIBUTOS
-        id                 : Inteiro, Chave Primária
-        id_user            : Inteiro, FK -> User, obrigatório
-        id_status          : Inteiro, FK -> SolicitationStatus,
-                             padrão CREATED
-        id_category        : Inteiro, FK -> SolicitationCategory,
-                             opcional (discriminador de tipo)
-        specialist_type_id : Inteiro, FK -> UserSpecialistType,
-                             opcional (categoria de destino)
-        title              : Texto(128), obrigatório
-        description        : Texto(640), obrigatório
-        file_path          : Texto(256), opcional
-        created_at         : DataHora, padrão agora()
-        last_update        : DataHora, atualizado em cada alteração
+    id: int  # Chave primária
+    id_user: int  # FK para User, obrigatório
+    title: str  # Texto com até 128 caracteres
+    description: str  # Texto com até 640 caracteres
+    user: User  # Relação muitos-para-um
+    id_status: SolicitationStatus = SolicitationStatus.CREATED  # Estado atual
+    id_category: SolicitationCategory | None = None  # Discriminador do tipo
+    specialist_type_id: int | None = None  # Categoria de destino
+    file_path: str | None = None  # Documento anexado, quando houver
+    created_at: datetime = field(default_factory=datetime.now)  # Data de criação
+    last_update: datetime = field(default_factory=datetime.now)  # Última alteração
+    reviews: list[Review] = field(default_factory=list)  # Relação um-para-muitos
 
-    RELACIONAMENTOS
-        user    : User                 (muitos-para-um)
-        reviews : Lista<Review>        (um-para-muitos, cascata)
-
-    ÍNDICES
-        idx_solicitation_user     -> (id_user)
-        idx_solicitation_status   -> (id_status)
-        idx_solicitation_created  -> (created_at)
-\end{verbatim}
+INDEXES = {
+    "idx_solicitation_user": ("id_user",),  # Filtro por usuário
+    "idx_solicitation_status": ("id_status",),  # Filtro por estado
+    "idx_solicitation_created": ("created_at",),  # Ordenação temporal
+}
+\end{minted}
 \end{algorithm}
 
 A decisão de modelagem central é a \textbf{abordagem polimórfica em tabela 
