@@ -47,42 +47,42 @@ os requisitos funcionais atendidos.
 
 POST & \texttt{/} &
 Usuário autenticado &
-RF01, RF02, RF03 \\
+\textbf{RF01}, \textbf{RF02}, \textbf{RF03} \\
 \midrule
 
 GET & \texttt{/} &
 Autenticado com perfil de visualização &
-RF04 \\
+\textbf{RF04} \\
 \midrule
 
 GET & \texttt{/me} &
 Usuário autenticado (restrito ao próprio usuário) &
-RF04 \\
+\textbf{RF04} \\
 \midrule
 
 GET & \texttt{/\textless id\textgreater} &
 Autenticado, com verificação de acesso no serviço &
-RF04, RF11 \\
+\textbf{RF04}, \textbf{RF11} \\
 \midrule
 
 POST & \texttt{/review} &
 Usuário autenticado com \texttt{SPECIALIST\_REVIEW} &
-RF05, RF06, RF07 \\
+\textbf{RF05}, \textbf{RF06}, \textbf{RF07} \\
 \midrule
 
 POST & \texttt{/review/edit} &
 Usuário autenticado com \texttt{SPECIALIST\_REVIEW} &
-RF05, RF06, RF07 \\
+\textbf{RF05}, \textbf{RF06}, \textbf{RF07} \\
 \midrule
 
 GET & \texttt{/review/\textless solicitation\_id\textgreater} &
 Usuário autenticado com \texttt{SPECIALIST\_REVIEW} &
-RF05, RF06, RF07 \\
+\textbf{RF05}, \textbf{RF06}, \textbf{RF07} \\
 \midrule
 
 GET & \texttt{/review/user/\textless user\_id\textgreater} &
 Usuário autenticado com \texttt{SPECIALIST\_REVIEW} &
-RF05, RF06, RF07 \\
+\textbf{RF05}, \textbf{RF06}, \textbf{RF07} \\
 
 \bottomrule
 \end{tabularx}
@@ -199,7 +199,7 @@ por schemas Marshmallow: a consulta é interpretada por
 \texttt{SolicitationQuerySchema}, e a resposta é serializada por 
 \texttt{SolicitationSchema} ou \texttt{PaginatedResponseSchema}, de modo 
 que o formato de entrada e o de saída não dependem da interface que 
-consome a API, atendendo ao RNF04. A quarta é a \textbf{externalização 
+consome a API, atendendo ao \textbf{RNF04}. A quarta é a \textbf{externalização
 da documentação}: o decorador \texttt{@swag\_from} referencia um arquivo 
 YAML por rota, com \texttt{validation=False} indicando que a validação 
 é responsabilidade dos schemas e não do Swagger.
@@ -214,8 +214,8 @@ desde que o solicitante possua o perfil de visualização. Essa
 centralização evita a duplicação da lógica de consulta entre rotas, 
 que, no padrão legado, costumava ser reproduzida em cada controlador.
 
-Do ponto de vista dos requisitos, os endpoints concentram os RF01 a RF04 
-(criação e consulta) e o RF11 (restrição de operações a usuários 
+Do ponto de vista dos requisitos, os endpoints concentram os \textbf{RF01} a \textbf{RF04} 
+(criação e consulta) e o \textbf{RF11} (restrição de operações a usuários 
 autorizados). As operações de decisão, aplicação de efeitos, snapshot e 
-reversão, correspondentes aos RF05 a RF09, são implementadas por rotas 
+reversão, correspondentes aos \textbf{RF05} a \textbf{RF09}, são implementadas por rotas 
 específicas descritas na Seção~\ref{sec:modulo-solicitacoes}.

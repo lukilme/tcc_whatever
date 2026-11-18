@@ -19,26 +19,9 @@ HTTP (GET, POST, PUT, DELETE e etc.) e representados em formatos padronizados, c
 JSON ou XML. A aplicação dessas restrições permite que o cliente e o servidor
 evoluam de forma independente, desde que a interface entre eles permaneça consistente
 
-\begin{table}[!htb]
-    \centering
-    \caption[Códigos HTTP e suas aplicações no módulo]{Códigos HTTP, significados padrão e aplicações no módulo.
-    \label{tab:codigos-http}}
-    \begin{tabular}{@{}p{2.4cm}p{4cm}p{7.7cm}@{}}
-        \toprule
-        \textbf{Código HTTP} & \textbf{Significado padrão} & \textbf{Aplicação no módulo} \\
-        \midrule
-        200 & Sucesso & Consultas e operações concluídas com êxito. \\
-        201 & Recurso criado & Criação de uma nova solicitação. \\
-        400 & Requisição inválida & Erros de validação nos dados enviados. \\
-        401 & Falha de autenticação & Credenciais inválidas. \\
-        403 & Proibido & Tentativa de acesso a recurso sem permissão. \\
-        404 & Não encontrado & Solicitação ou recurso inexistente. \\
-        409 & Conflito de estado & Tentativa de transição inválida (por exemplo, reverter solicitação não aprovada). \\
-        \bottomrule
-    \end{tabular}
-    \fonte{Elaboração própria, com base em RFC 9110 \cite{rfc9110}.}
-\end{table}
+\input{./dados/tabelas/codigos-http}
 
+\newpage
 % TO-DO: Um diagrama de arquitetura cliente-servidor, ilustrando a comunicação 
 % entre a interface, a API e o banco de dados, com destaque para a separação de 
 % responsabilidades e a independência entre os componentes.

@@ -6,9 +6,10 @@
 A entidade \texttt{SpecialistSnapshot} foi criada para preservar o estado 
 do especialista antes da aplicação de alterações aprovadas no fluxo de 
 mudança de categoria. O nome reflete o escopo: o snapshot cobre o 
-especialista, e é acionado exclusivamente pelo tipo \texttt{CHANGE\_CATEGORY} 
-— recurso e atualização de pontuação não geram snapshot, pelas razões 
-discutidas na Seção~\ref{sec:efeitos-por-tipo}. O 
+especialista, e é acionado exclusivamente pelo tipo \texttt{CHANGE\_CATEGORY}. 
+A captura do estado é feita antes da aplicação dos efeitos, garantindo
+a integridade do histórico.
+
 Quadro~\ref{qua:modelo-snapshot} descreve sua estrutura.
 
 \begin{quadro}[htbp]
@@ -119,34 +120,38 @@ reversão e o estado resultante. Essa é a diferença entre reversão e
 exclusão de histórico: a primeira adiciona um evento, a segunda remove 
 o passado. A escolha pela primeira é o que sustenta a auditoria.
 
+\newpage
+
 O Algoritmo~\ref{alg:reversao} descreve o fluxo em pseudocódigo, com 
 base na recuperação do snapshot mais recente do especialista.
 
 \begin{algorithm}[htbp]
 \caption{Fluxo de reversão (pseudocódigo).}
 \label{alg:reversao}
-\begin{verbatim}
-FUNÇÃO reverter(especialista_id, autorizador):
-    especialista = buscar Specialist por id
-    SE não existe:
-        erro "especialista não encontrado"
+\begin{minted}[fontsize=\footnotesize, framesep=1mm]{python}
+def reverter(especialista_id, autorizador):
+    especialista = buscar_specialist_por_id(especialista_id)
+    if especialista is None:
+        raise Erro("especialista não encontrado")
 
-    snapshot = buscar SpecialistSnapshot
-               filtrando specialist_id = especialista.id
-               ordenando por created_at DESC
-               limitando a 1 resultado
-    SE não existe:
-        erro "nenhum snapshot encontrado"
+    snapshot = buscar_snapshot(
+        specialist_id=especialista.id,
+        order_by="created_at DESC",
+        limit=1,
+    )
+    if snapshot is None:
+        raise Erro("nenhum snapshot encontrado")
 
     estado_anterior = desserializar(snapshot.snapshot)
 
-    EM UMA TRANSAÇÃO:
+    with transacao():
         restaurar(especialista, estado_anterior)
-        registrar_evento(especialista, REVERTIDA,
-                         autorizador, data)
+        registrar_evento(
+            especialista, "REVERTIDA", autorizador, data_atual()
+        )
 
-    RETORNAR confirmação
-\end{verbatim}
+    return confirmacao
+\end{minted}
 \end{algorithm}
 
 Quatro decisões delimitam o escopo da reversão. A primeira é que ela 
@@ -217,7 +222,7 @@ interface apenas a torna legível.
 \label{sec:rastreabilidade}
 
 O conjunto formado por solicitação, revisão, snapshot e linha do tempo 
-atende ao requisito de rastreabilidade (RNF02) em três dimensões. A 
+atende ao requisito de rastreabilidade \textbf{RNF02} em três dimensões. A 
 dimensão \textbf{temporal} é coberta pelos carimbos automáticos das 
 entidades. A dimensão \textbf{autoral} é coberta pelo registro do 
 solicitante na solicitação, do avaliador na revisão e do autorizador no 

@@ -22,11 +22,30 @@ depois dessa linha de base, foram implementados os testes do próprio módulo de
 solicitações. A ordem não foi acidental: sem a linha de base, a refatoração introduzida
 pelo módulo novo não teria como ser verificada contra regressões.
 
+\todo[inline, color=orange!30]{%
+  \textbf{TODO: diagrama da ordem de construção da suíte.}%
+  Inserir um diagrama de fluxo (TikZ ou figure) mostrando as três etapas:%
+  (i) funcionalidades básicas (especialistas, documentos, pontuação, RBAC);%
+  (ii) linha de base de regressão (timeline, usuário, especialista);%
+  (iii) testes do módulo de solicitações.%
+  Destacar visualmente que a etapa (iii) depende da etapa (ii),%
+  e que a etapa (ii) estabelece o "comportamento que não poderia ser alterado".%
+}
+
 No total, a suíte implementada contém 89 testes, distribuídos em 44 testes para o módulo
 novo e 45 testes de regressão. A proporção, próxima de 1:1, reflete a estratégia de
 equilíbrio entre adicionar cobertura para o que foi construído e preservar a cobertura
 do que existia. A suíte completa executa em aproximadamente três minutos, o que
 viabiliza sua integração à pipeline de verificação contínua.
+
+\todo[inline, color=orange!30]{%
+  \textbf{TODO: gráfico da divisão macro da suíte.}%
+  Inserir um gráfico de barras (ou pizza) com duas categorias:%
+  "Módulo novo" (44 testes) e "Regressão" (45 testes).%
+  Alternativa: um gráfico de barras empilhadas por arquivo,%
+  reforçando visualmente que a proporção é próxima de 1:1.%
+  Fonte: dados do Quadro~\ref{qua:distribuicao-testes}.%
+}
 
 A distribuição dos testes por arquivo é apresentada no
 Quadro~\ref{qua:distribuicao-testes}.
@@ -51,12 +70,12 @@ Quadro~\ref{qua:distribuicao-testes}.
 \texttt{test\_review.py} & 3 & Integração pela API (decisão) \\
 \midrule
 \multicolumn{3}{l}{\textit{Regressão}} \\
-\texttt{test\_notification.py} & 22 & Notificações — efeito colateral \\
-\texttt{test\_specialist.py} & 8 & Especialista — entidade modificada \\
-\texttt{test\_user.py} & 7 & Usuário — entidade associada \\
-\texttt{test\_stale\_criteria\_on\_category\_switch.py} & 2 & Critérios após mudança de categoria \\
-\texttt{test\_list\_items\_without\_declaration.py} & 2 & Listagem de itens \\
-\texttt{test\_geral.py} & 4 & Verificações gerais \\
+\texttt{\seqsplit{test\_notification.py}} & 22 & Notificações --- efeito colateral \\
+\texttt{\seqsplit{test\_specialist.py}} & 8 & Especialista --- entidade modificada \\
+\texttt{\seqsplit{test\_user.py}} & 7 & Usuário --- entidade associada \\
+\texttt{\seqsplit{test\_stale\_criteria\_on\_category\_switch.py}} & 2 & Critérios após mudança de categoria \\
+\texttt{\seqsplit{test\_list\_items\_without\_declaration.py}} & 2 & Listagem de itens \\
+\texttt{\seqsplit{test\_geral.py}} & 4 & Verificações gerais \\
 \midrule
 \textbf{Total} & \textbf{89} & \\
 \bottomrule
@@ -74,7 +93,8 @@ Diferentemente dos demais arquivos, que testam um módulo por vez, esses testes
 atravessam os três módulos envolvidos no fluxo — solicitação, revisão e especialista —,
 e são a evidência prática de que a integração entre eles funciona. É a este arquivo que
 o restante deste capítulo se refere quando afirma que a mudança de categoria só existe
-como integração (Seção~\ref{sec:cobertura-testes}).
+como integração (Seção~\ref{sec:testes-integracao}). Pois é o conjunto de solicitação, 
+revisão e snapshow que implementa a mudança de categoria; nenhum deles, isoladamente, é capaz de fazê-lo.
 
 \subsection{Isolamento entre Testes}
 \label{sec:isolamento}
@@ -93,6 +113,18 @@ requisição, e essas sessões participam de transações independentes da trans
 teste. Como consequência, o \textit{rollback} da transação do teste não desfaz as
 alterações feitas pelas requisições HTTP — o isolamento falha.
 
+\todo[inline, color=orange!30]{%
+  \textbf{TODO: diagrama comparativo rollback × TRUNCATE.}%
+  Inserir dois painéis lado a lado:%
+  (a) \textbf{Rollback transacional}: mostrar a transação do teste (T1) e as sessões%
+      abertas pelo \texttt{app.test\_client()} (T2, T3, ...), deixando explícito que%
+      o rollback de T1 não desfaz T2/T3 — isolamento falha;%
+  (b) \textbf{TRUNCATE}: mostrar a conexão dedicada (fora do controle transacional)%
+      executando \texttt{TRUNCATE ... RESTART IDENTITY CASCADE} no nível do banco,%
+      limpando todas as tabelas independentemente das sessões abertas.%
+  Pode ser feito com TikZ ou com duas figuras justapostas.%
+}
+
 O \texttt{TRUNCATE} resolve o problema porque opera no nível do banco, fora do controle
 transacional das sessões da aplicação. A limpeza acontece em uma conexão dedicada, com
 \texttt{commit} explícito, independente das sessões abertas pelo cliente de teste. O
@@ -101,7 +133,7 @@ Algoritmo~\ref{alg:truncate} descreve a função de limpeza em pseudocódigo.
 \begin{algorithm}[htbp]
 \caption{Limpeza de tabelas transacionais entre testes (pseudocódigo).}
 \label{alg:truncate}
-\begin{verbatim}
+\begin{minted}[fontsize=\footnotesize, framesep=1mm]{python}
 TABELAS_TRANSACIONAIS = [
     "specialists",
     "users",
@@ -111,20 +143,20 @@ TABELAS_TRANSACIONAIS = [
     "notifications",
 ]
 
-FUNÇÃO truncar(app, db):
-    COM app.em_contexto():
-        COM db.engine.conectar() COMO conexão:
-            conexão.executar(
+def truncar(app, db):
+    with app.em_contexto():
+        with db.engine.conectar() as conexao:
+            conexao.executar(
                 "TRUNCATE TABLE "
                 + juntar(TABELAS_TRANSACIONAIS)
                 + " RESTART IDENTITY CASCADE")
-            conexão.commit()
+            conexao.commit()
 
-FIXTURE session(db, app):    // autouse, escopo de função
+def session(db, app):  # autouse, escopo de função
     truncar(app, db)
-    ENTREGAR db.session
+    yield db.session
     truncar(app, db)
-\end{verbatim}
+\end{minted}
 \end{algorithm}
 
 A escolha do \texttt{TRUNCATE} tem uma contrapartida: ele é mais lento
@@ -157,12 +189,12 @@ A fixture \texttt{auth\_administrator} segue o mesmo padrão, mas cria um
 usuário com perfil de administração (\texttt{ProfileEnum.ADMIN}) e tipo
 de vínculo servidor. Utiliza identificador fixo (99999) para tornar o
 usuário previsível nos testes e evitar dependência da sequência de IDs.
-Como a fixture de sessão executa \texttt{TRUNCATE ... RESTART IDENTITY CASCADE}
+Como a fixture de sessão executa \texttt{"TRUNCATE ... RESTART IDENTITY CASCADE"} 
 antes de cada teste, o usuário é recriado a cada execução; não se
 trata, portanto, de reaproveitamento entre testes, mas de um identificador
 estável dentro de cada cenário. O perfil de administração satisfaz o
 \texttt{FeatureEnum.SPECIALIST\_REVIEW}, exigido pelas rotas de revisão,
-conforme apresentado na Seção~3.2.1.
+conforme apresentado na Seção~\ref{sec:endpoints}.
 
 A separação em duas fixtures, em vez de uma parametrizada, decorre das diferenças entre
 os fluxos de preparação: o especialista precisa de dados pessoais para estar completo no
@@ -177,11 +209,24 @@ forma, eventuais alterações no processo de autenticação, como mudanças no f
 token, podem ser tratadas em um único ponto.
 
 \subsection{Testes de integração}
-
+\label{sec:testes-integracao}
 Os testes de integração verificaram a comunicação entre os módulos e a correta interação
 entre backend, banco de dados e interfaces do sistema. Essa camada de validação foi
 importante para confirmar que as funcionalidades operavam de forma coerente no contexto
 completo da aplicação.
+
+\todo[inline, color=red!20]{%
+  \textbf{TODO: expandir está secao (atualmente com um único parágrafo).}%
+  Conteúdo a acrescentar:%
+  (i) listar as integrações efetivamente testadas (solicitação $\leftrightarrow$ revisão,%
+      revisão $\leftrightarrow$ especialista, especialista $\leftrightarrow$ usuário,%
+      RBAC $\leftrightarrow$ rotas);%
+  (ii) mencionar o uso do \texttt{app.test\_client()} como mediador;%
+  (iii) referenciar \texttt{test\_change\_category.py} como o arquivo que%
+      materializa a integração ponta a ponta;%
+  (iv) indicar a evidência produzida (saída do \texttt{pytest}, tempo de execução,%
+      cobertura de transições válidas e inválidas).%
+}
 
 \subsection{Processo de Integração Contínua}
 
@@ -191,7 +236,7 @@ Esse fluxo contribui para manter a qualidade do código e garantir que novas alt
 não comprometam o funcionamento do sistema. A solução foi implementada com o GitLab CI,
 usando o Runner interno do Polo de Inovação, o que mantém a execução no ambiente
 institucional e alinhada à infraestrutura já adotada pelo Laboratório Assert
-(Seção~2.7).
+(Seção~\ref{sec:controle-versao-integracao-continua}).
 
 \subsubsection{Estrutura do Pipeline}
 
@@ -201,6 +246,15 @@ Essa separação permite obter feedback rápido sobre problemas de formatação 
 dispender tempo com a execução completa dos testes. A definição do pipeline foi escrita
 em \texttt{.gitlab-ci.yml}, versionada junto ao código, o que garante que a configuração
 acompanhe a evolução do projeto e seja reproduzível em outros ambientes.
+
+\todo[inline, color=orange!30]{%
+  \textbf{TODO: captura de tela da pipeline no GitLab.}%
+  Inserir imagem da visualização de pipeline do GitLab (estágios \texttt{lint} e%
+  \texttt{test}, jobs por módulo, status de cada execução).%
+  Se a pipeline contiver dados sensíveis, anonimizar nomes de branches/commits.%
+  Legenda sugerida: ``Pipeline do módulo de solicitações no GitLab CI,%
+  executada no Runner interno do Polo de Inovação''.%
+}
 
 \paragraph{Estágio de lint}
 
@@ -245,6 +299,14 @@ motivos: o paralelismo reduz o tempo total de execução, e o detalhamento por m
 torna o diagnóstico mais direto — quando a pipeline falha, o job indica imediatamente
 qual área foi afetada.
 
+\todo[inline, color=orange!30]{%
+  \textbf{TODO: trecho ilustrativo do \texttt{.gitlab-ci.yml}.}%
+  Inserir bloco \texttt{lstlisting} com o template \texttt{.test\_template}%
+  (imagem, serviços PostgreSQL/Redis, laço \texttt{pg\_isready}) e um job exemplar%
+  (ex.: \texttt{test-solicitation-module} com \texttt{needs: [test-user-module]}).%
+  Se o trecho for longo, mover para um apêndice e referenciar no texto.%
+}
+
 \subsubsection{Gatilhos e Bloqueio de Merge}
 
 O pipeline é executado tanto em \textit{push} quanto em \textit{merge request}. A
@@ -263,4 +325,11 @@ verificação para o momento em que ela é efetivamente decisiva: a integração
 desenvolvedor pode iterar livremente em sua ramificação, mas a base principal só recebe
 alterações que passaram pela suíte completa. Isso concretiza, no fluxo de trabalho, o
 princípio de que o controle de versão atua sobre o código e a integração contínua atua
-sobre a sua validade (Seção~2.7).
+sobre a sua validade (Seção~\ref{sec:controle-versao-integracao-continua}).
+
+\todo[inline, color=red!20]{%
+  \textbf{menção a cobertura de código ou de transições.}%
+  O texto não discute cobertura (linhas, branches ou transições da máquina de estados).%
+  Não há medição de cobertura (\texttt{pytest-cov}), a declarar explicitamente como limitação e %
+  sugerir como trabalho futuro.%
+}

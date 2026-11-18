@@ -10,7 +10,7 @@ de registrar, consultar e desfazer alterações cadastrais com garantias de rast
 Auditoria, no contexto de sistemas de informação, é o registro sistemático de quem realizou
 determinada operação, quando, sobre qual dado e com qual resultado. A rastreabilidade é a
 propriedade que permite reconstituir o histórico de uma informação a partir desses registros.
-Fowler \cite{fowler2004} descreve o padrão \textit{Audit Log} como um registro de alterações
+\citeonline{fowler2004} descreve o padrão \textit{Audit Log} como um registro de alterações
 feitas nos dados, com o objetivo de permitir verificar o que ocorreu e, quando necessário,
 compreender a origem de um estado atual. Em sistemas que envolvem decisões de classificação e
 seleção de pessoas, como o Banco de Especialistas, esse registro contribui para a transparência
@@ -47,7 +47,7 @@ fluxo seja respeitado independentemente da interface utilizada.
 Para possibilitar a reversão de uma alteração, é necessário preservar o estado anterior dos
 dados. O conceito de \textit{snapshot} (instantâneo) consiste em capturar e armazenar o estado
 de um objeto em determinado momento. Ele se aproxima do padrão \textit{Memento}, descrito por
-Gamma et al. \cite{gamma1994}, cujo propósito é capturar o estado interno de um objeto, sem
+\citeonline{gamma1994}, cujo propósito é capturar o estado interno de um objeto, sem
 violar seu encapsulamento, para que ele possa ser restaurado posteriormente.
 
 No módulo, a entidade \textit{Snapshot} registra o estado relevante do especialista (como

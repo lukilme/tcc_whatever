@@ -1,0 +1,24 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{TABELAS\PYGZus{}TRANSACIONAIS} \PYG{o}{=} \PYG{p}{[}
+    \PYG{l+s+s2}{\PYGZdq{}specialists\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}users\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}solicitations\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}solicitation\PYGZus{}reviews\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}specialist\PYGZus{}snapshots\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}notifications\PYGZdq{}}\PYG{p}{,}
+\PYG{p}{]}
+
+\PYG{k}{def} \PYG{n+nf}{truncar}\PYG{p}{(}\PYG{n}{app}\PYG{p}{,} \PYG{n}{db}\PYG{p}{):}
+    \PYG{k}{with} \PYG{n}{app}\PYG{o}{.}\PYG{n}{em\PYGZus{}contexto}\PYG{p}{():}
+        \PYG{k}{with} \PYG{n}{db}\PYG{o}{.}\PYG{n}{engine}\PYG{o}{.}\PYG{n}{conectar}\PYG{p}{()} \PYG{k}{as} \PYG{n}{conexao}\PYG{p}{:}
+            \PYG{n}{conexao}\PYG{o}{.}\PYG{n}{executar}\PYG{p}{(}
+                \PYG{l+s+s2}{\PYGZdq{}TRUNCATE TABLE \PYGZdq{}}
+                \PYG{o}{+} \PYG{n}{juntar}\PYG{p}{(}\PYG{n}{TABELAS\PYGZus{}TRANSACIONAIS}\PYG{p}{)}
+                \PYG{o}{+} \PYG{l+s+s2}{\PYGZdq{} RESTART IDENTITY CASCADE\PYGZdq{}}\PYG{p}{)}
+            \PYG{n}{conexao}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{()}
+
+\PYG{k}{def} \PYG{n+nf}{session}\PYG{p}{(}\PYG{n}{db}\PYG{p}{,} \PYG{n}{app}\PYG{p}{):}  \PYG{c+c1}{\PYGZsh{} autouse, escopo de função}
+    \PYG{n}{truncar}\PYG{p}{(}\PYG{n}{app}\PYG{p}{,} \PYG{n}{db}\PYG{p}{)}
+    \PYG{k}{yield} \PYG{n}{db}\PYG{o}{.}\PYG{n}{session}
+    \PYG{n}{truncar}\PYG{p}{(}\PYG{n}{app}\PYG{p}{,} \PYG{n}{db}\PYG{p}{)}
+\end{Verbatim}

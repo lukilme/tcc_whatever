@@ -1,0 +1,24 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{reverter}\PYG{p}{(}\PYG{n}{especialista\PYGZus{}id}\PYG{p}{,} \PYG{n}{autorizador}\PYG{p}{):}
+    \PYG{n}{especialista} \PYG{o}{=} \PYG{n}{buscar\PYGZus{}specialist\PYGZus{}por\PYGZus{}id}\PYG{p}{(}\PYG{n}{especialista\PYGZus{}id}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{especialista} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{Erro}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}especialista não encontrado\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{snapshot} \PYG{o}{=} \PYG{n}{buscar\PYGZus{}snapshot}\PYG{p}{(}
+        \PYG{n}{specialist\PYGZus{}id}\PYG{o}{=}\PYG{n}{especialista}\PYG{o}{.}\PYG{n}{id}\PYG{p}{,}
+        \PYG{n}{order\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}created\PYGZus{}at DESC\PYGZdq{}}\PYG{p}{,}
+        \PYG{n}{limit}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}
+    \PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{snapshot} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{Erro}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}nenhum snapshot encontrado\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{estado\PYGZus{}anterior} \PYG{o}{=} \PYG{n}{desserializar}\PYG{p}{(}\PYG{n}{snapshot}\PYG{o}{.}\PYG{n}{snapshot}\PYG{p}{)}
+
+    \PYG{k}{with} \PYG{n}{transacao}\PYG{p}{():}
+        \PYG{n}{restaurar}\PYG{p}{(}\PYG{n}{especialista}\PYG{p}{,} \PYG{n}{estado\PYGZus{}anterior}\PYG{p}{)}
+        \PYG{n}{registrar\PYGZus{}evento}\PYG{p}{(}
+            \PYG{n}{especialista}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}REVERTIDA\PYGZdq{}}\PYG{p}{,} \PYG{n}{autorizador}\PYG{p}{,} \PYG{n}{data\PYGZus{}atual}\PYG{p}{()}
+        \PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n}{confirmacao}
+\end{Verbatim}

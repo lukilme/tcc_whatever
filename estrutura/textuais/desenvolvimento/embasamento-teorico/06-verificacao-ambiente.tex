@@ -4,6 +4,8 @@
 \subsection{Testes Automatizados com Pytest}
 \label{subsec:testes-automatizados-pytest}
 
+
+
 O Pytest foi empregado para verificar as regras de negócio do módulo, em especial as transições
 permitidas da máquina de estados: criação, aprovação, rejeição e reversão \cite{pytest2024}.
 Os testes também verificaram os efeitos dessas transições sobre a categoria, a pontuação e o
@@ -11,6 +13,21 @@ histórico da solicitação.
 
 % TO-DO: Imagem de uma execução de teste.
 \todo[inline]{TODO:Imagem de uma execução de teste.}
+
+\subsection{Testes Unitários}
+\label{subsec:testes-unitarios}
+Teste unitário é aquele que verifica, de forma isolada, o comportamento de uma
+unidade do sistema, como uma função, uma classe ou um serviço. Seu objetivo é
+avaliar uma regra específica sem depender da comunicação com outros
+componentes, o que torna mais precisa a identificação de falhas \cite{pytest2024}.
+
+\subsection{Testes de Integração}
+\label{subsec:testes-integracao}
+Teste de integração, por sua vez, verifica a interação entre dois ou mais
+componentes, avaliando se eles se comunicam e funcionam corretamente em
+conjunto. Diferentemente do teste unitário, pode envolver recursos externos,
+como banco de dados, API e ambiente de execução, para validar o fluxo completo
+da aplicação.
 
 \subsection{Ambiente Reprodutível com Docker}
 \label{subsec:ambiente-reprodutivel-docker}

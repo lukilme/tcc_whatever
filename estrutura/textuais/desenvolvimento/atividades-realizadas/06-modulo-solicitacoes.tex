@@ -6,6 +6,7 @@
 \input{estrutura/textuais/desenvolvimento/atividades-realizadas/11-banco-de-dados}
 
 \subsection{Autorização e Controle de Acesso}
+\label{subsec:autorizacao-controle-acesso}
 
 A autorização foi implementada considerando os diferentes papéis envolvidos no fluxo, de
 modo que apenas usuários com permissão adequada possam aprovar, rejeitar ou alterar as
@@ -39,8 +40,8 @@ sem a devida autorização.
 \label{subsubsec:revisao-como-evento-dominio}
 Para assegurar que a decisão seja um registro histórico auditável, a entidade
 \texttt{SolicitationReview} foi modelada para atuar como um \textbf{Evento de Domínio}
-(\textit{Domain Event}), segundo os preceitos do \textit{Domain-Driven Design} (EVANS,
-2003). Em vez de ser apenas uma tabela de passagem, cada registro na tabela
+(\textit{Domain Event}), segundo os preceitos do \textit{Domain-Driven Design}
+\citeonline{evans2003}. Em vez de ser apenas uma tabela de passagem, cada registro na tabela
 \texttt{solicitation\_reviews} representa o fato imutável de que uma decisão ocorreu no
 domínio (o evento de aprovação ou rejeição).
 
@@ -53,7 +54,7 @@ semântica. Adicionalmente, foram definidos índices específicos
 (\texttt{idx\_review\_solicitation}, \texttt{idx\_review\_user} e
 \texttt{idx\_review\_created}) para otimizar a reconstituição da linha do tempo. Ao
 tratar a revisão como um Evento de Domínio, o sistema materializa o gatilho que dispara
-os efeitos transacionais no especialista, atendendo diretamente ao RNF02
+os efeitos transacionais no especialista, atendendo diretamente ao \textbf{RNF02}
 (Rastreabilidade).
 
 \subsubsection{Execução das Regras de Negócio e Atomicidade}

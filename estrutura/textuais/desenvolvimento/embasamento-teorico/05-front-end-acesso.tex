@@ -19,13 +19,13 @@ a camada de apresentação, em coerência com o \textit{Additive Change}
 declarado no componente é vinculado à interface e, quando alterado, o Vue atualiza
 apenas as partes dependentes por meio de um \textit{virtual DOM}. No módulo, isso
 permite refletir o retorno de uma decisão de revisão sem recarregar a página
-(Seção~\ref{subsec:frontend-detalhe}).
+(Seção~\ref{subsubsec:frontend-detalhe}).
 
 A interface é organizada em componentes, sobretudo \textit{Single-File Components}
 (\texttt{.vue}), com \texttt{<template>}, \texttt{<script>} e \texttt{<style>}. Essa
 coesão permite isolar o formulário de criação no \texttt{SolicitationModal} e reutilizar
 o \texttt{PreviewDocumentDialog} sem alterações
-(Seção~\ref{subsec:frontend-componentes}). A comunicação entre estado e interface ocorre
+(Seção~\ref{subsec:componentes-vue}). A comunicação entre estado e interface ocorre
 por diretivas: \texttt{v-model} sustenta os campos do formulário; \texttt{v-if} controla
 a exibição condicional do campo ``Nova Categoria''; e \texttt{v-for} percorre a lista de
 solicitações na renderização dos \textit{cards}.
@@ -55,24 +55,6 @@ mapeia \texttt{index.vue} para \texttt{/solicitations} e \texttt{\_id.vue} para
 pelo \texttt{@nuxtjs/axios}, injetado como \texttt{this.\$axios}, o que centraliza
 cabeçalhos, tokens de autenticação e interceptadores de erro.
 
-\subsection{Gerenciamento de estado com Vuex}
-\label{subsec:vuex}
-
-O Vuex centraliza o estado em um \textit{store} único, organizado em \textbf{state},
-\textbf{getters}, \textbf{mutations} e \textbf{actions}, tornando o fluxo de alteração
-previsível \cite{vuex2024}. O módulo usa \textbf{módulos com namespace} por domínio:
-\texttt{store/specialists} expõe ações como \texttt{getSolicitations}, e
-\texttt{store/appeal} isola as operações de recurso, como \texttt{createAppeal} e
-\texttt{completeAppeal}. Essa separação reduz o acoplamento entre interface e API e
-mantém as telas focadas em apresentação.
-
-A adoção do Vuex também permite que listagem e criação compartilhem o mesmo estado de
-solicitações. Quando o modal de criação conclui o envio, a listagem do solicitante pode
-refletir o novo registro sem que os componentes se conheçam diretamente, pois o
-\textit{store} atua como intermediário. O mesmo ocorre após uma decisão de revisão: a
-tela de detalhe atualiza o estado e garante que a navegação seguinte encontre os dados
-atualizados.
-
 \subsection{RBAC e Controle de Acesso}
 \label{subsec:rbac-controle-acesso}
 
@@ -89,7 +71,7 @@ acesso são poucos e bem definidos, e a política de autorização precisa ser a
 
 A escolha do RBAC também se justifica pelo alinhamento com o OWASP Top 10. A edição mais
 recente do ranking mantém o \textit{Broken Access Control} na primeira posição dos
-riscos mais críticos para aplicações web \cite{glas2025}, o que reforça a necessidade de
+riscos mais críticos para aplicações web \cite{owasp2025}, o que reforça a necessidade de
 um modelo de autorização explícito, verificado no servidor e auditável. O módulo adota
 essa orientação em duas camadas complementares. A camada \textbf{autoritativa} está no
 servidor (Seção~\ref{subsec:owasp-seguranca-aplicacoes-web}): cada rota declara o perfil exigido por meio
@@ -107,12 +89,9 @@ das \textit{features} associados à sua conta. A autorização é expressa, port
 apenas por papéis, mas pela combinação entre \textbf{perfil}
 (\texttt{ProfileEnum.ADMIN}) e \textbf{permissão}
 (\texttt{FeatureEnum.SPECIALIST\_REVIEW}). O Quadro~\ref{quadro:papeis-permissoes}
-sintetiza as operações disponíveis no módulo e as condições que cada uma exige. As
-definições refletem o que está implementado no servidor
-(Seção~\ref{subsec:solicitacao-endpoints}); a interface apenas respeita essas
-restrições.
+sintetiza as operações disponíveis no módulo e as condições que cada uma exige.
 
-\begin{table}[htb]
+\begin{quadro}
 \centering
 \caption{Papéis e permissões no módulo de solicitações.}
 \label{quadro:papeis-permissoes}
@@ -130,7 +109,7 @@ Reverter alteração aprovada & Não & Não & Sim & RF09 \\
 \hline
 \end{tabular}
 \fonte{Elaboração própria (2026).}
-\end{table}
+\end{quadro}
 
 A definição dos papéis operacionais é a seguinte. O \textbf{solicitante} é qualquer
 usuário autenticado que cria solicitações e acompanha as suas próprias; não tem acesso à

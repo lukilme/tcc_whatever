@@ -48,7 +48,7 @@ colunas e restrições.
 \fonte{Elaboração própria (2026).}
 \end{quadro}
 
-O Algoritmo~\ref{alg:modelo-solicitation} descreve, em pseudocódigo, a 
+O Algoritmo~\ref{alg:modelo-solicitation} descreve, em python com comentários, a 
 estrutura da entidade principal, com seus atributos, restrições, índices 
 e relacionamentos, e as enumerações que definem os estados e os tipos de 
 solicitação.
@@ -163,11 +163,11 @@ Por fim, o \textbf{controle temporal} foi delegado ao banco:
 \texttt{created\_at} recebe o instante corrente na inserção e 
 \texttt{last\_update} é atualizado automaticamente a cada alteração, de 
 modo que o momento da última modificação é registrado mesmo em operações 
-que não passem pela aplicação. Isso atende parcialmente ao RNF02, no 
+que não passem pela aplicação. Isso atende parcialmente ao \textbf{RNF02}, no
 aspecto temporal da rastreabilidade; a dimensão semântica — quem alterou, 
 de qual estado para qual estado, com qual justificativa — é atendida pelo 
 mecanismo de snapshot e pela linha do tempo, descritos na 
-Seção~\ref{sec:snapshot-auditoria}. A atomicidade das operações (RNF01), 
+Seção~\ref{sec:snapshot-auditoria}. A atomicidade das operações (\textbf{RNF01}),
 por sua vez, não é garantida no modelo, mas na camada de serviço, por 
 meio da unidade de trabalho do SQLAlchemy (\texttt{session}): o modelo 
 define as restrições; a transação define o momento em que elas são 
